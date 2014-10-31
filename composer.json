@@ -1,0 +1,25 @@
+{
+    "name": "lucatume/function-mocker",
+    "description": "Function mocking with Patchwork",
+    "license": "GPL2",
+    "authors": [
+        {
+            "name": "theAverageDev",
+            "email": "luca@theaveragedev.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "antecedent/patchwork": "dev-master",
+        "lucatume/args": "dev-master",
+        "phpunit/phpunit": "~4.5@dev"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.1@dev"
+    },
+    "autoload":{
+        "psr-0":{
+            "tad\\FunctionMocker": "src"
+        }
+    }
+}
