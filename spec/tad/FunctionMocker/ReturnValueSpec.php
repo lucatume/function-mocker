@@ -58,7 +58,16 @@
 		 * it allows checking if the return value is null
 		 */
 		public function it_allows_checking_if_the_return_value_is_null() {
-			$this::from(null)->isNull()->shouldReturn(true);
-			$this::from(23)->isNull()->shouldReturn(false);
-		        }
+			$this::from( null )->isNull()->shouldReturn( true );
+			$this::from( 23 )->isNull()->shouldReturn( false );
+		}
+
+		/**
+		 * it should allow getting the return value of the callback function
+		 */
+		public function it_should_allow_getting_the_return_value_of_the_callback_function() {
+			$this->from( function ( $value1, $value2 ) {
+				return $value1 + $value2;
+			} )->call( [ 2, 3 ] )->shouldReturn( 5 );
+		}
 	}

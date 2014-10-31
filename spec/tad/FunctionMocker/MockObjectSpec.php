@@ -96,4 +96,16 @@
 			$invocation->getCallTimes( [ 'some' ] )->willReturn( 2 );
 			$sut->shouldThrow( 'PHPUnit_Framework_AssertionFailedError' )->duringWasCalledWithTimes( [ 'some' ], 3 );
 		}
+
+		/**
+		 * it allows checking for 0 calls using sugar method
+		 */
+		public function it_allows_checking_for_0_calls_using_sugar_method( Checker $checker, ReturnValue $returnValue, Invocation $invocation ) {
+			$sut = $this::from( $checker, $returnValue, $invocation );
+			$invocation->getCallTimes()->willReturn( 0 );
+			$sut->wasNotCalled()->shouldReturn( true );
+			$invocation->getCallTimes( [ 'some' ] )->willReturn( 0 );
+			$sut->wasNotCalledWith( [ 'some' ] )->shouldReturn( true );
+		}
+
 	}

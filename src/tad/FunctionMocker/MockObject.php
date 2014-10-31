@@ -43,7 +43,9 @@
 			return $this->generator->getFunctionName();
 		}
 
-		public function wasCalledTimes( $times = null ) {
+		public function wasCalledTimes( $times ) {
+			\Arg::_( $times, 'Times' )->is_int();
+
 			$callTimes = $this->invocation->getCallTimes();
 			$condition = $callTimes === $times;
 			if ( ! $condition && $this->throw ) {
@@ -51,10 +53,13 @@
 				\PHPUnit_Framework_Assert::fail( $message );
 			}
 
+			\PHPUnit_Framework_Assert::assertTrue($condition);
 			return $condition;
 		}
 
-		public function wasCalledWithTimes( $args, $times ) {
+		public function wasCalledWithTimes( array $args = array(), $times ) {
+			\Arg::_( $times, 'Times' )->is_int();
+
 			$callTimes = $this->invocation->getCallTimes( $args );
 			$condition = $callTimes === $times;
 			if ( ! $condition && $this->throw ) {
@@ -63,6 +68,7 @@
 				\PHPUnit_Framework_Assert::fail( $message );
 			}
 
+			\PHPUnit_Framework_Assert::assertTrue($condition);
 			return $condition;
 		}
 
@@ -74,5 +80,13 @@
 
 		public function willThrow() {
 			return $this->throw;
+		}
+
+		public function wasNotCalled() {
+			return $this->wasCalledTimes( 0 );
+		}
+
+		public function wasNotCalledWith( array $args = null ) {
+			return $this->wasCalledWithTimes( $args, 0 );
 		}
 	}
