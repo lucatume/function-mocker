@@ -115,10 +115,9 @@
 		 * it should allow mocking a defined class method
 		 */
 		public function it_should_allow_mocking_a_defined_class_method() {
-			FunctionMocker::mock( 'AClass::aMethod', 23 );
-			$this->assertEquals( 23, \AClass::aMethod() );
+			FunctionMocker::mock( 'AClass::bMethod', 23 );
+			$this->assertEquals( 23, \AClass::bMethod() );
 		}
-
 
 	}
 
