@@ -7,79 +7,81 @@
 		/**
 		 * @var Checker
 		 */
-		protected $generator;
+		protected $__generator;
 
 		/** @var  ReturnValue */
-		protected $returnValue;
+		protected $__returnValue;
 
 		/**
 		 * @var Invocation
 		 */
-		protected $invocation;
+		protected $__invocation;
 
 		/**
 		 * @var bool
 		 */
-		protected $throw = true;
+		protected $__throw = true;
 
-		public static function from( Checker $generator, ReturnValue $returnValue, Invocation $invocation ) {
+		public static function __from( Checker $generator, ReturnValue $returnValue, Invocation $invocation ) {
 			$instance = new self;
-			$instance->generator = $generator;
-			$instance->returnValue = $returnValue;
-			$instance->invocation = $invocation;
+			$instance->__generator = $generator;
+			$instance->__returnValue = $returnValue;
+			$instance->__invocation = $invocation;
 
 			return $instance;
 		}
 
-		public function willReturnCallable() {
-			return $this->returnValue->isCallable();
+		public function __willReturnCallable() {
+			return $this->__returnValue->isCallable();
 		}
 
-		public function wasEvalCreated() {
-			return $this->generator->isEvalCreated();
+		public function __wasEvalCreated() {
+			return $this->__generator->isEvalCreated();
 		}
 
-		public function getFunctionName() {
-			return $this->generator->getFunctionName();
+		public function __getFunctionName() {
+			return $this->__generator->getFunctionName();
 		}
 
 		public function wasCalledTimes( $times ) {
 			\Arg::_( $times, 'Times' )->is_int();
 
-			$callTimes = $this->invocation->getCallTimes();
+			$callTimes = $this->__invocation->getCallTimes();
 			$condition = $callTimes === $times;
-			if ( ! $condition && $this->throw ) {
-				$message = sprintf( '%s was called %d times, %s times expected.', $this->getFunctionName(), $callTimes, $times );
+			if ( ! $condition && $this->__throw ) {
+				$message = sprintf( '%s was called %d times, %s times expected.', $this->__getFunctionName(), $callTimes, $times );
 				\PHPUnit_Framework_Assert::fail( $message );
 			}
 
-			\PHPUnit_Framework_Assert::assertTrue($condition);
+			\PHPUnit_Framework_Assert::assertTrue( $condition );
+
 			return $condition;
 		}
 
 		public function wasCalledWithTimes( array $args = array(), $times ) {
 			\Arg::_( $times, 'Times' )->is_int();
 
-			$callTimes = $this->invocation->getCallTimes( $args );
+			$callTimes = $this->__invocation->getCallTimes( $args );
 			$condition = $callTimes === $times;
-			if ( ! $condition && $this->throw ) {
+			if ( ! $condition && $this->__throw ) {
 				$args = '[' . implode( ', ', $args ) . ']';
-				$message = sprintf( '%s was called %d times with %s, %d times expected.', $this->getFunctionName(), $callTimes, $args, $times );
+				$message = sprintf( '%s was called %d times with %s, %d times expected.', $this->__getFunctionName(), $callTimes, $args, $times );
 				\PHPUnit_Framework_Assert::fail( $message );
 			}
 
-			\PHPUnit_Framework_Assert::assertTrue($condition);
+			\PHPUnit_Framework_Assert::assertTrue( $condition );
+
 			return $condition;
 		}
 
-		public function throwException( $value ) {
+		public function __throwException( $value ) {
 			\Arg::_( (bool) $value, 'Value' )->is_bool();
 
-			$this->throw = (bool) $value;
+			$this->__throw = (bool) $value;
 		}
 
-		public function willThrow() {
-			return $this->throw;
+		public function __willThrow() {
+			return $this->__throw;
 		}
 
 		public function wasNotCalled() {
