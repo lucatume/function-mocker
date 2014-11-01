@@ -5,35 +5,41 @@
 	class MockExtender {
 
 		protected static $mockObjectClassName = 'Matcher';
+		protected        $smarty;
+		protected        $mockedClasses       = array();
 
 		public static function from( $class ) {
-			$extendingClassName = self::createExtensionClass( $class );
+			$instance = new self;
+			$instance->initSmarty();
+
+			$extendingClassName = $instance->createExtensionClass( $class );
 
 			return new $extendingClassName;
 		}
 
-		protected static function createExtensionClass( $class ) {
+		public function createExtensionClass( $class ) {
 			\Arg::_( $class, 'Class name' )->is_string()
 			    ->assert( class_exists( $class ), "Class must exists to be mocked." );
 
-			$template = self::getTemplateContent();
-			$mockClassName = self::getMockClassName( $class );
-			$vars = array( 'className' => $mockClassName, 'parentClassName' => $class );
-			$code = self::render( $vars, $template );
-
-			if ( ! eval( $code ) ) {
-				throw new \RuntimeException( 'There was a problem parsing the php code.' );
+			if ( in_array( $class, array_keys( $this->mockedClasses ) ) ) {
+				return $this->mockedClasses[ $class ];
 			}
 
+			$reflection = new \ReflectionClass( $class );
+			$classShortName = $reflection->getShortName();
+			$className = $reflection->getName();
+			$mockClassName = $this->getMockClassName( $classShortName );
+			$vars = array( 'className' => $mockClassName, 'parentClassName' => $className );
+
+			$code = $this->getMockObjectCode( $vars );
+
+			if ( eval( $code ) === false ) {
+				throw new \RuntimeException( 'There was a problem parsing the php code; where is a mistery.' );
+			}
+
+			$this->mockedClasses[ $class ] = $mockClassName;
+
 			return $mockClassName;
-		}
-
-		protected static function getTemplateContent() {
-			$templateFileName = implode( DIRECTORY_SEPARATOR, array(
-				dirname( __FILE__ ), 'templates', 'mock-object.tpl'
-			) );
-
-			return file_get_contents( $templateFileName );
 		}
 
 		/**
@@ -41,21 +47,30 @@
 		 *
 		 * @return string
 		 */
-		protected static function getMockClassName( $class ) {
+		protected function getMockClassName( $class ) {
 			$hash = md5( time() );
 			$mockClassName = 'Mock_' . $class . '_' . $hash;
 
 			return $mockClassName;
 		}
 
-		protected static function render( array $vars = array(), $template = '' ) {
-			array_walk( $vars, function ( $value, $key ) use ( &$template ) {
-				$pattern = sprintf( '~\\{%s\\}~', $key );
-				$replacement = $value;
-				$template = preg_replace( $pattern, $replacement, $template );
-			} );
+		protected function initSmarty() {
+			$this->smarty = new \Smarty();
+			$this->smarty->setCaching( \Smarty::CACHING_LIFETIME_CURRENT );
+			$templateDir = dirname( __FILE__ ) . '/templates';
+			$this->smarty->setTemplateDir( $templateDir );
+			$this->smarty->setCompileDir( $templateDir . '/compiled' );
+			$this->smarty->setCacheDir( $templateDir . '/cache' );
+		}
 
-			return $template;
+		protected function getMockObjectCode( array $vars ) {
+			$smarty = $this->smarty;
+			array_walk( $vars, function ( $value, $key ) use ( $smarty ) {
+				$smarty->assign( $key, $value );
+			} );
+			$code = $this->smarty->fetch( 'mock-object.tpl' );
+
+			return $code;
 		}
 
 
