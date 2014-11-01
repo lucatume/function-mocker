@@ -5,7 +5,7 @@
 
 	class MockObjectTemplateBuilder extends \PHPUnit_Framework_TestCase {
 
-		protected $mockObjectClassName = 'Matcher';
+		protected $mockObjectClassName = 'MockObject';
 
 		/**
 		 * @test
@@ -14,12 +14,12 @@
 			$mockObjectFileName = $this->getMockObjectFileName();
 			$templateFileName = $this->getTemplateFileName( $mockObjectFileName );
 			$mockObjectCode = $this->getMockObjectCode( $mockObjectFileName );
-			$mockObjectCode = $this->addExtendsTemplate( $mockObjectCode );
+			$mockObjectCode = $this->addExtendsPlaceholder( $mockObjectCode );
 			$mockObjectCode = $this->templatizeClassName( $mockObjectCode );
+			$mockObjectCode = $this->removeNamespaceLine( $mockObjectCode );
 			$mockObjectCode = $this->removeComments( $mockObjectCode );
-			$mockObjectCode = addslashes($mockObjectCode);
 
-			file_put_contents( $templateFileName, $mockObjectCode );
+			file_put_contents( $templateFileName, trim($mockObjectCode) );
 		}
 
 		/**
@@ -63,9 +63,9 @@
 		 *
 		 * @return mixed
 		 */
-		protected function addExtendsTemplate( $mockObjectCode ) {
+		protected function addExtendsPlaceholder( $mockObjectCode ) {
 			$pattern = sprintf( '/\\s%s\\s/', $this->mockObjectClassName );
-			$replacement = sprintf( ' %s extends {parentClassName} ', $this->mockObjectClassName );
+			$replacement = sprintf( ' %s extends {$parentClassName} ', $this->mockObjectClassName );
 			$mockObjectCode = preg_replace( $pattern, $replacement, $mockObjectCode );
 
 			return $mockObjectCode;
@@ -78,7 +78,7 @@
 		 */
 		protected function templatizeClassName( $mockObjectCode ) {
 			$pattern = sprintf( '/%s/', $this->mockObjectClassName );
-			$replacement = '{className}';
+			$replacement = '{$className}';
 			$mockObjectCode = preg_replace( $pattern, $replacement, $mockObjectCode );
 
 			return $mockObjectCode;
@@ -92,6 +92,17 @@
 		protected function removeComments( $mockObjectCode ) {
 			$mockObjectCode = preg_replace( '!/\*.*?\*/!s', '', $mockObjectCode );
 			$mockObjectCode = preg_replace( '/\n\s*\n/', "\n", $mockObjectCode );
+
+			return $mockObjectCode;
+		}
+
+		/**
+		 * @param $mockObjectCode
+		 *
+		 * @return mixed
+		 */
+		protected function removeNamespaceLine( $mockObjectCode ) {
+			$mockObjectCode = preg_replace( "/^namespace\\s+.*?;/um", " ", $mockObjectCode );
 
 			return $mockObjectCode;
 		}
