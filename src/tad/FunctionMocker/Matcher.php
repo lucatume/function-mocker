@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	class MockObject {
+	class Matcher {
 
 		/**
 		 * @var Checker

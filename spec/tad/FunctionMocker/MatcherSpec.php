@@ -8,9 +8,9 @@
 	use tad\FunctionMocker\Invocation;
 	use tad\FunctionMocker\ReturnValue;
 
-	class MockObjectSpec extends ObjectBehavior {
+	class MatcherSpec extends ObjectBehavior {
 
-		protected $sutClass = 'tad\FunctionMocker\MockObject';
+		protected $sutClass = 'tad\FunctionMocker\Matcher';
 
 		function it_is_initializable() {
 			$this->shouldHaveType( $this->sutClass );
