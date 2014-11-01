@@ -26,7 +26,7 @@
 			$checker = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
 			$invocation = new Invocation();
-			$mockObject = MockObject::from( $checker, $returnValue, $invocation );
+			$mockObject = MockObject::__from( $checker, $returnValue, $invocation );
 
 			if ( function_exists( '\Patchwork\replace' ) ) {
 				\Patchwork\replace( $functionName, function () use ( $functionName, $returnValue, $invocation ) {
