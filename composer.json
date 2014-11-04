@@ -12,8 +12,7 @@
     "require": {
         "antecedent/patchwork": "dev-master",
         "lucatume/args": "dev-master",
-        "phpunit/phpunit": "~4.5@dev",
-        "smarty/smarty": "~3.1@dev"
+        "phpunit/phpunit": "~4.5@dev"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.1@dev"
