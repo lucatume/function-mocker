@@ -11,6 +11,11 @@
 		 */
 		protected static $testCase;
 
+		/**
+		 * Loads Patchwork, use in setUp method of the test case.
+		 *
+		 * @return void
+		 */
 		public static function load() {
 			$dir = __DIR__;
 			while ( true ) {
@@ -24,10 +29,35 @@
 			}
 		}
 
+		/**
+		 * Undoes Patchwork bindings, use in tearDown method of test case.
+		 *
+		 * @return void
+		 */
 		public static function unload() {
 			\Patchwork\undoAll();
 		}
 
+		/**
+		 * Mocks a function, a static method or an instance method.
+		 * 
+		 * To mock functions and static methods Patchwork will be used
+		 * hence `load` and `unload` methods are required.  
+		 * When mocking instance methods a PHPUnit mock object will be
+		 * returned and the expectation on it will be set using the
+		 * `PHPUnit_Framework_TestCase::any` method.
+		 * 
+		 * @param string $functionName The name of the function to mock.
+		 *                             Name spaced or not; to mock a class
+		 *                             method use the `Class::method`
+		 *                             notation.
+		 * @param null|mixed|callable $returnValue The return value.
+		 *        					   Either null, a value or a callable
+		 *                             that will be returned when the
+		 *                             function or method is invoked.
+		 * 
+		 * @return PHPUnit_Framework_MockObject_MockObject|tad\FunctionMocker\Matcher
+		 */
 		public static function mock( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
 
