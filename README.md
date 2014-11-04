@@ -108,7 +108,7 @@ When trying to mock instance method the `FunctionMocker::mock` will merely retur
         /**
          * @test
          */
-        public function it_will_call_manipulatePostContent(){
+        public function it_will_call_go(){
             $dep = FunctionMocker::mock('Dep::go', 23);
 
             $sut = new SomeClass($dep);
