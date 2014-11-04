@@ -106,8 +106,18 @@
 		 * it should allow mocking a defined static class method
 		 */
 		public function it_should_allow_mocking_a_defined_static_class_method() {
-			FunctionMocker::mock( 'AClass::aMethod', 23 );
-			$this->assertEquals( 23, \AClass::aMethod() );
+			FunctionMocker::mock( 'AClass::staticMethod', 23 );
+			$this->assertEquals( 23, \AClass::staticMethod() );
+		}
+
+		/**
+		 * @test
+		 * it should return an object extending the original one when mocking an instance method
+		 */
+		public function it_should_return_an_object_extending_the_original_one_when_mocking_an_instance_method() {
+			$sut = FunctionMocker::mock( 'AClass::instanceMethod', 23 );
+
+			$this->assertInstanceOf( 'AClass', $sut );
 		}
 
 		/**
@@ -115,8 +125,8 @@
 		 * it should allow mocking a defined class method
 		 */
 		public function it_should_allow_mocking_a_defined_class_method() {
-			FunctionMocker::mock( 'AClass::bMethod', 23 );
-			$this->assertEquals( 23, \AClass::bMethod() );
+			$sut = FunctionMocker::mock( 'AClass::instanceMethod', 23 );
+			$this->assertEquals( 23, $sut->instanceMethod() );
 		}
 
 	}

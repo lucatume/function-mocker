@@ -3,11 +3,11 @@
 
 	class AClass {
 
-		public static function aMethod() {
+		public static function staticMethod() {
 			return false;
 		}
 
-		public function bMethod() {
+		public function instanceMethod() {
 			return 112;
 		}
 	}
