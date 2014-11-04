@@ -20,7 +20,7 @@
 			$instance = new self;
 			$instance->isEvalCreated = false;
 			if ( ! function_exists( $functionName ) ) {
-				eval( sprintf( 'function %s(){return null;}', $functionName ) );
+				@eval( sprintf( 'function %s(){return null;}', $functionName ) );
 				$instance->isEvalCreated = true;
 			}
 			$instance->functionName = $functionName;

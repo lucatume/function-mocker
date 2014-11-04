@@ -97,8 +97,37 @@
 		 */
 		public function it_should_allow_verifying_a_function_was_called_with_args() {
 			$mock = FunctionMocker::mock( 'undefined_function' );
-			undefined_function('foo', 'baz');
-			$mock->wasCalledWithTimes(['foo', 'baz'], 1);
+			undefined_function( 'foo', 'baz' );
+			$mock->wasCalledWithTimes( [ 'foo', 'baz' ], 1 );
 		}
+
+		/**
+		 * @test
+		 * it should allow mocking a defined static class method
+		 */
+		public function it_should_allow_mocking_a_defined_static_class_method() {
+			FunctionMocker::mock( 'AClass::staticMethod', 23 );
+			$this->assertEquals( 23, \AClass::staticMethod() );
+		}
+
+		/**
+		 * @test
+		 * it should return an object extending the original one when mocking an instance method
+		 */
+		public function it_should_return_an_object_extending_the_original_one_when_mocking_an_instance_method() {
+			$sut = FunctionMocker::mock( 'AClass::instanceMethod', 23 );
+
+			$this->assertInstanceOf( 'AClass', $sut );
+		}
+
+		/**
+		 * @test
+		 * it should allow mocking a defined class method
+		 */
+		public function it_should_allow_mocking_a_defined_class_method() {
+			$sut = FunctionMocker::mock( 'AClass::instanceMethod', 23 );
+			$this->assertEquals( 23, $sut->instanceMethod() );
+		}
+
 	}
 
