@@ -43,6 +43,14 @@
 			return $this->__generator->getFunctionName();
 		}
 
+		/**
+		 * Checks if the function or method was called the specified number
+		 * of times.
+		 *
+		 * @param  int $times
+		 *
+		 * @return void
+		 */
 		public function wasCalledTimes( $times ) {
 			\Arg::_( $times, 'Times' )->is_int();
 
@@ -58,6 +66,15 @@
 			return $condition;
 		}
 
+		/**
+		 * Checks if the function or method was called with the specified
+		 * arguments a number of times.
+		 *
+		 * @param  array  $args
+		 * @param  int $times
+		 *
+		 * @return void
+		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
 			\Arg::_( $times, 'Times' )->is_int();
 
@@ -84,10 +101,23 @@
 			return $this->__throw;
 		}
 
+		/**
+		 * Checks that the function or method was not called.
+		 *
+		 * @return void
+		 */
 		public function wasNotCalled() {
 			return $this->wasCalledTimes( 0 );
 		}
 
+		/**
+		 * Checks that the function or method was not called with
+		 * the specified arguments.
+		 *
+		 * @param  array $args
+		 *
+		 * @return void
+		 */
 		public function wasNotCalledWith( array $args = null ) {
 			return $this->wasCalledWithTimes( $args, 0 );
 		}
