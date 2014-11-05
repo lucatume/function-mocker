@@ -16,118 +16,118 @@
 
 		/**
 		 * @test
-		 * it should allow mocking a user defined function
+		 * it should return null when stubbin a function
 		 */
-		public function it_should_allow_mocking_a_user_defined_function() {
-			FunctionMocker::mock( 'some_function', 'baz' );
-			$this->assertEquals( 'baz', some_function() );
+		public function it_should_return_null_when_stubbin_a_function() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', 23 );
+
+			$this->assertNull( $ret );
+			$this->assertEquals( 23, someFunction() );
 		}
 
 		/**
 		 * @test
-		 * it should allow mocking an undefined functionj
+		 * it should return null when stubbing a static method
 		 */
-		public function it_should_allow_mocking_an_undefined_functionj() {
-			FunctionMocker::mock( 'undefined_function', 23 );
-			$this->assertEquals( 23, undefined_function() );
+		public function it_should_return_null_when_stubbing_a_static_method() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
+
+			$this->assertNull( $ret );
+			$this->assertEquals( 23, SomeClass::staticMethod() );
 		}
 
 		/**
 		 * @test
-		 * it should allow mocking a function and return a callback
+		 * it should return an object instance when stubbing an instance method
 		 */
-		public function it_should_allow_mocking_a_function_and_return_a_callback() {
-			FunctionMocker::mock( 'some_function', function () {
-				return 'some';
-			} );
-			$this->assertEquals( 'some', some_function() );
+		public function it_should_return_an_object_instance_when_stubbing_an_instance_method() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', 23 );
+
+			$this->assertInstanceOf( __NAMESPACE__ . '\SomeClass', $ret );
+			$this->assertEquals( 23, $ret->instanceMethod() );
 		}
 
 		/**
 		 * @test
-		 * it should allow mocking an undefined function and return a callback
+		 * it should return a matcher when spying a function
 		 */
-		public function it_should_allow_mocking_an_undefined_function_and_return_a_callback() {
-			FunctionMocker::mock( 'undefined_function', function () {
-				return 23;
-			} );
-			$this->assertEquals( 23, undefined_function() );
+		public function it_should_return_a_matcher_when_spying_a_function() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
+
+			$this->assertInstanceOf( 'tad\FunctionMocker\FunctionMatcher', $ret );
 		}
 
 		/**
 		 * @test
-		 * it should allow mocking a user defined function multiple times
+		 * it should pass when spying a function
 		 */
-		public function it_should_allow_mocking_a_user_defined_function_multiple_times() {
-			FunctionMocker::mock( 'some_function', 'baz' );
-			$this->assertEquals( 'baz', some_function() );
-			FunctionMocker::mock( 'some_function', 'bar' );
-			$this->assertEquals( 'bar', some_function() );
-			FunctionMocker::mock( 'some_function', 23 );
-			$this->assertEquals( 23, some_function() );
+		public function it_should_pass_when_spying_a_function() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
+
+			$this->assertEquals( 'foo', someFunction() );
+			$ret->wasCalledOnce();
+			$ret->wasCalledTimes( 1 );
 		}
 
 		/**
 		 * @test
-		 * it should allow mocking an undefined functions multiple times
+		 * it should return a matcher when spying a static method
 		 */
-		public function it_should_allow_mocking_an_undefined_functions_multiple_times() {
-			FunctionMocker::mock( 'undefined_function', 23 );
-			$this->assertEquals( 23, undefined_function() );
-			FunctionMocker::mock( 'undefined_function', 45 );
-			$this->assertEquals( 45, undefined_function() );
-			FunctionMocker::mock( 'undefined_function', 'foo' );
-			$this->assertEquals( 'foo', undefined_function() );
+		public function it_should_return_a_matcher_when_spying_a_static_method() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
+
+			$this->assertInstanceOf( 'tad\FunctionMocker\FunctionMatcher', $ret );
 		}
 
 		/**
 		 * @test
-		 * it should allow verifying a function was called
+		 * it should pass when spying a static method
 		 */
-		public function it_should_allow_verifying_a_function_was_called() {
-			$mock = FunctionMocker::mock( 'undefined_function', 23 );
-			undefined_function();
-			undefined_function();
-			$mock->wasCalledTimes( 2 );
+		public function it_should_pass_when_spying_a_static_method() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
+
+			$this->assertEquals( 'foo baz', SomeClass::staticMethod() );
+			$ret->wasCalledOnce();
+			$ret->wasCalledTimes( 1 );
 		}
 
 		/**
 		 * @test
-		 * it should allow verifying a function was called with args
+		 * it should return a spy object when spying an instance method
 		 */
-		public function it_should_allow_verifying_a_function_was_called_with_args() {
-			$mock = FunctionMocker::mock( 'undefined_function' );
-			undefined_function( 'foo', 'baz' );
-			$mock->wasCalledWithTimes( [ 'foo', 'baz' ], 1 );
+		public function it_should_return_a_spy_object_when_spying_an_instance_method() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
+
+			$this->assertInstanceOf( 'tad\FunctionMocker\InstanceSpy', $ret );
 		}
 
 		/**
 		 * @test
-		 * it should allow mocking a defined static class method
+		 * it should pass when spying an instance method
 		 */
-		public function it_should_allow_mocking_a_defined_static_class_method() {
-			FunctionMocker::mock( 'AClass::staticMethod', 23 );
-			$this->assertEquals( 23, \AClass::staticMethod() );
+		public function it_should_pass_when_spying_an_instance_method() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
+			$value = $ret->instanceMethod();
+
+			$this->assertEquals( 'some value', $value );
 		}
 
-		/**
-		 * @test
-		 * it should return an object extending the original one when mocking an instance method
-		 */
-		public function it_should_return_an_object_extending_the_original_one_when_mocking_an_instance_method() {
-			$sut = FunctionMocker::mock( 'AClass::instanceMethod', 23 );
+	}
 
-			$this->assertInstanceOf( 'AClass', $sut );
+
+	class SomeClass {
+
+		public static function staticMethod() {
+			return "foo baz";
 		}
 
-		/**
-		 * @test
-		 * it should allow mocking a defined class method
-		 */
-		public function it_should_allow_mocking_a_defined_class_method() {
-			$sut = FunctionMocker::mock( 'AClass::instanceMethod', 23 );
-			$this->assertEquals( 23, $sut->instanceMethod() );
+		public function instanceMethod() {
+			return 'some value';
 		}
+	}
 
+
+	function someFunction() {
+		return 'foo';
 	}
 
