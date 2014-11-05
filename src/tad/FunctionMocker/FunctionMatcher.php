@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	class Matcher {
+	class FunctionMatcher implements InvocationMatcher{
 
 		/**
 		 * @var Checker
@@ -70,8 +70,8 @@
 		 * Checks if the function or method was called with the specified
 		 * arguments a number of times.
 		 *
-		 * @param  array  $args
-		 * @param  int $times
+		 * @param  array $args
+		 * @param  int   $times
 		 *
 		 * @return void
 		 */
@@ -120,5 +120,12 @@
 		 */
 		public function wasNotCalledWith( array $args = null ) {
 			return $this->wasCalledWithTimes( $args, 0 );
+		}
+
+		/**
+		 * Checks if a given function or method was called just one time.
+		 */
+		public function wasCalledOnce() {
+			return $this->wasCalledTimes( 1 );
 		}
 	}
