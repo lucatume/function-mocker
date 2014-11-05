@@ -18,10 +18,4 @@
 			$this->shouldThrow( '\InvalidArgumentException' )->duringMock( 23 );
 		}
 
-		/**
-		 * it should return a mock object after construction
-		 */
-		public function it_should_return_a_mock_object_after_construction() {
-			$this::mock( 'undefined_function_1', 'foo' )->shouldHaveType( 'tad\FunctionMocker\Matcher' );
-		}
 	}
