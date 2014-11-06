@@ -17,6 +17,20 @@
 
 			$this->assertEquals( 23, $spy->getInvocations()[0]->parameters[0] );
 		}
+
+		/**
+		 * @test
+		 * it should mock using mock builder
+		 */
+		public function it_should_mock_using_mock_builder() {
+			$stub = $this->getMockBuilder( __NAMESPACE__ . '\Dummy' )->disableOriginalConstructor()
+			             ->setMethods( array( '__construct', 'instanceMethod' ) )->getMock();
+			$stub->expects( $spy = $this->any() )->method( 'instanceMethod' );
+
+			$stub->instanceMethod( 23 );
+
+			$this->assertEquals( 23, $spy->getInvocations()[0]->parameters[0] );
+		}
 	}
 
 
