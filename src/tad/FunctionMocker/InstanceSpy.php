@@ -7,25 +7,25 @@
 		/**
 		 * @var \PHPUnit_Framework_MockObject_Invocation
 		 */
-		public $invocation;
+		public $__invocation;
 
 		/**
 		 * @var object
 		 */
-		public $object;
+		public $__object;
 
 		public static function from( \PHPUnit_Framework_MockObject_Matcher_Invocation $invocation, $object ) {
 			\Arg::_( $object, 'Object' )->is_object();
 
 			$instance = new self;
-			$instance->invocation = $invocation;
-			$instance->object = $object;
+			$instance->__invocation = $invocation;
+			$instance->__object = $object;
 
 			return $instance;
 		}
 
 		public function __call( $name, $args ) {
-			$out = call_user_func_array( array( $this->object, $name ), $args );
+			$out = call_user_func_array( array( $this->__object, $name ), $args );
 
 			return $out;
 		}
@@ -39,7 +39,9 @@
 		 * @return void
 		 */
 		public function wasCalledTimes( $times ) {
-			\PHPUnit_Framework_Assert::assertCount( $times, $this->invocation->getInvocations() );
+			$invocations = $this->__invocation->getInvocations();
+
+			\PHPUnit_Framework_Assert::assertCount( $times, $invocations );
 		}
 
 		/**
@@ -52,6 +54,12 @@
 		 * @return void
 		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
+			$invocations = $this->__invocation->getInvocations();
+			$invocations = array_filter( $invocations, function ( $invocation ) use ( $args ) {
+				return $invocation->parameters === $args;
+			} );
+
+			\PHPUnit_Framework_Assert::assertCount( $times, $invocations );
 		}
 
 		/**
@@ -60,7 +68,7 @@
 		 * @return void
 		 */
 		public function wasNotCalled() {
-			// TODO: Implement wasNotCalled() method.
+			return $this->wasCalledTimes( 0 );
 		}
 
 		/**
@@ -72,13 +80,13 @@
 		 * @return void
 		 */
 		public function wasNotCalledWith( array $args = null ) {
-			// TODO: Implement wasNotCalledWith() method.
+			return $this->wasCalledWithTimes( $args, 0 );
 		}
 
 		/**
 		 * Checks if a given function or method was called just one time.
 		 */
 		public function wasCalledOnce() {
-			// TODO: Implement wasCalledOnce() method.
+			return $this->wasCalledTimes( 1 );
 		}
 	}
