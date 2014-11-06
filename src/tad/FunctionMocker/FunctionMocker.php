@@ -2,6 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
+	use src\tad\FunctionMocker\StubInvocation;
 	use tad\FunctionMocker\SpoofTestCase;
 
 	class FunctionMocker {
@@ -38,13 +39,15 @@
 			\Patchwork\undoAll();
 		}
 
-		public static function replace( $functionName, $returnValue = null, $shouldReturnObject = true, $shouldPass = false, $spying = false, $times = null ) {
+		public static function replace( $functionName, $returnValue = null, $shouldReturnObject = true, $shouldPass = false, $spying = false, $mocking = false ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
 
-			$request           = MockRequestParser::on( $functionName );
-			$checker           = Checker::fromName( $functionName );
-			$returnValue       = ReturnValue::from( $returnValue );
-			$invocation        = new Invocation();
+			$request     = MockRequestParser::on( $functionName );
+			$checker     = Checker::fromName( $functionName );
+			$returnValue = ReturnValue::from( $returnValue );
+
+			$invocation = InvocationFactory::make( $spying, $mocking );
+
 			$matcher           = FunctionMatcher::__from( $checker, $returnValue, $invocation );
 			$matcherInvocation = null;
 
@@ -56,25 +59,9 @@
 				);
 				$mockInstance = $testCase->getMockBuilder( $request->getClassName() )->disableOriginalConstructor()
 				                         ->setMethods( $methods )->getMock();
-				$timeIntValue = null;
-				if ( ! is_null( $times ) ) {
-					$timeIntValue = (int) $times;
-					switch ( $times ) {
-						case 0:
-							$times = 'never';
-							break;
-						case 1:
-							$times = 'once';
-							break;
-						default:
-							$times = 'exactly';
-							break;
-					}
-				} else {
-					$times = 'any';
-				}
+				$times        = 'any';
 
-				$matcherInvocation = $testCase->$times( $timeIntValue );
+				$matcherInvocation = $testCase->$times();
 				$methodName        = $request->getMethodName();
 
 				if ( $returnValue->isCallable() ) {
@@ -85,14 +72,21 @@
 
 					$mockInstance->expects( $matcherInvocation )->method( $methodName )->willReturn( $value );
 				}
+				if ( $spying || $mocking ) {
+					// todo: return InstanceMock here when mockin
+					return $spying ? InstanceSpy::from( $matcherInvocation, $mockInstance ) : false;
+				}
 
-				return $spying ? InstanceSpy::from( $matcherInvocation, $mockInstance ) : $mockInstance;
+				return $mockInstance;
 			}
 
 			// function or static method
 			$functionOrMethodName = $request->isMethod() ? $request->getMethodName() : $functionName;
-			$shouldPass           = $spying ? false : $shouldPass;
-			$replacementFunction  = self::getReplacementFunction( $functionOrMethodName, $returnValue, $invocation, $shouldPass );
+			// if spying do not pass
+			$shouldPass = $spying ? false : $shouldPass;
+
+
+			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $invocation, $shouldPass );
 
 			if ( function_exists( '\Patchwork\replace' ) ) {
 				\Patchwork\replace( $functionName, $replacementFunction );
@@ -159,7 +153,12 @@
 			return self::replace( $functionName, $returnValue, $shouldReturnObject, $shouldPass, $spying );
 		}
 
-		public static function mock( $functionName ) {
+		public static function mock( $functionName, $returnValue = null ) {
+			$shouldReturnObject = true;
+			$shouldPass         = is_null( $returnValue );
+			$spying             = false;
+			$mocking            = true;
 
+			return self::replace( $functionName, $returnValue, $shouldReturnObject, $shouldPass, $spying, $mocking );
 		}
 	}
