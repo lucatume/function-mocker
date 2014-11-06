@@ -221,7 +221,7 @@
 		 * it should return nulll when spying an instance method and not settin any return value
 		 */
 		public function it_should_return_null_when_spying_an_instance_method_and_not_setting_any_return_value() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
+			$ret   = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
 			$value = $ret->instanceMethod();
 
 			$this->assertNull( $value );
@@ -305,6 +305,15 @@
 			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			$spy->wasCalledTimes( 0 );
 		}
+
+		/**
+		 * @test
+		 * it should return a CallMatcher instance when mocking a function
+		 */
+		public function it_should_return_a_call_matcher_instance_when_mocking_a_function() {
+			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\someFunction' ) );
+		}
+
 	}
 
 

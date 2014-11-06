@@ -1,6 +1,6 @@
 <?php
 
-	namespace spec\tad\FunctionMocker;
+	namespace tad\FunctionMocker;
 
 	interface CallMatcher {
 
