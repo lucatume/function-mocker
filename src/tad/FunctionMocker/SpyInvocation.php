@@ -2,7 +2,8 @@
 
 	namespace tad\FunctionMocker;
 
-	class Invocation {
+
+	class SpyInvocation implements  CallLogger {
 
 		protected $calls = array();
 
