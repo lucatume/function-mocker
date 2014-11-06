@@ -73,7 +73,9 @@
 
 			if ( $request->isInstanceMethod() ) {
 				$testCase = self::getTestCase();
-				$methods = $shouldPass ? array( '__construct' ) : array( '__construct', $request->getMethodName() );
+				$methods = ( $shouldPass && ! $spying ) ? array( '__construct' ) : array(
+					'__construct', $request->getMethodName()
+				);
 				$mockInstance = $testCase->getMockBuilder( $request->getClassName() )->disableOriginalConstructor()
 				                         ->setMethods( $methods )->getMock();
 				$timeIntValue = null;
@@ -94,22 +96,25 @@
 					$times = 'any';
 				}
 
+				$matcherInvocation = $testCase->$times( $timeIntValue );
+				$methodName = $request->getMethodName();
+
 				if ( $returnValue->isCallable() ) {
-
-					$mockInstance->expects( $matcherInvocation = $testCase->$times( $timeIntValue ) )
-					             ->method( $request->getMethodName() )->willReturnCallback( $returnValue->getValue() );
+					$mockInstance->expects( $matcherInvocation )->method( $methodName )
+					             ->willReturnCallback( $returnValue->getValue() );
 				} else {
-					$value = $shouldPass ? $mockInstance->{$request->getMethodName()}() : $returnValue->getValue();
+					$value = $shouldPass ? $mockInstance->$methodName() : $returnValue->getValue();
 
-					$mockInstance->expects( $matcherInvocation = $testCase->$times( $timeIntValue ) )
-					             ->method( $request->getMethodName() )->willReturn( $value );
+					$mockInstance->expects( $matcherInvocation )->method( $methodName )->willReturn( $value );
 				}
 
 				return $spying ? InstanceSpy::from( $matcherInvocation, $mockInstance ) : $mockInstance;
 			}
 
 			// function or static method
-			$replacementFunction = self::getReplacementFunction( $functionName, $returnValue, $invocation, $shouldPass );
+			$functionOrMethodName = $request->isMethod() ? $request->getMethodName() : $functionName;
+			$shouldPass = $spying ? false : $shouldPass;
+			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $invocation, $shouldPass );
 
 			if ( function_exists( '\Patchwork\replace' ) ) {
 				\Patchwork\replace( $functionName, $replacementFunction );

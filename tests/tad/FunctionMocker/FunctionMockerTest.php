@@ -19,10 +19,38 @@
 		 * it should return null when stubbin a function
 		 */
 		public function it_should_return_null_when_stubbin_a_function() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', 23 );
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction' );
 
 			$this->assertNull( $ret );
+			$this->assertNull( someFunction() );
+		}
+
+		/**
+		 * @test
+		 * it should return the set return value when stubbing a function and setting a return value
+		 */
+		public function it_should_return_the_set_return_value_when_stubbing_a_function_and_setting_a_return_value() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', 23 );
+
 			$this->assertEquals( 23, someFunction() );
+		}
+
+		/**
+		 * @test
+		 * it should return the callback when stubbing a function and setting a closure return value
+		 */
+		public function it_should_return_the_callback_when_stubbing_a_function_and_setting_a_closure_return_value() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', function ( $value ) {
+				return $value + 1;
+			} );
+
+			$this->assertEquals( 24, someFunction( 23 ) );
+
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', function ( $a, $b ) {
+				return $a + $b;
+			} );
+
+			$this->assertEquals( 23, someFunction( 11, 12 ) );
 		}
 
 		/**
@@ -30,10 +58,31 @@
 		 * it should return null when stubbing a static method
 		 */
 		public function it_should_return_null_when_stubbing_a_static_method() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
 			$this->assertNull( $ret );
+		}
+
+		/**
+		 * @test
+		 * it should allow setting various return values when stubbing a static method
+		 */
+		public function it_should_allow_setting_various_return_values_when_stubbin_a_static_method() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
+
 			$this->assertEquals( 23, SomeClass::staticMethod() );
+
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a ) {
+				return $a + 1;
+			} );
+
+			$this->assertEquals( 24, SomeClass::staticMethod( 23 ) );
+
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a, $b ) {
+				return $a + $b;
+			} );
+
+			$this->assertEquals( 24, SomeClass::staticMethod( 23, 1 ) );
 		}
 
 		/**
@@ -49,6 +98,28 @@
 
 		/**
 		 * @test
+		 * it should allow setting various return values when stubbing an instance method
+		 */
+		public function it_should_allow_setting_various_return_values_when_stubbing_an_instance_method() {
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', 23 );
+
+			$this->assertEquals( 23, $ret->instanceMethod() );
+
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a ) {
+				return $a + 1;
+			} );
+
+			$this->assertEquals( 24, $ret->instanceMethod( 23 ) );
+
+			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a, $b ) {
+				return $a + $b;
+			} );
+
+			$this->assertEquals( 24, $ret->instanceMethod( 23, 1 ) );
+		}
+
+		/**
+		 * @test
 		 * it should return a matcher when spying a function
 		 */
 		public function it_should_return_a_matcher_when_spying_a_function() {
@@ -59,14 +130,36 @@
 
 		/**
 		 * @test
-		 * it should pass when spying a function
+		 * it should return null when spying a function and not setting a return value
 		 */
 		public function it_should_pass_when_spying_a_function() {
 			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
 
-			$this->assertEquals( 'foo', someFunction() );
+			$this->assertNull( someFunction() );
 			$ret->wasCalledOnce();
 			$ret->wasCalledTimes( 1 );
+		}
+
+		/**
+		 * @test
+		 * it should allow setting various return values when spying a function
+		 */
+		public function it_should_allow_setting_various_return_values_when_spying_a_function() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction', 23 );
+
+			$this->assertEquals( 23, someFunction() );
+
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction', function ( $value ) {
+				return $value + 1;
+			} );
+
+			$this->assertEquals( 24, someFunction( 23 ) );
+
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction', function ( $a, $b ) {
+				return $a + $b;
+			} );
+
+			$this->assertEquals( 23, someFunction( 11, 12 ) );
 		}
 
 		/**
@@ -81,14 +174,36 @@
 
 		/**
 		 * @test
-		 * it should pass when spying a static method
+		 * it should return null when spying a static method and not setting a return value
 		 */
-		public function it_should_pass_when_spying_a_static_method() {
+		public function it_should_retur_null_when_spying_a_static_method_and_not_setting_a_return_value() {
 			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
-			$this->assertEquals( 'foo baz', SomeClass::staticMethod() );
+			$this->assertNull( SomeClass::staticMethod() );
 			$ret->wasCalledOnce();
 			$ret->wasCalledTimes( 1 );
+		}
+
+		/**
+		 * @test
+		 * it should allow setting various return values when spying a static method
+		 */
+		public function it_should_allow_setting_various_return_values_when_spying_a_static_method() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
+
+			$this->assertEquals( 23, SomeClass::staticMethod() );
+
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $value ) {
+				return $value + 1;
+			} );
+
+			$this->assertEquals( 24, SomeClass::staticMethod( 23 ) );
+
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a, $b ) {
+				return $a + $b;
+			} );
+
+			$this->assertEquals( 23, SomeClass::staticMethod( 11, 12 ) );
 		}
 
 		/**
@@ -103,21 +218,99 @@
 
 		/**
 		 * @test
-		 * it should pass when spying an instance method
+		 * it should return nulll when spying an instance method and not settin any return value
 		 */
-		public function it_should_pass_when_spying_an_instance_method() {
+		public function it_should_return_null_when_spying_an_instance_method_and_not_setting_any_return_value() {
 			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
 			$value = $ret->instanceMethod();
 
-			$this->assertEquals( 'some value', $value );
+			$this->assertNull( $value );
 		}
 
+		/**
+		 * @test
+		 * it should allow setting various return values on a spied instance method
+		 */
+		public function it_should_allow_setting_various_return_values_on_a_spied_instance_method() {
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod', 23 );
+
+			$this->assertEquals( 23, $ret->instanceMethod() );
+
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a ) {
+				return $a + 1;
+			} );
+
+			$this->assertEquals( 24, $ret->instanceMethod( 23 ) );
+
+			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a, $b ) {
+				return $a + $b;
+			} );
+
+			$this->assertEquals( 24, $ret->instanceMethod( 23, 1 ) );
+		}
+
+		/**
+		 * @test
+		 * it should allow verifying calls on spied function
+		 */
+		public function it_should_allow_verifying_calls_on_spied_function() {
+			$spy = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
+
+			someFunction( 12 );
+			someFunction( 11 );
+
+			$spy->wasCalledTimes( 2 );
+			$spy->wasCalledWithTimes( array( 12 ), 1 );
+			$spy->wasCalledWithTimes( array( 11 ), 1 );
+			$spy->wasNotCalledWith( array( 10 ) );
+
+			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			$spy->wasCalledTimes( 0 );
+		}
+
+		/**
+		 * @test
+		 * it should allow verifying calls on spied static method
+		 */
+		public function it_should_allow_verifying_calls_on_spied_static_method() {
+			$spy = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
+
+			SomeClass::staticMethod( 12 );
+			SomeClass::staticMethod( 11 );
+
+			$spy->wasCalledTimes( 2 );
+			$spy->wasCalledWithTimes( array( 12 ), 1 );
+			$spy->wasCalledWithTimes( array( 11 ), 1 );
+			$spy->wasNotCalledWith( array( 10 ) );
+
+			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			$spy->wasCalledTimes( 0 );
+		}
+
+		/**
+		 * @test
+		 * it should allow verifying calls on spied instance method
+		 */
+		public function it_should_allow_verifying_calls_on_spied_instance_method() {
+			$spy = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
+
+			$spy->instanceMethod( 12 );
+			$spy->instanceMethod( 11 );
+
+			$spy->wasCalledTimes( 2 );
+			$spy->wasCalledWithTimes( array( 12 ), 1 );
+			$spy->wasCalledWithTimes( array( 11 ), 1 );
+			$spy->wasNotCalledWith( array( 10 ) );
+
+			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			$spy->wasCalledTimes( 0 );
+		}
 	}
 
 
 	class SomeClass {
 
-		public static function staticMethod() {
+		public static function staticMethod( $a = null, $b = null ) {
 			return "foo baz";
 		}
 
@@ -127,7 +320,7 @@
 	}
 
 
-	function someFunction() {
+	function someFunction( $value1 = 0, $value2 = 0 ) {
 		return 'foo';
 	}
 
