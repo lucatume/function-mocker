@@ -92,7 +92,9 @@
 				\Patchwork\replace( $functionName, $replacementFunction );
 			}
 
-			return $shouldReturnObject ? $verifier : null;
+			$returnObject = $mocking ? $callLogger : $verifier;
+
+			return $shouldReturnObject ? $returnObject : null;
 		}
 
 		/**

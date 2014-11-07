@@ -308,7 +308,7 @@
 
 		/**
 		 * @test
-		 * it should return a CallMatcher instance when mocking a function
+		 * it should return a FunctionCallMatcher instance when mocking a function
 		 */
 		public function it_should_return_a_call_matcher_instance_when_mocking_a_function() {
 			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\someFunction' ) );
