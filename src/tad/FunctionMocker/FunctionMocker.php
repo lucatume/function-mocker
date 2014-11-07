@@ -42,13 +42,13 @@
 		public static function replace( $functionName, $returnValue = null, $shouldReturnObject = true, $shouldPass = false, $spying = false, $mocking = false ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
 
-			$request     = MockRequestParser::on( $functionName );
+			$request     = ReplacementRequest::on( $functionName );
 			$checker     = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
 
-			$invocation = CallLoggerFactory::make( $spying, $mocking );
+			$callLogger = CallLoggerFactory::make( $spying, $mocking );
+			$verifier   = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
 
-			$matcher           = FunctionCallVerifier::__from( $checker, $returnValue, $invocation );
 			$matcherInvocation = null;
 
 			if ( $request->isInstanceMethod() ) {
@@ -86,13 +86,13 @@
 			$shouldPass = $spying ? false : $shouldPass;
 
 
-			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $invocation, $shouldPass );
+			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $callLogger, $shouldPass );
 
 			if ( function_exists( '\Patchwork\replace' ) ) {
 				\Patchwork\replace( $functionName, $replacementFunction );
 			}
 
-			return $shouldReturnObject ? $matcher : null;
+			return $shouldReturnObject ? $verifier : null;
 		}
 
 		/**
