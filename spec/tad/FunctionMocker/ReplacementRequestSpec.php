@@ -5,10 +5,10 @@
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
 
-	class MockRequestParserSpec extends ObjectBehavior {
+	class ReplacementRequestSpec extends ObjectBehavior {
 
 		function it_is_initializable() {
-			$this->shouldHaveType( 'tad\FunctionMocker\MockRequestParser' );
+			$this->shouldHaveType( 'tad\FunctionMocker\ReplacementRequest' );
 		}
 
 		/**

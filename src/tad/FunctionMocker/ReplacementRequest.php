@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	class MockRequestParser {
+	class ReplacementRequest {
 
 		/**
 		 * @var string
