@@ -5,10 +5,10 @@
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
 
-	class InvocationTraceSpec extends ObjectBehavior {
+	class CallTraceSpec extends ObjectBehavior {
 
 		function it_is_initializable() {
-			$this->shouldHaveType( 'tad\FunctionMocker\InvocationTrace' );
+			$this->shouldHaveType( 'tad\FunctionMocker\CallTrace' );
 		}
 
 		/**

@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	class InstanceSpy implements InvocationMatcher {
+	class InstanceSpy implements CallVerifier {
 
 		/**
 		 * @var \PHPUnit_Framework_MockObject_Invocation

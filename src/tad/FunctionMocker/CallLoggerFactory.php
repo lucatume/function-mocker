@@ -3,19 +3,19 @@
 	namespace tad\FunctionMocker;
 
 
-	use tad\FunctionMocker\StubInvocation;
+	use tad\FunctionMocker\StubCallLogger;
 
-	class InvocationFactory {
+	class CallLoggerFactory {
 
 		public static function make( $spying, $mocking ) {
 			if ( $spying && $mocking ) {
 				throw new \BadMethodCallException( 'Either spy or mock, not both.' );
 			}
-			$invocation = new StubInvocation();
+			$invocation = new StubCallLogger();
 			if ( $spying ) {
-				$invocation = new SpyInvocation();
+				$invocation = new SpyCallLogger();
 			} else if ( $mocking ) {
-				$invocation = new MockInvocation();
+				$invocation = new MockCallLogger();
 			}
 
 			return $invocation;

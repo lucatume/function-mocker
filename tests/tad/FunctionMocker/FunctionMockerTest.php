@@ -125,7 +125,7 @@
 		public function it_should_return_a_matcher_when_spying_a_function() {
 			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\FunctionMatcher', $ret );
+			$this->assertInstanceOf( 'tad\FunctionMocker\FunctionCallVerifier', $ret );
 		}
 
 		/**
@@ -169,7 +169,7 @@
 		public function it_should_return_a_matcher_when_spying_a_static_method() {
 			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\FunctionMatcher', $ret );
+			$this->assertInstanceOf( 'tad\FunctionMocker\FunctionCallVerifier', $ret );
 		}
 
 		/**

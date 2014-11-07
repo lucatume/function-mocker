@@ -46,9 +46,9 @@
 			$checker     = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
 
-			$invocation = InvocationFactory::make( $spying, $mocking );
+			$invocation = CallLoggerFactory::make( $spying, $mocking );
 
-			$matcher           = FunctionMatcher::__from( $checker, $returnValue, $invocation );
+			$matcher           = FunctionCallVerifier::__from( $checker, $returnValue, $invocation );
 			$matcherInvocation = null;
 
 			if ( $request->isInstanceMethod() ) {

@@ -2,8 +2,6 @@
 
 	namespace tad\FunctionMocker;
 
-	use Doctrine\Instantiator\Exception\InvalidArgumentException;
-
 	class Checker {
 
 		protected static $systemFuncs;
@@ -15,9 +13,9 @@
 				self::$systemFuncs = get_defined_functions()['internal'];
 			}
 			$condition = ! in_array( $functionName, self::$systemFuncs );
-			\Arg::_( $functionName)->assert( $condition, 'Function must not be an internal one.' );
+			\Arg::_( $functionName )->assert( $condition, 'Function must not be an internal one.' );
 
-			$instance = new self;
+			$instance                = new self;
 			$instance->isEvalCreated = false;
 			if ( ! function_exists( $functionName ) ) {
 				@eval( sprintf( 'function %s(){return null;}', $functionName ) );

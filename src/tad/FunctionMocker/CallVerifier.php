@@ -9,7 +9,7 @@
 namespace tad\FunctionMocker;
 
 
-interface InvocationMatcher {
+interface CallVerifier {
 
 	/**
 	 * Checks if the function or method was called the specified number

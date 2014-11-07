@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	class FunctionMatcher implements InvocationMatcher{
+	class FunctionCallVerifier implements CallVerifier {
 
 		/**
 		 * @var Checker
@@ -13,20 +13,20 @@
 		protected $__returnValue;
 
 		/**
-		 * @var Invocation
+		 * @var SpyCallLogger
 		 */
-		protected $__invocation;
+		protected $__callLogger;
 
 		/**
 		 * @var bool
 		 */
 		protected $__throw = true;
 
-		public static function __from( Checker $generator, ReturnValue $returnValue, Invocation $invocation ) {
-			$instance = new self;
-			$instance->__generator = $generator;
+		public static function __from( Checker $generator, ReturnValue $returnValue, CallLogger $callLogger ) {
+			$instance                = new self;
+			$instance->__generator   = $generator;
 			$instance->__returnValue = $returnValue;
-			$instance->__invocation = $invocation;
+			$instance->__callLogger  = $callLogger;
 
 			return $instance;
 		}
@@ -54,7 +54,7 @@
 		public function wasCalledTimes( $times ) {
 			\Arg::_( $times, 'Times' )->is_int();
 
-			$callTimes = $this->__invocation->getCallTimes();
+			$callTimes = $this->__callLogger->getCallTimes();
 			$condition = $callTimes === $times;
 			if ( ! $condition && $this->__throw ) {
 				$message = sprintf( '%s was called %d times, %s times expected.', $this->__getFunctionName(), $callTimes, $times );
@@ -78,10 +78,10 @@
 		public function wasCalledWithTimes( array $args = array(), $times ) {
 			\Arg::_( $times, 'Times' )->is_int();
 
-			$callTimes = $this->__invocation->getCallTimes( $args );
+			$callTimes = $this->__callLogger->getCallTimes( $args );
 			$condition = $callTimes === $times;
 			if ( ! $condition && $this->__throw ) {
-				$args = '[' . implode( ', ', $args ) . ']';
+				$args    = '[' . implode( ', ', $args ) . ']';
 				$message = sprintf( '%s was called %d times with %s, %d times expected.', $this->__getFunctionName(), $callTimes, $args, $times );
 				\PHPUnit_Framework_Assert::fail( $message );
 			}

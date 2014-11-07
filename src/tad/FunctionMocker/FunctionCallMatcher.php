@@ -2,7 +2,11 @@
 
 	namespace tad\FunctionMocker;
 
-	interface CallMatcher {
+	class FunctionCallMatcher implements CallLogger, CallMatcher {
+
+		public function called( array $args = null ) {
+			// TODO: Implement called() method.
+		}
 
 		/**
 		 * Sets an expectation for the function or method to be called
@@ -13,7 +17,9 @@
 		 * @throws PHPUnit_Framework_ExpectationFailedException
 		 * @return void
 		 */
-		public function shouldBeCalledTimes( $times );
+		public function shouldBeCalledTimes( $times ) {
+			// TODO: Implement shouldBeCalledTimes() method.
+		}
 
 		/**
 		 * Sets an expectation for the function or method to be called
@@ -30,7 +36,9 @@
 		 * @throws PHPUnit_Framework_ExpectationFailedException
 		 * @return void
 		 */
-		public function shouldBeCalledWithTimes( array $args, $times );
+		public function shouldBeCalledWithTimes( array $args, $times ) {
+			// TODO: Implement shouldBeCalledWithTimes() method.
+		}
 
 		/**
 		 * Sets an expectation for the function or method not be called
@@ -39,7 +47,9 @@
 		 * @throws PHPUnit_Framework_ExpectationFailedException
 		 * @return void
 		 */
-		public function shouldNotBeCalled();
+		public function shouldNotBeCalled() {
+			// TODO: Implement shouldNotBeCalled() method.
+		}
 
 		/**
 		 * Sets an expectation for the function or method not be called
@@ -51,5 +61,7 @@
 		 * @throws PHPUnit_Framework_ExpectationFailedException
 		 * @return void
 		 */
-		public function shouldNotBeCalledWith( array $args );
+		public function shouldNotBeCalledWith( array $args ) {
+			// TODO: Implement shouldNotBeCalledWith() method.
+		}
 	}

@@ -3,12 +3,12 @@
 	namespace tad\FunctionMocker;
 
 
-	class SpyInvocation implements  CallLogger {
+	class SpyCallLogger implements  CallLogger {
 
 		protected $calls = array();
 
 		public function called( array $args = null ) {
-			$this->calls[] = InvocationTrace::fromArguments( $args );
+			$this->calls[] = CallTrace::fromArguments( $args );
 		}
 
 		public function getCallTimes( array $args = null ) {

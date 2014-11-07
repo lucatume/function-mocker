@@ -5,10 +5,10 @@
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
 
-	class SpyInvocationSpec extends ObjectBehavior {
+	class SpyCallLoggerSpec extends ObjectBehavior {
 
 		function it_is_initializable() {
-			$this->shouldHaveType( 'tad\FunctionMocker\SpyInvocation' );
+			$this->shouldHaveType( 'tad\FunctionMocker\SpyCallLogger' );
 		}
 
 		/**

@@ -5,24 +5,24 @@
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
 
-	class InvocationFactorySpec extends ObjectBehavior {
+	class CallLoggerFactorySpec extends ObjectBehavior {
 
 		function it_is_initializable() {
-			$this->shouldHaveType( 'tad\FunctionMocker\InvocationFactory' );
+			$this->shouldHaveType( 'tad\FunctionMocker\CallLoggerFactory' );
 		}
 
 		/**
-		 * it returns a StubInvocation if no spying and no mocking
+		 * it returns a StubCallLogger if no spying and no mocking
 		 */
 		public function it_returns_a_stub_invocation_if_no_spying_and_no_mocking() {
-			$this::make( false, false )->shouldHaveType( 'tad\FunctionMocker\StubInvocation' );
+			$this::make( false, false )->shouldHaveType( 'tad\FunctionMocker\StubCallLogger' );
 		}
 
 		/**
-		 * it returns a SpyInvocation if spying
+		 * it returns a SpyCallLogger if spying
 		 */
 		public function it_returns_a_spy_invocation_if_spying() {
-			$this::make( true, false )->shouldHaveType( 'tad\FunctionMocker\SpyInvocation' );
+			$this::make( true, false )->shouldHaveType( 'tad\FunctionMocker\SpyCallLogger' );
 		}
 
 		/**
@@ -33,9 +33,9 @@
 		}
 
 		/**
-		 * it returns a MockInvocation if mocking
+		 * it returns a MockCallLogger if mocking
 		 */
 		public function it_returns_a_mock_invocation_if_mocking() {
-			$this::make( false, true )->shouldHaveType( 'tad\FunctionMocker\MockInvocation' );
+			$this::make( false, true )->shouldHaveType( 'tad\FunctionMocker\MockCallLogger' );
 		}
 	}
