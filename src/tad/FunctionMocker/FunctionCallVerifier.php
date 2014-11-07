@@ -7,7 +7,7 @@
 		/**
 		 * @var Checker
 		 */
-		protected $__generator;
+		protected $__checker;
 
 		/** @var  ReturnValue */
 		protected $__returnValue;
@@ -22,9 +22,9 @@
 		 */
 		protected $__throw = true;
 
-		public static function __from( Checker $generator, ReturnValue $returnValue, CallLogger $callLogger ) {
-			$instance                = new self;
-			$instance->__generator   = $generator;
+		public static function __from( Checker $checker, ReturnValue $returnValue, CallLogger $callLogger ) {
+			$instance                = new static;
+			$instance->__checker     = $checker;
 			$instance->__returnValue = $returnValue;
 			$instance->__callLogger  = $callLogger;
 
@@ -36,11 +36,11 @@
 		}
 
 		public function __wasEvalCreated() {
-			return $this->__generator->isEvalCreated();
+			return $this->__checker->isEvalCreated();
 		}
 
 		public function __getFunctionName() {
-			return $this->__generator->getFunctionName();
+			return $this->__checker->getFunctionName();
 		}
 
 		/**

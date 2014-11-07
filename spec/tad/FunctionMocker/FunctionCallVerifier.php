@@ -8,7 +8,7 @@
 	use tad\FunctionMocker\SpyCallLogger;
 	use tad\FunctionMocker\ReturnValue;
 
-	class FunctionCallVerifier extends ObjectBehavior {
+	class FunctionCallVerifierSpec extends ObjectBehavior {
 
 		protected $sutClass = 'tad\FunctionMocker\FunctionCallVerifier';
 
@@ -19,8 +19,8 @@
 		/**
 		 * it can be constructed from function generator and function return value
 		 */
-		public function it_can_be_constructed__from_function_generator_and_function_return_value( Checker $checker, ReturnValue $returnValue, SpyCallLogger $invocation ) {
-			$this::__from( $checker, $returnValue, $invocation )->shouldHaveType( $this->sutClass );
+		public function it_can_be_constructed__from_function_generator_and_function_return_value( Checker $checker, ReturnValue $returnValue, SpyCallLogger $callLogger ) {
+			$this::__from( $checker, $returnValue, $callLogger )->shouldHaveType( $this->sutClass );
 		}
 
 		/**
