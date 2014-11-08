@@ -5,8 +5,43 @@
 
 	class MockCallLogger implements CallLogger, CallMatcher {
 
+		/**
+		 * @var array
+		 */
+		public static $instances           = array();
+		protected     $shouldBeCalledTimes = 0;
+		protected     $functionName;
+		protected     $calledTimes         = 0;
+		protected     $calls               = array();
+		protected     $verified            = false;
+
+		public static function from( $functionName ) {
+			\Arg::_( $functionName, 'Function name' )->is_string();
+
+			$instance                         = new self;
+			$instance->functionName           = $functionName;
+			self::$instances[ $functionName ] = $instance;
+
+			return $instance;
+		}
+
 		public function called( array $args = null ) {
-			// verify it has been called using the expected parameters
+			$this->calls[] = $args;
+			$this->calledTimes += 1;
+
+		}
+
+		public static function verifyExpectations() {
+			foreach ( self::$instances as $instance ) {
+				$instance->verify();
+			}
+		}
+
+		public function verify() {
+			if ( $this->calledTimes !== $this->shouldBeCalledTimes ) {
+				$message = sprintf( '%s was expected to be called %d times, was called %d times.', $this->functionName, $this->shouldBeCalledTimes, $this->calledTimes );
+				\PHPUnit_Framework_Assert::fail( $message );
+			}
 		}
 
 		/**
@@ -19,7 +54,9 @@
 		 * @return void
 		 */
 		public function shouldBeCalledTimes( $times ) {
-			// TODO: Implement shouldBeCalledTimes() method.
+			\Arg::_( $times, 'Times' )->is_int();
+
+			$this->shouldBeCalledTimes = $times;
 		}
 
 		/**

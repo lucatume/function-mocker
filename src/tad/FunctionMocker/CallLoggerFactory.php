@@ -7,7 +7,7 @@
 
 	class CallLoggerFactory {
 
-		public static function make( $spying, $mocking ) {
+		public static function make( $spying, $mocking, $functionName ) {
 			if ( $spying && $mocking ) {
 				throw new \BadMethodCallException( 'Either spy or mock, not both.' );
 			}
@@ -15,7 +15,7 @@
 			if ( $spying ) {
 				$invocation = new SpyCallLogger();
 			} else if ( $mocking ) {
-				$invocation = new MockCallLogger();
+				$invocation = MockCallLogger::from($functionName);
 			}
 
 			return $invocation;

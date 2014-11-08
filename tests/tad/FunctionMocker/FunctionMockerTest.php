@@ -3,6 +3,8 @@
 	namespace tad\FunctionMocker\Tests;
 
 	use tad\FunctionMocker\FunctionMocker;
+	use tad\FunctionMocker\FunctionMockerTestCase;
+	use tad\FunctionMocker\MockCallLogger;
 
 	class FunctionMockerTest extends \PHPUnit_Framework_TestCase {
 
@@ -312,6 +314,20 @@
 		 */
 		public function it_should_return_a_call_matcher_instance_when_mocking_a_function() {
 			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\someFunction' ) );
+		}
+
+		/**
+		 * @test
+		 * it should allow setting times the mocked function should be called and fail when called less times
+		 * @expectedException \PHPUnit_Framework_AssertionFailedError
+		 */
+		function it_should_allow_setting_times_the_mocked_function_should_be_called_and_fail_when_called_less_times() {
+			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( 3 );
+
+			someFunction();
+			someFunction();
+
+			FunctionMocker::verify();
 		}
 
 	}

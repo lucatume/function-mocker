@@ -46,7 +46,7 @@
 			$checker     = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
 
-			$callLogger = CallLoggerFactory::make( $spying, $mocking );
+			$callLogger = CallLoggerFactory::make( $spying, $mocking, $functionName );
 			$verifier   = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
 
 			$matcherInvocation = null;
@@ -162,5 +162,9 @@
 			$mocking            = true;
 
 			return self::replace( $functionName, $returnValue, $shouldReturnObject, $shouldPass, $spying, $mocking );
+		}
+
+		public static function verify() {
+			MockCallLogger::verifyExpectations();
 		}
 	}
