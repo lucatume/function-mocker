@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Luca
- * Date: 06/11/14
- * Time: 20:55
- */
-
-namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker;
 
 
-interface CallLogger {
+	interface CallLogger {
 
-	public function called( array $args = null );
-}
+		public function called( array $args = null );
+	}
