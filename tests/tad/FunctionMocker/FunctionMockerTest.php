@@ -3,8 +3,7 @@
 	namespace tad\FunctionMocker\Tests;
 
 	use tad\FunctionMocker\FunctionMocker;
-	use tad\FunctionMocker\FunctionMockerTestCase;
-	use tad\FunctionMocker\MockCallLogger;
+	use tad\FunctionMocker\TestCase;
 
 	class FunctionMockerTest extends \PHPUnit_Framework_TestCase {
 
@@ -316,17 +315,31 @@
 			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\someFunction' ) );
 		}
 
+		public function functionExpectations() {
+			return array(
+				// times, calls, shouldThrow
+				array( 3, 2, true ),
+				array( 3, 3, false )
+			);
+		}
+
 		/**
 		 * @test
-		 * it should allow setting times the mocked function should be called and fail when called less times
-		 * @expectedException \PHPUnit_Framework_AssertionFailedError
+		 * it should allow setting expectations on mocked functions
+		 * @dataProvider functionExpectations
 		 */
-		function it_should_allow_setting_times_the_mocked_function_should_be_called_and_fail_when_called_less_times() {
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( 3 );
+		public function it_should_allow_setting_expectations_on_mocked_functions( $times, $calls, $shouldThrow ) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
 
-			someFunction();
-			someFunction();
+			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
 
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				someFunction();
+			}
+
+			// test only
 			FunctionMocker::verify();
 		}
 
@@ -347,5 +360,9 @@
 
 	function someFunction( $value1 = 0, $value2 = 0 ) {
 		return 'foo';
+	}
+
+	function anotherFunction() {
+
 	}
 

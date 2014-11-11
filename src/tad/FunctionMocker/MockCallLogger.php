@@ -8,12 +8,15 @@
 		/**
 		 * @var array
 		 */
-		public static $instances           = array();
-		protected     $shouldBeCalledTimes = 0;
-		protected     $functionName;
-		protected     $calledTimes         = 0;
-		protected     $calls               = array();
-		protected     $verified            = false;
+		public static $instances = array();
+		protected     $verified  = false;
+		/**
+		 * @var MatchingStrategy
+		 */
+		protected $callExpectation = null;
+		protected $functionName;
+		protected $calledTimes     = 0;
+		protected $calls           = array();
 
 		public static function from( $functionName ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
@@ -25,21 +28,25 @@
 			return $instance;
 		}
 
+		public static function verifyExpectations() {
+			foreach ( self::$instances as $instance ) {
+				$instance->verify();
+				unset( $instance );
+			}
+		}
+
 		public function called( array $args = null ) {
 			$this->calls[] = $args;
 			$this->calledTimes += 1;
 
 		}
 
-		public static function verifyExpectations() {
-			foreach ( self::$instances as $instance ) {
-				$instance->verify();
-			}
-		}
-
 		public function verify() {
-			if ( $this->calledTimes !== $this->shouldBeCalledTimes ) {
-				$message = sprintf( '%s was expected to be called %d times, was called %d times.', $this->functionName, $this->shouldBeCalledTimes, $this->calledTimes );
+			if ( ! $this->callExpectation ) {
+				return;
+			}
+			if ( ! $this->callExpectation->matches( $this->calledTimes ) ) {
+				$message = sprintf( '%s was expected to be called %s times, was called %d times.', $this->functionName, $this->callExpectation, $this->calledTimes );
 				\PHPUnit_Framework_Assert::fail( $message );
 			}
 		}
@@ -54,9 +61,9 @@
 		 * @return void
 		 */
 		public function shouldBeCalledTimes( $times ) {
-			\Arg::_( $times, 'Times' )->is_int();
+			\Arg::_( $times, 'Times' )->is_string( $times )->_or()->is_int( $times );
 
-			$this->shouldBeCalledTimes = $times;
+			$this->callExpectation = MatchingStrategyFactory::make( $times );
 		}
 
 		/**
