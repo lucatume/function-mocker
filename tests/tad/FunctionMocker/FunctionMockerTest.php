@@ -559,6 +559,127 @@
 			// test only
 			FunctionMocker::verify();
 		}
+
+		/**
+		 * @test
+		 * it should allow setting string exact expectations on static methods
+		 * @dataProvider exactExpectations
+		 */
+		public function it_should_allow_setting_string_exact_expectations_on_static_methods($times, $calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
+
+			$times = '==' . $times;
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( $times );
+
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
+
+			// test only
+			FunctionMocker::verify();
+		}
+
+		/**
+		 * @test
+		 * it should allow setting greater than expectations on static methods
+		 * @dataProvider gt3Expectations
+		 */
+		public function it_should_allow_setting_greater_than_expectations_on_static_methods($calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
+
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '>3' );
+
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
+
+			// test only
+			FunctionMocker::verify();
+		}
+
+		/**
+		 * @test
+		 * it should allow setting at least expectations on static methods
+		 * @dataProvider atLeast3Expectations
+		 */
+		public function it_should_allow_setting_at_least_expectations_on_static_methods($calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
+
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '>=3' );
+
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
+
+			// test only
+			FunctionMocker::verify();
+		}
+
+		/**
+		 * @test
+		 * it should allow setting less than expectations on static methods
+		 * @dataProvider lessThan3Expectations
+		 */
+		public function it_should_allow_setting_less_than_expectations_on_static_methods($calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
+
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '<3' );
+
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
+
+			// test only
+			FunctionMocker::verify();
+		}
+
+		/**
+		 * @test
+		 * it should allow setting at most expectations on static methods
+		 * @dataProvider atMost2Expectations
+		 */
+		public function it_should_allow_setting_at_most_expectations_on_static_methods($calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
+
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '<=2' );
+
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
+
+			// test only
+			FunctionMocker::verify();
+		}
+
+		/**
+		 * @test
+		 * it should allow setting not expectations on static methods
+		 * @dataProvider not3Expectations
+		 */
+		public function it_should_allow_setting_not_expectations_on_static_methods($calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
+
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '!=3' );
+
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
+
+			// test only
+			FunctionMocker::verify();
+		}
 	}
 
 
