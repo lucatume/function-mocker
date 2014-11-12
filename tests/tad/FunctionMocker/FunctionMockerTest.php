@@ -3,16 +3,21 @@
 	namespace tad\FunctionMocker\Tests;
 
 	use tad\FunctionMocker\FunctionMocker;
+	use tad\FunctionMocker\MockCallLogger;
 	use tad\FunctionMocker\TestCase;
 
 	class FunctionMockerTest extends \PHPUnit_Framework_TestCase {
 
 		public function setUp() {
-			FunctionMocker::load();
+			FunctionMocker::setUp();
 		}
 
 		public function tearDown() {
-			FunctionMocker::unload();
+			FunctionMocker::tearDown();
+		}
+
+		public function assertPostConditions() {
+			FunctionMocker::verify();
 		}
 
 		/**
