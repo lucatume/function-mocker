@@ -29,16 +29,27 @@
 		}
 
 		public static function verifyExpectations() {
+			if ( ! count( self::$instances ) ) {
+				return;
+			}
 			foreach ( self::$instances as $instance ) {
-				$instance->verify();
-				unset( $instance );
+				try {
+					$instance->verify();
+				} catch ( \PHPUnit_Framework_AssertionFailedError $fail ) {
+					static::reset();
+					throw $fail;
+				}
 			}
 		}
+
+		private static function reset() {
+			self::$instances = null;
+		}
+
 
 		public function called( array $args = null ) {
 			$this->calls[] = $args;
 			$this->calledTimes += 1;
-
 		}
 
 		public function verify() {
