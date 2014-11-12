@@ -17,7 +17,7 @@
 		 *
 		 * @return void
 		 */
-		public static function load() {
+		public static function setUp() {
 			$dir = __DIR__;
 			while ( true ) {
 				if ( file_exists( $dir . '/vendor' ) ) {
@@ -35,7 +35,7 @@
 		 *
 		 * @return void
 		 */
-		public static function unload() {
+		public static function tearDown() {
 			\Patchwork\undoAll();
 		}
 
