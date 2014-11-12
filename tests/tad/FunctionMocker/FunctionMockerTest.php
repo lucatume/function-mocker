@@ -539,109 +539,26 @@
 			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' ) );
 		}
 
+
 		/**
 		 * @test
-		 * it should allow setting exact expectations on mocked static methods and fail if more
+		 * it should allow setting exact expecations on static methods
+		 * @dataProvider exactExpectations
 		 */
-		public function it_should_allow_setting_exact_expectations_on_mocked_static_methods_and_fail_if_more() {
-			$times = 3;
-			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+		public function it_should_allow_setting_exact_expecations_on_static_methods($times, $calls, $shouldThrow) {
+			if ( $shouldThrow ) {
+				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
+			}
 
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
+			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( $times );
 
-			someFunction();
-			someFunction();
-			someFunction();
-			someFunction();
+			for ( $i = 0; $i < $calls; $i ++ ) {
+				SomeClass::staticMethod();
+			}
 
 			// test only
 			FunctionMocker::verify();
 		}
-
-		/**
-		 * @test
-		 * it should allow setting exact expectations on mocked static methods and fail if less
-		 */
-		public function it_should_allow_setting_exact_expectations_on_mocked_static_methods_and_fail_if_less() {
-			$times = 3;
-			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			someFunction();
-			someFunction();
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting exact string expectations on mocked static methods and succeed if matched
-		 */
-		public function it_should_allow_setting_exact_string_expectations_on_mocked_static_methods_and_succeed_if_matched() {
-			$times = 3;
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			someFunction();
-			someFunction();
-			someFunction();
-
-			// test only
-			FunctionMocker::verify();
-		}
-		/**
-		 * @test
-		 * it should allow setting exact string expectations on mocked static methods and fail if more
-		 */
-		public function it_should_allow_setting_exact_string_expectations_on_mocked_static_methods_and_fail_if_more() {
-			$times = '==3';
-			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			someFunction();
-			someFunction();
-			someFunction();
-			someFunction();
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting exact string expectations on mocked static methods and fail if less
-		 */
-		public function it_should_allow_setting_exact_string_expectations_on_mocked_static_methods_and_fail_if_less() {
-			$times = '==3';
-			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			someFunction();
-			someFunction();
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting exact expectations on mocked static methods and succeed if matched
-		 */
-		public function it_should_allow_setting_exact_expectations_on_mocked_static_methods_and_succeed_if_matched() {
-			$times = '==3';
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			someFunction();
-			someFunction();
-			someFunction();
-
-			// test only
-			FunctionMocker::verify();
-		}
-
 	}
 
 
