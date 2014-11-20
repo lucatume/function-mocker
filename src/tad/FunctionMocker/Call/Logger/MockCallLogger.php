@@ -3,7 +3,10 @@
 	namespace tad\FunctionMocker\Call\Logger;
 
 
-	class MockCallLogger implements CallLogger, CallMatcher {
+	use tad\FunctionMocker\Call\Matcher\Matcher;
+	use tad\FunctionMocker\MatchingStrategy\Factory as MatchingStrategyFactory;
+
+	class MockCallLogger implements Logger, Matcher {
 
 		/**
 		 * @var array

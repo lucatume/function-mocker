@@ -2,6 +2,10 @@
 
 	namespace tad\FunctionMocker\Call\Verifier;
 
+	use tad\FunctionMocker\Call\Logger\Logger;
+	use tad\FunctionMocker\Checker;
+	use tad\FunctionMocker\ReturnValue;
+
 	class FunctionCallVerifier extends AbstractVerifier {
 
 		/**
@@ -22,7 +26,7 @@
 		 */
 		protected $__throw = true;
 
-		public static function __from( Checker $checker, ReturnValue $returnValue, CallLogger $callLogger ) {
+		public static function __from( Checker $checker, ReturnValue $returnValue, Logger $callLogger ) {
 			$instance                = new static;
 			$instance->__checker     = $checker;
 			$instance->__returnValue = $returnValue;

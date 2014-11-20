@@ -6,6 +6,13 @@
 
 	class Factory {
 
+		/**
+		 * @param $spying
+		 * @param $mocking
+		 * @param $functionName
+		 *
+		 * @return Logger
+		 */
 		public static function make( $spying, $mocking, $functionName ) {
 			if ( $spying && $mocking ) {
 				throw new \BadMethodCallException( 'Either spy or mock, not both.' );

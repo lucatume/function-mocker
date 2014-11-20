@@ -2,7 +2,9 @@
 
 	namespace tad\FunctionMocker;
 
-	use src\tad\FunctionMocker\StubInvocation;
+	use tad\FunctionMocker\Call\Logger\Factory as CallLoggerFactory;
+	use tad\FunctionMocker\Call\Logger\MockCallLogger;
+	use tad\FunctionMocker\Call\Verifier\Factory as CallVerifierFactory;
 	use tad\FunctionMocker\SpoofTestCase;
 
 	class FunctionMocker {
@@ -39,6 +41,16 @@
 			\Patchwork\undoAll();
 		}
 
+		/**
+		 * @param      $functionName
+		 * @param null $returnValue
+		 * @param bool $shouldReturnObject
+		 * @param bool $shouldPass
+		 * @param bool $spying
+		 * @param bool $mocking
+		 *
+		 * @return null|\PHPUnit_Framework_MockObject_MockObject|Call\Logger\MockCallLogger|Call\Logger\SpyCallLogger|Call\Logger\StubCallLogger|Call\Verifier\InstanceMethodCallVerifier|static
+		 */
 		public static function replace( $functionName, $returnValue = null, $shouldReturnObject = true, $shouldPass = false, $spying = false, $mocking = false ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
 
@@ -47,7 +59,7 @@
 			$returnValue = ReturnValue::from( $returnValue );
 
 			$callLogger = CallLoggerFactory::make( $spying, $mocking, $functionName );
-			$verifier   = Factory::make( $request, $checker, $returnValue, $callLogger );
+			$verifier   = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
 
 			$matcherInvocation = null;
 
@@ -57,7 +69,7 @@
 					'__construct',
 					$request->getMethodName()
 				);
-				$mockInstance = $testCase->getMockBuilder( $request->getClassName() )->disableOriginalConstructor()
+				$mockObject = $testCase->getMockBuilder( $request->getClassName() )->disableOriginalConstructor()
 				                         ->setMethods( $methods )->getMock();
 				$times        = 'any';
 
@@ -65,20 +77,20 @@
 				$methodName        = $request->getMethodName();
 
 				if ( $returnValue->isCallable() ) {
-					$mockInstance->expects( $matcherInvocation )->method( $methodName )
+					$mockObject->expects( $matcherInvocation )->method( $methodName )
 					             ->willReturnCallback( $returnValue->getValue() );
 				} else {
-					$value = $shouldPass ? $mockInstance->$methodName() : $returnValue->getValue();
+					$value = $shouldPass ? $mockObject->$methodName() : $returnValue->getValue();
 
-					$mockInstance->expects( $matcherInvocation )->method( $methodName )->willReturn( $value );
+					$mockObject->expects( $matcherInvocation )->method( $methodName )->willReturn( $value );
 				}
-				//wwid
-				$mockInstance->__phpunit_setOriginalObject($mockInstance);
-				if ( $spying || $mocking ) {
-					return $spying ? InstanceSpy::from( $matcherInvocation, $mockInstance ) : InstanceMock::from ($matcherInvocation, $mockInstance);
-				}
+				//todo: wrap PHPUnit mock object and return it
+//				$mockObject->__phpunit_setOriginalObject($mockObject);
+//				if ( $spying || $mocking ) {
+//					return $spying ? InstanceSpy::from( $matcherInvocation, $mockObject ) : InstanceMock::from ($matcherInvocation, $mockObject);
+//				}
 
-				return $mockInstance;
+				return $mockObject;
 			}
 
 			// function or static method

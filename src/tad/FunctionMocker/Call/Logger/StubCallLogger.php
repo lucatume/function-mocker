@@ -3,9 +3,8 @@
 	namespace tad\FunctionMocker\Call\Logger;
 
 
-	use tad\FunctionMocker\CallLogger;
 
-	class StubCallLogger implements CallLogger {
+	class StubCallLogger implements Logger {
 
 		public function called( array $args = null ) {
 			return;

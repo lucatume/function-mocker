@@ -3,12 +3,15 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 
+	use tad\FunctionMocker\Call\Logger\Logger;
+	use tad\FunctionMocker\ReturnValue;
+
 	class InstanceMethodCallVerifier extends AbstractVerifier {
 
 		protected $returnValue;
 		protected $callLogger;
 
-		public static function from( ReturnValue $returnValue, CallLogger $callLogger ) {
+		public static function from( ReturnValue $returnValue, Logger $callLogger ) {
 			$instance              = new self;
 			$instance->returnValue = $returnValue;
 			$instance->callLogger  = $callLogger;

@@ -3,7 +3,9 @@
 	namespace tad\FunctionMocker\Call\Logger;
 
 
-	class SpyCallLogger implements  CallLogger {
+	use tad\FunctionMocker\CallTrace;
+
+	class SpyCallLogger implements  Logger {
 
 		protected $calls = array();
 
