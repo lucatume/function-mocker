@@ -1,6 +1,6 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Logger;
 
 
 	use tad\FunctionMocker\CallLogger;

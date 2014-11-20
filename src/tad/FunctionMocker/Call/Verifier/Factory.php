@@ -1,10 +1,8 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Verifier;
 
-	use tad\FunctionMocker\FunctionCallVerifier;
-
-	class CallVerifierFactory {
+	class Factory {
 
 		public static function make( ReplacementRequest $request, Checker $checker, ReturnValue $returnValue, CallLogger $callLogger ) {
 			if ( $request->isFunction() ) {

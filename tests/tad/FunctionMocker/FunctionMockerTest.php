@@ -217,9 +217,9 @@
 		 * it should return a spy object when spying an instance method
 		 */
 		public function it_should_return_a_spy_object_when_spying_an_instance_method() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
+			$sut = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\InstanceSpy', $ret );
+			$this->assertInstanceOf( __NAMESPACE__ . '\SomeClass', $sut );
 		}
 
 		/**
@@ -314,7 +314,7 @@
 
 		/**
 		 * @test
-		 * it should return a CallMatcher instance when mocking a function
+		 * it should return a Matcher instance when mocking a function
 		 */
 		public function it_should_return_a_call_matcher_instance_when_mocking_a_function() {
 			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\someFunction' ) );
@@ -533,7 +533,7 @@
 
 		/**
 		 * @test
-		 * it should return a CallMatcher instance when mocking a static method
+		 * it should return a Matcher instance when mocking a static method
 		 */
 		public function it_should_return_a_call_matcher_instance_when_mocking_a_static_method() {
 			$this->assertInstanceOf( '\tad\FunctionMocker\CallMatcher', FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' ) );
@@ -545,7 +545,7 @@
 		 * it should allow setting exact expecations on static methods
 		 * @dataProvider exactExpectations
 		 */
-		public function it_should_allow_setting_exact_expecations_on_static_methods($times, $calls, $shouldThrow) {
+		public function it_should_allow_setting_exact_expecations_on_static_methods( $times, $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -565,7 +565,7 @@
 		 * it should allow setting string exact expectations on static methods
 		 * @dataProvider exactExpectations
 		 */
-		public function it_should_allow_setting_string_exact_expectations_on_static_methods($times, $calls, $shouldThrow) {
+		public function it_should_allow_setting_string_exact_expectations_on_static_methods( $times, $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -586,7 +586,7 @@
 		 * it should allow setting greater than expectations on static methods
 		 * @dataProvider gt3Expectations
 		 */
-		public function it_should_allow_setting_greater_than_expectations_on_static_methods($calls, $shouldThrow) {
+		public function it_should_allow_setting_greater_than_expectations_on_static_methods( $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -606,7 +606,7 @@
 		 * it should allow setting at least expectations on static methods
 		 * @dataProvider atLeast3Expectations
 		 */
-		public function it_should_allow_setting_at_least_expectations_on_static_methods($calls, $shouldThrow) {
+		public function it_should_allow_setting_at_least_expectations_on_static_methods( $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -626,7 +626,7 @@
 		 * it should allow setting less than expectations on static methods
 		 * @dataProvider lessThan3Expectations
 		 */
-		public function it_should_allow_setting_less_than_expectations_on_static_methods($calls, $shouldThrow) {
+		public function it_should_allow_setting_less_than_expectations_on_static_methods( $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -646,7 +646,7 @@
 		 * it should allow setting at most expectations on static methods
 		 * @dataProvider atMost2Expectations
 		 */
-		public function it_should_allow_setting_at_most_expectations_on_static_methods($calls, $shouldThrow) {
+		public function it_should_allow_setting_at_most_expectations_on_static_methods( $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -666,7 +666,7 @@
 		 * it should allow setting not expectations on static methods
 		 * @dataProvider not3Expectations
 		 */
-		public function it_should_allow_setting_not_expectations_on_static_methods($calls, $shouldThrow) {
+		public function it_should_allow_setting_not_expectations_on_static_methods( $calls, $shouldThrow ) {
 			if ( $shouldThrow ) {
 				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
 			}
@@ -680,6 +680,17 @@
 			// test only
 			FunctionMocker::verify();
 		}
+
+		/**
+		 * @test
+		 * it should return an instance of the mocked class when mocking an instance method
+		 */
+		public function it_should_return_an_instance_of_the_mocked_class_when_mocking_an_instance_method() {
+			$sut = FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::instanceMethod' );
+			$this->assertInstanceOf( __NAMESPACE__ . '\SomeClass', $sut );
+		}
+
+
 	}
 
 
@@ -692,6 +703,16 @@
 		public function instanceMethod() {
 			return 'some value';
 		}
+	}
+
+	class SomeClassExtension extends  SomeClass{
+		public function instanceMethod() {
+			return 'foo';
+		}
+	}
+
+	class AnotherClass{
+		public function someMethod(){}
 	}
 
 

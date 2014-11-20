@@ -1,7 +1,5 @@
 <?php
-	namespace tad\FunctionMocker;
-
-	use tad\FunctionMocker\AbstractMatchingStrategy;
+	namespace tad\FunctionMocker\MatchingStrategy;
 
 	class EqualMatchingStrategy extends AbstractMatchingStrategy {
 

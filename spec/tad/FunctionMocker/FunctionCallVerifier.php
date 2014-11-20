@@ -1,6 +1,6 @@
 <?php
 
-	namespace spec\tad\FunctionMocker;
+	namespace spec\tad\FunctionMocker\Call\Verifier;
 
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
@@ -10,7 +10,7 @@
 
 	class FunctionCallVerifierSpec extends ObjectBehavior {
 
-		protected $sutClass = 'tad\FunctionMocker\FunctionCallVerifier';
+		protected $sutClass = 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier';
 
 		function it_is_initializable() {
 			$this->shouldHaveType( $this->sutClass );

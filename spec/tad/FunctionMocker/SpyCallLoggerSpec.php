@@ -1,6 +1,6 @@
 <?php
 
-	namespace spec\tad\FunctionMocker;
+	namespace spec\tad\FunctionMocker\Call\Logger;
 
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
@@ -8,7 +8,7 @@
 	class SpyCallLoggerSpec extends ObjectBehavior {
 
 		function it_is_initializable() {
-			$this->shouldHaveType( 'tad\FunctionMocker\SpyCallLogger' );
+			$this->shouldHaveType( 'tad\FunctionMocker\Call\Logger\SpyCallLogger' );
 		}
 
 		/**

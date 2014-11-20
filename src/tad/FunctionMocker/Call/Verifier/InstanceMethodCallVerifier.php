@@ -1,9 +1,9 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Verifier;
 
 
-	class InstanceMethodCallVerifier implements CallVerifier {
+	class InstanceMethodCallVerifier extends AbstractVerifier {
 
 		protected $returnValue;
 		protected $callLogger;

@@ -1,11 +1,10 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Logger;
 
 
-	use tad\FunctionMocker\StubCallLogger;
 
-	class CallLoggerFactory {
+	class Factory {
 
 		public static function make( $spying, $mocking, $functionName ) {
 			if ( $spying && $mocking ) {

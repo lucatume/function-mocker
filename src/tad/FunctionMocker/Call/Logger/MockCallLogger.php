@@ -1,6 +1,6 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Logger;
 
 
 	class MockCallLogger implements CallLogger, CallMatcher {
@@ -119,5 +119,14 @@
 		 */
 		public function shouldNotBeCalledWith( array $args ) {
 			// TODO: Implement shouldNotBeCalledWith() method.
+		}
+
+		public static function getInterfaceMethods() {
+			return array(
+				'shouldBeCalledTimes($times)',
+				'shouldNotBeCalled()',
+				'shouldBeCalledWithTimes(array $args, $times)',
+				'shouldNotBeCalledWith(array $args)'
+			);
 		}
 	}

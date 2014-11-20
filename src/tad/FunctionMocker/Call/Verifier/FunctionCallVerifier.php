@@ -1,8 +1,8 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Verifier;
 
-	class FunctionCallVerifier implements CallVerifier {
+	class FunctionCallVerifier extends AbstractVerifier {
 
 		/**
 		 * @var Checker

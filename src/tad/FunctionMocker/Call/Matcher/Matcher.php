@@ -1,8 +1,8 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Matcher;
 
-	interface CallMatcher {
+	interface Matcher {
 
 		/**
 		 * Sets an expectation for the function or method to be called

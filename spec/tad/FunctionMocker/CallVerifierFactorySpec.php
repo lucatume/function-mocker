@@ -1,18 +1,15 @@
 <?php
 
-	namespace spec\tad\FunctionMocker;
+	namespace spec\tad\FunctionMocker\Call\Verifier;
 
 	use PhpSpec\ObjectBehavior;
 	use Prophecy\Argument;
-	use tad\FunctionMocker\Checker;
 	use tad\FunctionMocker\ReplacementRequest;
-	use tad\FunctionMocker\ReturnValue;
-	use tad\FunctionMocker\StubCallLogger;
 
 	class CallVerifierFactorySpec extends ObjectBehavior {
 
 		function it_is_initializable() {
-			$this->shouldHaveType( 'tad\FunctionMocker\CallVerifierFactory' );
+			$this->shouldHaveType( 'tad\FunctionMocker\Call\Verifier\Factory' );
 		}
 
 		/**

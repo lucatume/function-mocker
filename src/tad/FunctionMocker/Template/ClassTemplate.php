@@ -2,6 +2,7 @@
 
 	namespace tad\FunctionMocker\Template;
 
+	use src\tad\FunctionMocker\Template\Wrapping\Extender;
 	use tad\FunctionMocker\MockCallLogger;
 
 	class ClassTemplate {
@@ -35,13 +36,13 @@
 		}
 
 		public function getExtendedMockTemplate() {
-			return $this->getMockTemplate( true );
+			return $this->getMockTemplate(  );
 		}
 
-		public function getMockTemplate( $extend = false ) {
+		public function getMockTemplate( Extender $wrapping ) {
 
 			$vars = array(
-				'extendedMethods' => $extend ? $this->getExtendedMethods() : '',
+				'extendedMethods' => $wrapping ? $this->getExtendedMethods($wrapping) : '',
 				'originalMethods' => $this->getOriginalMethodsCode()
 			);
 
@@ -63,13 +64,13 @@
 
 		private function getTemplate() {
 			return <<< CODESET
-class %%extendedClassName%% extends %%mockClassName%% {
+class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName%% {
 
-	private \$__functionMocker_mockCallLogger;
+	private \$__functionMocker_extenderObject;
 	private \$__functionMocker_originalMockObject;
 
-	public function __set_functionMocker_mockCallLogger(\\tad\FunctionMocker\MockCallLogger \$logger){
-		\$this->__functionMocker_mockCallLogger = \$logger;
+	public function __set_functionMocker_mockCallLogger(\$extenderObject){
+		\$this->__functionMocker_extenderObject = \$extenderObject;
 	}
 
 	public function __set_functionMocker_originalMockObject(\PHPUnit_Framework_MockObject_MockObject \$mockObject){
@@ -97,19 +98,14 @@ CODESET;
 			return $originalMethods;
 		}
 
-		private function getExtendedMethods() {
-			$signatures  = MockCallLogger::getInterfaceMethods();
-			$methodsCode = array_map( function ( $signature ) {
-				return sprintf( "public function %s{\n\t\$this->__functionMocker_mockCallLogger->%s;\n}", $signature, $signature );
-			}, $signatures );
-
-			return "\n\t" . implode( "\n\n\t", $methodsCode );
-		}
 
 		/**
 		 * @param $extendedMockTemplate
 		 */
 		protected function removeDoubleBlanksFrom( &$extendedMockTemplate ) {
 			$extendedMockTemplate = preg_replace( "/^([\\t\\n]+)$/um", "", $extendedMockTemplate );
+		}
+
+		public function getExtendedSpyTemplate() {
 		}
 	}

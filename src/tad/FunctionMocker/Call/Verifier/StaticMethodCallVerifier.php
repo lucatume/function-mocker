@@ -1,6 +1,6 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Verifier;
 
 
 	class StaticMethodCallVerifier extends FunctionCallVerifier {

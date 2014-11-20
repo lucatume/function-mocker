@@ -47,7 +47,7 @@
 			$returnValue = ReturnValue::from( $returnValue );
 
 			$callLogger = CallLoggerFactory::make( $spying, $mocking, $functionName );
-			$verifier   = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
+			$verifier   = Factory::make( $request, $checker, $returnValue, $callLogger );
 
 			$matcherInvocation = null;
 
@@ -72,9 +72,10 @@
 
 					$mockInstance->expects( $matcherInvocation )->method( $methodName )->willReturn( $value );
 				}
+				//wwid
+				$mockInstance->__phpunit_setOriginalObject($mockInstance);
 				if ( $spying || $mocking ) {
-					// todo: return InstanceMock here when mockin
-					return $spying ? InstanceSpy::from( $matcherInvocation, $mockInstance ) : false;
+					return $spying ? InstanceSpy::from( $matcherInvocation, $mockInstance ) : InstanceMock::from ($matcherInvocation, $mockInstance);
 				}
 
 				return $mockInstance;

@@ -1,6 +1,6 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\MatchingStrategy;
 
 
 	class AtLeastMatchingStrategy extends AbstractMatchingStrategy {

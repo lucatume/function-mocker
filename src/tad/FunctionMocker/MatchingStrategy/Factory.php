@@ -1,8 +1,8 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\MatchingStrategy;
 
-	class MatchingStrategyFactory {
+	class Factory {
 
 		protected $times;
 		protected $isGreaterThan;

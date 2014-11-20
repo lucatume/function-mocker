@@ -6,7 +6,7 @@
  * Time: 07:58
  */
 
-namespace tad\FunctionMocker;
+namespace tad\FunctionMocker\MatchingStrategy;
 
 
 interface MatchingStrategy {

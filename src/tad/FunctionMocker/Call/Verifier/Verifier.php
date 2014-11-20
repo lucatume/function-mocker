@@ -6,10 +6,10 @@
  * Time: 08:48
  */
 
-namespace tad\FunctionMocker;
+namespace tad\FunctionMocker\Call\Verifier;
 
 
-interface CallVerifier {
+interface Verifier {
 
 	/**
 	 * Checks if the function or method was called the specified number
