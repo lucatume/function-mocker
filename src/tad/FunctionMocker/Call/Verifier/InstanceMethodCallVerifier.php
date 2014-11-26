@@ -11,6 +11,7 @@
 		protected $returnValue;
 		protected $callLogger;
 
+		//todo: probably get rid of the returnValue and the callLogger
 		public static function from( ReturnValue $returnValue, Logger $callLogger ) {
 			$instance              = new self;
 			$instance->returnValue = $returnValue;
@@ -28,7 +29,10 @@
 		 * @return void
 		 */
 		public function wasCalledTimes( $times ) {
-			return;
+			$callTimes    = $this->invokedRecorder->getInvocationCount();
+			$functionName = $this->request->getMethodName();
+
+			return $this->matchCallTimes( $times, $callTimes, $functionName );
 		}
 
 		/**
@@ -41,34 +45,24 @@
 		 * @return void
 		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
-			return;
+			$callTimes = $this->getCallTimes($args);
+			$functionName = $this->request->getMethodName();
+
+			return $this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
 		}
 
 		/**
-		 * Checks that the function or method was not called.
+		 * @param array $args
 		 *
-		 * @return void
+		 * @return array
 		 */
-		public function wasNotCalled() {
-			return;
-		}
+		protected function getCallTimes(array $args) {
+			$invocations = $this->invokedRecorder->getInvocations();
+			$callTimes   = 0;
+			array_map( function ( \PHPUnit_Framework_MockObject_Invocation_Object $invocation ) use ( &$callTimes, &$args ) {
+				$callTimes += $invocation->parameters === $args;
+			}, $invocations );
 
-		/**
-		 * Checks that the function or method was not called with
-		 * the specified arguments.
-		 *
-		 * @param  array $args
-		 *
-		 * @return void
-		 */
-		public function wasNotCalledWith( array $args = null ) {
-			return;
-		}
-
-		/**
-		 * Checks if a given function or method was called just one time.
-		 */
-		public function wasCalledOnce() {
-			return;
+			return $callTimes;
 		}
 	}

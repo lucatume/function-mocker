@@ -53,4 +53,13 @@ interface Verifier {
 	 * Checks if a given function or method was called just one time.
 	 */
 	public function wasCalledOnce();
+
+	/**
+	 * Checks if a given function or method was called once with a set of arguments.
+	 *
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public function wasCalledWithOnce( array $args = null );
 }

@@ -4,6 +4,7 @@
 
 	use tad\FunctionMocker\Call\Logger\Logger;
 	use tad\FunctionMocker\Checker;
+	use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory;
 	use tad\FunctionMocker\ReturnValue;
 
 	class FunctionCallVerifier extends AbstractVerifier {
@@ -20,11 +21,6 @@
 		 * @var SpyCallLogger
 		 */
 		protected $__callLogger;
-
-		/**
-		 * @var bool
-		 */
-		protected $__throw = true;
 
 		public static function __from( Checker $checker, ReturnValue $returnValue, Logger $callLogger ) {
 			$instance                = new static;
@@ -56,18 +52,11 @@
 		 * @return void
 		 */
 		public function wasCalledTimes( $times ) {
-			\Arg::_( $times, 'Times' )->is_int();
 
-			$callTimes = $this->__callLogger->getCallTimes();
-			$condition = $callTimes === $times;
-			if ( ! $condition && $this->__throw ) {
-				$message = sprintf( '%s was called %d times, %s times expected.', $this->__getFunctionName(), $callTimes, $times );
-				\PHPUnit_Framework_Assert::fail( $message );
-			}
+			$callTimes        = $this->__callLogger->getCallTimes();
+			$functionName = $this->__getFunctionName();
 
-			\PHPUnit_Framework_Assert::assertTrue( $condition );
-
-			return $condition;
+			return $this->matchCallTimes( $times, $callTimes, $functionName );
 		}
 
 		/**
@@ -80,56 +69,10 @@
 		 * @return void
 		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
-			\Arg::_( $times, 'Times' )->is_int();
 
 			$callTimes = $this->__callLogger->getCallTimes( $args );
-			$condition = $callTimes === $times;
-			if ( ! $condition && $this->__throw ) {
-				$args    = '[' . implode( ', ', $args ) . ']';
-				$message = sprintf( '%s was called %d times with %s, %d times expected.', $this->__getFunctionName(), $callTimes, $args, $times );
-				\PHPUnit_Framework_Assert::fail( $message );
-			}
+			$functionName = $this->__getFunctionName();
 
-			\PHPUnit_Framework_Assert::assertTrue( $condition );
-
-			return $condition;
-		}
-
-		public function __throwException( $value ) {
-			\Arg::_( (bool) $value, 'Value' )->is_bool();
-
-			$this->__throw = (bool) $value;
-		}
-
-		public function __willThrow() {
-			return $this->__throw;
-		}
-
-		/**
-		 * Checks that the function or method was not called.
-		 *
-		 * @return void
-		 */
-		public function wasNotCalled() {
-			return $this->wasCalledTimes( 0 );
-		}
-
-		/**
-		 * Checks that the function or method was not called with
-		 * the specified arguments.
-		 *
-		 * @param  array $args
-		 *
-		 * @return void
-		 */
-		public function wasNotCalledWith( array $args = null ) {
-			return $this->wasCalledWithTimes( $args, 0 );
-		}
-
-		/**
-		 * Checks if a given function or method was called just one time.
-		 */
-		public function wasCalledOnce() {
-			return $this->wasCalledTimes( 1 );
+			return $this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
 		}
 	}

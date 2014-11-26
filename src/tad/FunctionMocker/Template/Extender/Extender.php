@@ -6,11 +6,12 @@
 	 * Time: 17:21
 	 */
 
-	namespace src\tad\FunctionMocker\Template\Wrapping;
+	namespace tad\FunctionMocker\Template\Extender;
 
 
 	interface Extender {
 
-		public function getExtendingClass();
-		public function getExtendingMethods();
+		public function getExtenderClassName();
+		public function getExtenderMethodsSignaturesAndCalls();
+		public function getExtenderInterfaceName();
 	}

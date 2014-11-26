@@ -4,7 +4,7 @@
 
 
 	use tad\FunctionMocker\Call\Matcher\Matcher;
-	use tad\FunctionMocker\MatchingStrategy\Factory as MatchingStrategyFactory;
+	use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory as MatchingStrategyFactory;
 
 	class MockCallLogger implements Logger, Matcher {
 

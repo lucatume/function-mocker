@@ -25,8 +25,11 @@
 		public function setTargetClass( $targetClass ) {
 			$this->targetClass = $targetClass;
 			$this->reflection  = new \ReflectionClass( $targetClass );
+			$this->methods     = $this->reflection->getMethods( \ReflectionMethod::IS_PUBLIC );
 			$fileName          = $this->reflection->getFileName();
-			$this->contents    = file_get_contents( $fileName );
+			if ( file_exists( $fileName ) ) {
+				$this->contents = file_get_contents( $fileName );
+			}
 
 			return $this;
 		}
@@ -38,14 +41,14 @@
 		}
 
 		public function getMockCallingFrom( $methodName ) {
-			$code   = $this->getMethodCode( $methodName );
-			$method = is_a($methodName, '\ReflectionMethod') ? $methodName : new \ReflectionMethod($this->targetClass, $methodName);
-			$methodName = is_string($methodName) ? $methodName : $method->name;
-			$args   = array_map( function ( \ReflectionParameter $parameter ) {
+			$code       = $this->getMethodCode( $methodName );
+			$method     = is_a( $methodName, '\ReflectionMethod' ) ? $methodName : new \ReflectionMethod( $this->targetClass, $methodName );
+			$methodName = is_string( $methodName ) ? $methodName : $method->name;
+			$args       = array_map( function ( \ReflectionParameter $parameter ) {
 				return '$' . $parameter->name;
 			}, $method->getParameters() );
-			$args   = implode( ', ', $args );
-			$body   = "return \$this->__functionMocker_originalMockObject->$methodName($args);";
+			$args       = implode( ', ', $args );
+			$body       = "return \$this->__functionMocker_originalMockObject->$methodName($args);";
 
 			return $this->getMethodCodeForWithBody( $methodName, $body );
 		}
@@ -57,7 +60,7 @@
 		 */
 		protected function getMethodCode( $methodName ) {
 
-			$method = is_a($methodName, '\ReflectionMethod') ? $methodName : new \ReflectionMethod($this->targetClass, $methodName);
+			$method = is_a( $methodName, '\ReflectionMethod' ) ? $methodName : new \ReflectionMethod( $this->targetClass, $methodName );
 
 			$startLine = $method->getStartLine();
 			$endLine   = $method->getEndLine();
@@ -100,4 +103,13 @@
 
 			return $code;
 		}
-}
+
+		public function getAllMockCallings() {
+			$code = array_map( function ( $method ) {
+				return $this->getMockCallingFrom( $method );
+			}, $this->methods );
+			$code = implode( "\n\n\t", $code );
+
+			return $code;
+		}
+	}

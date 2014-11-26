@@ -44,70 +44,60 @@
 		/**
 		 * @param      $functionName
 		 * @param null $returnValue
-		 * @param bool $shouldReturnObject
 		 * @param bool $shouldPass
-		 * @param bool $spying
-		 * @param bool $mocking
 		 *
-		 * @return null|\PHPUnit_Framework_MockObject_MockObject|Call\Logger\MockCallLogger|Call\Logger\SpyCallLogger|Call\Logger\StubCallLogger|Call\Verifier\InstanceMethodCallVerifier|static
+		 * @internal param bool $shouldReturnObject
+		 * @internal param bool $spying
+		 * @internal param bool $mocking
+		 *
+		 * @return null|\PHPUnit_Framework_MockObject_MockObject|MockCallLogger|Call\Logger\SpyCallLogger|Call\Logger\StubCallLogger|Call\Verifier\InstanceMethodCallVerifier|static
 		 */
-		public static function replace( $functionName, $returnValue = null, $shouldReturnObject = true, $shouldPass = false, $spying = false, $mocking = false ) {
+		public static function replace( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
 
 			$request     = ReplacementRequest::on( $functionName );
 			$checker     = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
 
-			$callLogger = CallLoggerFactory::make( $spying, $mocking, $functionName );
+			$callLogger = CallLoggerFactory::make( $functionName );
 			$verifier   = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
 
-			$matcherInvocation = null;
+			$invokedRecorder = null;
 
 			if ( $request->isInstanceMethod() ) {
-				$testCase     = self::getTestCase();
-				$methods      = ( $shouldPass && ! $spying ) ? array( '__construct' ) : array(
-					'__construct',
-					$request->getMethodName()
-				);
+				$testCase   = self::getTestCase();
+				$methods    = array( '__construct', $request->getMethodName() );
 				$mockObject = $testCase->getMockBuilder( $request->getClassName() )->disableOriginalConstructor()
-				                         ->setMethods( $methods )->getMock();
-				$times        = 'any';
+				                       ->setMethods( $methods )->getMock();
+				$times      = 'any';
 
-				$matcherInvocation = $testCase->$times();
-				$methodName        = $request->getMethodName();
+				$invokedRecorder = $testCase->$times();
+				$methodName      = $request->getMethodName();
 
 				if ( $returnValue->isCallable() ) {
-					$mockObject->expects( $matcherInvocation )->method( $methodName )
-					             ->willReturnCallback( $returnValue->getValue() );
+					$mockObject->expects( $invokedRecorder )->method( $methodName )
+					           ->willReturnCallback( $returnValue->getValue() );
 				} else {
-					$value = $shouldPass ? $mockObject->$methodName() : $returnValue->getValue();
-
-					$mockObject->expects( $matcherInvocation )->method( $methodName )->willReturn( $value );
+					$mockObject->expects( $invokedRecorder )->method( $methodName )
+					           ->willReturn( $returnValue->getValue() );
 				}
-				//todo: wrap PHPUnit mock object and return it
-//				$mockObject->__phpunit_setOriginalObject($mockObject);
-//				if ( $spying || $mocking ) {
-//					return $spying ? InstanceSpy::from( $matcherInvocation, $mockObject ) : InstanceMock::from ($matcherInvocation, $mockObject);
-//				}
+				$mockWrapper = new MockWrapper();
+				$mockWrapper->setOriginalClassName( $request->getClassName() );
+				$wrapperInstance = $mockWrapper->wrap( $mockObject, $invokedRecorder, $request );
 
-				return $mockObject;
+				return $wrapperInstance;
 			}
 
 			// function or static method
 			$functionOrMethodName = $request->isMethod() ? $request->getMethodName() : $functionName;
-			// if spying do not pass
-			$shouldPass = $spying ? false : $shouldPass;
 
-
-			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $callLogger, $shouldPass );
+			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $callLogger );
 
 			if ( function_exists( '\Patchwork\replace' ) ) {
 				\Patchwork\replace( $functionName, $replacementFunction );
 			}
 
-			$returnObject = $mocking ? $callLogger : $verifier;
-
-			return $shouldReturnObject ? $returnObject : null;
+			return $verifier;
 		}
 
 		/**
@@ -129,8 +119,8 @@
 		 *
 		 * @return callable
 		 */
-		protected static function getReplacementFunction( $functionName, $returnValue, $invocation, $shouldPass = false ) {
-			$replacementFunction = function () use ( $functionName, $returnValue, $invocation, $shouldPass ) {
+		protected static function getReplacementFunction( $functionName, $returnValue, $invocation ) {
+			$replacementFunction = function () use ( $functionName, $returnValue, $invocation ) {
 				$trace = debug_backtrace();
 				$args  = array_filter( $trace, function ( $stackLog ) use ( $functionName ) {
 					$check = isset( $stackLog['args'] ) && is_array( $stackLog['args'] ) && $stackLog['function'] === $functionName;
@@ -141,43 +131,9 @@
 				$args  = isset( $args[0] ) ? $args[0]['args'] : array();
 				$invocation->called( $args );
 
-				if ( $shouldPass ) {
-					\Patchwork\pass();
-				} else {
-					return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
-				}
+				return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
 			};
 
 			return $replacementFunction;
-		}
-
-		public static function stub( $functionName, $returnValue = null ) {
-			// applies to functions and static methods only
-			$shouldReturnObject = false;
-			$shouldPass         = false;
-			$spying             = false;
-
-			return self::replace( $functionName, $returnValue, $shouldReturnObject, $shouldPass, $spying );
-		}
-
-		public static function spy( $functionName, $returnValue = null ) {
-			$shouldReturnObject = true;
-			$shouldPass         = is_null( $returnValue );
-			$spying             = true;
-
-			return self::replace( $functionName, $returnValue, $shouldReturnObject, $shouldPass, $spying );
-		}
-
-		public static function mock( $functionName, $returnValue = null ) {
-			$shouldReturnObject = true;
-			$shouldPass         = is_null( $returnValue );
-			$spying             = false;
-			$mocking            = true;
-
-			return self::replace( $functionName, $returnValue, $shouldReturnObject, $shouldPass, $spying, $mocking );
-		}
-
-		public static function verify() {
-			MockCallLogger::verifyExpectations();
 		}
 	}

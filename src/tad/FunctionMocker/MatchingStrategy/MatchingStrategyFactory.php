@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker\MatchingStrategy;
 
-	class Factory {
+	class MatchingStrategyFactory {
 
 		protected $times;
 		protected $isGreaterThan;

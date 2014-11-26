@@ -1,6 +1,6 @@
 <?php
 
-	namespace src\tad\FunctionMocker\Template\Wrapping;
+	namespace tad\FunctionMocker\Template\Extender;
 
 
 	abstract class AbstractExtender implements Extender {
@@ -8,19 +8,18 @@
 		/**
 		 * @var string
 		 */
-		protected $wrappingClassName;
+		protected $extenderClassName;
 
-		public function getExtendingClass() {
-			return $this->wrappingClassName;
+		/**
+		 * @var string
+		 */
+		protected $extenderInterfaceName;
+
+		public function getExtenderClassName() {
+			return $this->extenderClassName;
 		}
 
-		public function getExtendingMethodsCode() {
-			$signatures  = ${$this->wrappingClassName}::getInterfaceMethods();
-			$methodsCode = array_map( function ( $signature ) {
-				return sprintf( "public function %s{\n\t\$this->__functionMocker_extenderObject->%s;\n}", $signature, $signature );
-			}, $signatures );
-
-			return "\n\t" . implode( "\n\n\t", $methodsCode );
+		public function getExtenderInterfaceName() {
+			return $this->extenderInterfaceName;
 		}
-
 	}

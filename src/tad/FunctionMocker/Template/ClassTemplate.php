@@ -2,8 +2,8 @@
 
 	namespace tad\FunctionMocker\Template;
 
-	use src\tad\FunctionMocker\Template\Wrapping\Extender;
 	use tad\FunctionMocker\MockCallLogger;
+	use tad\FunctionMocker\Template\Extender\Extender;
 
 	class ClassTemplate {
 
@@ -27,6 +27,11 @@
 		 */
 		protected $methodCode;
 
+		/**
+		 * @var Extender
+		 */
+		protected $extender;
+
 		public function setTargetClass( $className ) {
 			$this->targetClass   = $className;
 			$this->reflection    = new \ReflectionClass( $this->targetClass );
@@ -36,13 +41,43 @@
 		}
 
 		public function getExtendedMockTemplate() {
-			return $this->getMockTemplate(  );
+			return <<< CODESET
+class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName%% {
+
+	private \$__functionMocker_callHandler;
+	private \$__functionMocker_originalMockObject;
+
+	public function __set_functionMocker_callHandler(tad\FunctionMocker\Call\CallHandler \$callHandler){
+		\$this->__functionMocker_callHandler = \$callHandler;
+	}
+
+	public function __set_functionMocker_originalMockObject(\PHPUnit_Framework_MockObject_MockObject \$mockObject){
+		\$this->__functionMocker_originalMockObject = \$mockObject;
+	}
+
+	%%extendedMethods%%
+
+	%%originalMethods%%
+}
+CODESET;
+		}
+
+		public function getExtendedMethodTemplate() {
+			return <<< CODESET
+	%%signature%%{
+		\$this->__functionMocker_callHandler->%%call%%;
+		return \$this;
+	}
+
+CODESET;
+
 		}
 
 		public function getMockTemplate( Extender $wrapping ) {
 
 			$vars = array(
-				'extendedMethods' => $wrapping ? $this->getExtendedMethods($wrapping) : '',
+				// wwid
+				'extendedMethods' => $wrapping ? $this->extender->getExtenderMethodsSignaturesAndCalls() : '',
 				'originalMethods' => $this->getOriginalMethodsCode()
 			);
 
@@ -107,5 +142,14 @@ CODESET;
 		}
 
 		public function getExtendedSpyTemplate() {
+
+		}
+
+		public function setExtender( Extender $extender ) {
+			$this->extender = $extender;
+		}
+
+		public function getClassTemplate() {
+			$classTemplate = $this->getMockTemplate( $this->extender );
 		}
 	}

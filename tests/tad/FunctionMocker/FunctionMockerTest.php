@@ -16,43 +16,38 @@
 			FunctionMocker::tearDown();
 		}
 
-		public function assertPostConditions() {
-			FunctionMocker::verify();
-		}
-
 		/**
 		 * @test
-		 * it should return null when stubbin a function
+		 * it should return a Verifier object when replacing a function
 		 */
 		public function it_should_return_null_when_stubbin_a_function() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction' );
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction' );
 
-			$this->assertNull( $ret );
-			$this->assertNull( someFunction() );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\Verifier', $ret );
 		}
 
 		/**
 		 * @test
-		 * it should return the set return value when stubbing a function and setting a return value
+		 * it should return the set return value when replacing a function and setting a return value
 		 */
-		public function it_should_return_the_set_return_value_when_stubbing_a_function_and_setting_a_return_value() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', 23 );
+		public function it_should_return_the_set_return_value_when_replacing_a_function_and_setting_a_return_value() {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction', 23 );
 
 			$this->assertEquals( 23, someFunction() );
 		}
 
 		/**
 		 * @test
-		 * it should return the callback when stubbing a function and setting a closure return value
+		 * it should return the callback return value when replacing a function and setting a callback return value
 		 */
-		public function it_should_return_the_callback_when_stubbing_a_function_and_setting_a_closure_return_value() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', function ( $value ) {
+		public function it_should_return_the_callback_return_value_when_replacing_a_function_and_setting_a_callback_return_value() {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction', function ( $value ) {
 				return $value + 1;
 			} );
 
 			$this->assertEquals( 24, someFunction( 23 ) );
 
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\someFunction', function ( $a, $b ) {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction', function ( $a, $b ) {
 				return $a + $b;
 			} );
 
@@ -61,30 +56,30 @@
 
 		/**
 		 * @test
-		 * it should return null when stubbing a static method
+		 * it should return a Verifier when replacing a static method
 		 */
-		public function it_should_return_null_when_stubbing_a_static_method() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod' );
+		public function it_should_return_a_verifier_when_replacing_a_static_method() {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
-			$this->assertNull( $ret );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\Verifier', $ret );
 		}
 
 		/**
 		 * @test
-		 * it should allow setting various return values when stubbing a static method
+		 * it should allow setting various return values when replacing a static method
 		 */
-		public function it_should_allow_setting_various_return_values_when_stubbin_a_static_method() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
+		public function it_should_allow_setting_various_return_values_when_replacing_a_static_method() {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
 
 			$this->assertEquals( 23, SomeClass::staticMethod() );
 
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a ) {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a ) {
 				return $a + 1;
 			} );
 
 			$this->assertEquals( 24, SomeClass::staticMethod( 23 ) );
 
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a, $b ) {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a, $b ) {
 				return $a + $b;
 			} );
 
@@ -93,53 +88,10 @@
 
 		/**
 		 * @test
-		 * it should return an object instance when stubbing an instance method
+		 * it should return null when replacing a function and not setting a return value
 		 */
-		public function it_should_return_an_object_instance_when_stubbing_an_instance_method() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', 23 );
-
-			$this->assertInstanceOf( __NAMESPACE__ . '\SomeClass', $ret );
-			$this->assertEquals( 23, $ret->instanceMethod() );
-		}
-
-		/**
-		 * @test
-		 * it should allow setting various return values when stubbing an instance method
-		 */
-		public function it_should_allow_setting_various_return_values_when_stubbing_an_instance_method() {
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', 23 );
-
-			$this->assertEquals( 23, $ret->instanceMethod() );
-
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a ) {
-				return $a + 1;
-			} );
-
-			$this->assertEquals( 24, $ret->instanceMethod( 23 ) );
-
-			$ret = FunctionMocker::stub( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a, $b ) {
-				return $a + $b;
-			} );
-
-			$this->assertEquals( 24, $ret->instanceMethod( 23, 1 ) );
-		}
-
-		/**
-		 * @test
-		 * it should return a matcher when spying a function
-		 */
-		public function it_should_return_a_matcher_when_spying_a_function() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
-
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $ret );
-		}
-
-		/**
-		 * @test
-		 * it should return null when spying a function and not setting a return value
-		 */
-		public function it_should_pass_when_spying_a_function() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
+		public function it_should_return_null_when_replacing_a_function_and_not_setting_a_return_value() {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction' );
 
 			$this->assertNull( someFunction() );
 			$ret->wasCalledOnce();
@@ -151,17 +103,17 @@
 		 * it should allow setting various return values when spying a function
 		 */
 		public function it_should_allow_setting_various_return_values_when_spying_a_function() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction', 23 );
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction', 23 );
 
 			$this->assertEquals( 23, someFunction() );
 
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction', function ( $value ) {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction', function ( $value ) {
 				return $value + 1;
 			} );
 
 			$this->assertEquals( 24, someFunction( 23 ) );
 
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\someFunction', function ( $a, $b ) {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction', function ( $a, $b ) {
 				return $a + $b;
 			} );
 
@@ -173,17 +125,17 @@
 		 * it should return a matcher when spying a static method
 		 */
 		public function it_should_return_a_matcher_when_spying_a_static_method() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
 			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $ret );
 		}
 
 		/**
 		 * @test
-		 * it should return null when spying a static method and not setting a return value
+		 * it should return null when replacing a static method and not setting a return value
 		 */
-		public function it_should_retur_null_when_spying_a_static_method_and_not_setting_a_return_value() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
+		public function it_should_retur_null_when_replacing_a_static_method_and_not_setting_a_return_value() {
+			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
 			$this->assertNull( SomeClass::staticMethod() );
 			$ret->wasCalledOnce();
@@ -192,75 +144,10 @@
 
 		/**
 		 * @test
-		 * it should allow setting various return values when spying a static method
-		 */
-		public function it_should_allow_setting_various_return_values_when_spying_a_static_method() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod', 23 );
-
-			$this->assertEquals( 23, SomeClass::staticMethod() );
-
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $value ) {
-				return $value + 1;
-			} );
-
-			$this->assertEquals( 24, SomeClass::staticMethod( 23 ) );
-
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod', function ( $a, $b ) {
-				return $a + $b;
-			} );
-
-			$this->assertEquals( 23, SomeClass::staticMethod( 11, 12 ) );
-		}
-
-		/**
-		 * @test
-		 * it should return a spy object when spying an instance method
-		 */
-		public function it_should_return_a_spy_object_when_spying_an_instance_method() {
-			$sut = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
-
-			$this->assertInstanceOf( __NAMESPACE__ . '\SomeClass', $sut );
-		}
-
-		/**
-		 * @test
-		 * it should return nulll when spying an instance method and not settin any return value
-		 */
-		public function it_should_return_null_when_spying_an_instance_method_and_not_setting_any_return_value() {
-			$ret   = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
-			$value = $ret->instanceMethod();
-
-			$this->assertNull( $value );
-		}
-
-		/**
-		 * @test
-		 * it should allow setting various return values on a spied instance method
-		 */
-		public function it_should_allow_setting_various_return_values_on_a_spied_instance_method() {
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod', 23 );
-
-			$this->assertEquals( 23, $ret->instanceMethod() );
-
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a ) {
-				return $a + 1;
-			} );
-
-			$this->assertEquals( 24, $ret->instanceMethod( 23 ) );
-
-			$ret = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod', function ( $a, $b ) {
-				return $a + $b;
-			} );
-
-			$this->assertEquals( 24, $ret->instanceMethod( 23, 1 ) );
-		}
-
-		/**
-		 * @test
 		 * it should allow verifying calls on spied function
 		 */
 		public function it_should_allow_verifying_calls_on_spied_function() {
-			$spy = FunctionMocker::spy( __NAMESPACE__ . '\someFunction' );
+			$spy = FunctionMocker::replace( __NAMESPACE__ . '\someFunction' );
 
 			someFunction( 12 );
 			someFunction( 11 );
@@ -279,7 +166,7 @@
 		 * it should allow verifying calls on spied static method
 		 */
 		public function it_should_allow_verifying_calls_on_spied_static_method() {
-			$spy = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::staticMethod' );
+			$spy = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
 			SomeClass::staticMethod( 12 );
 			SomeClass::staticMethod( 11 );
@@ -293,35 +180,6 @@
 			$spy->wasCalledTimes( 0 );
 		}
 
-		/**
-		 * @test
-		 * @skip
-		 * it should allow verifying calls on spied instance method
-		 */
-		public function it_should_allow_verifying_calls_on_spied_instance_method() {
-			$this->markTestSkipped();
-			$spy = FunctionMocker::spy( __NAMESPACE__ . '\SomeClass::instanceMethod' );
-
-			$spy->instanceMethod( 12 );
-			$spy->instanceMethod( 11 );
-
-			$spy->wasCalledTimes( 2 );
-			$spy->wasCalledWithTimes( array( 12 ), 1 );
-			$spy->wasCalledWithTimes( array( 11 ), 1 );
-			$spy->wasNotCalledWith( array( 10 ) );
-
-			$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			$spy->wasCalledTimes( 0 );
-		}
-
-		/**
-		 * @test
-		 * it should return a Matcher instance when mocking a function
-		 */
-		public function it_should_return_a_call_matcher_instance_when_mocking_a_function() {
-			$this->assertInstanceOf( '\tad\FunctionMocker\Call\Matcher\Matcher', FunctionMocker::mock( __NAMESPACE__ . '\someFunction' ) );
-		}
-
 		public function exactExpectations() {
 			return array(
 				// times, calls, shouldThrow
@@ -333,25 +191,6 @@
 			);
 		}
 
-		/**
-		 * @test
-		 * it should allow setting exact expectations on mocked functions
-		 * @dataProvider exactExpectations
-		 */
-		public function it_should_allow_setting_exact_expectations_on_mocked_functions( $times, $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
 
 		public function gt3Expectations() {
 			return array(
@@ -360,27 +199,6 @@
 				array( 4, false ),
 				array( 0, true )
 			);
-		}
-
-		/**
-		 * @test
-		 * it should allow setting greater than expectations on functions
-		 * @dataProvider gt3Expectations
-		 */
-		public function it_should_allow_setting_greater_than_expectations_on_functions( $calls, $shouldThrow ) {
-			$times = '>3';
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
 		}
 
 		public function atLeast3Expectations() {
@@ -392,27 +210,6 @@
 			);
 		}
 
-		/**
-		 * @test
-		 * it should allow setting at least expectations on functions
-		 * @dataProvider atLeast3Expectations
-		 */
-		public function it_should_allow_setting_at_least_expectations_on_functions( $calls, $shouldThrow ) {
-			$times = '>=3';
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
 		public function lessThan3Expectations() {
 			return array(
 				array( 0, false ),
@@ -420,27 +217,6 @@
 				array( 3, true ),
 				array( 4, true )
 			);
-		}
-
-		/**
-		 * @test
-		 * it should allow setting less than expectations on functions
-		 * @dataProvider lessThan3Expectations
-		 */
-		public function it_should_allow_setting_less_than_expectations_on_functions( $calls, $shouldThrow ) {
-			$times = '<3';
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
 		}
 
 		public function atMost2Expectations() {
@@ -452,27 +228,6 @@
 			);
 		}
 
-		/**
-		 * @test
-		 * it should allow setting at most expectations on functions
-		 * @dataProvider atMost2Expectations
-		 */
-		public function it_should_allow_setting_at_most_expectations_on_functions( $calls, $shouldThrow ) {
-			$times = '<=2';
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
 		public function not3Expectations() {
 			return array(
 				array( 1, false ),
@@ -480,27 +235,6 @@
 				array( 0, false ),
 				array( 4, false )
 			);
-		}
-
-		/**
-		 * @test
-		 * it should allow setting not expectations on functions
-		 * @dataProvider not3Expectations
-		 */
-		public function it_should_allow_setting_not_expectations_on_functions( $calls, $shouldThrow ) {
-			$times = '!=3';
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
 		}
 
 		public function exact3Expectations() {
@@ -511,187 +245,6 @@
 				array( 4, true )
 			);
 		}
-
-		/**
-		 * @test
-		 * it should allow setting string exact expectations on functions
-		 * @dataProvider exact3Expectations
-		 */
-		public function it_should_allow_setting_string_exact_expectations_on_functions( $calls, $shouldThrow ) {
-			$times = '==3';
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\someFunction' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				someFunction();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should return a Matcher instance when mocking a static method
-		 */
-		public function it_should_return_a_call_matcher_instance_when_mocking_a_static_method() {
-			$this->assertInstanceOf( '\tad\FunctionMocker\Call\Matcher\Matcher', FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' ) );
-		}
-
-
-		/**
-		 * @test
-		 * it should allow setting exact expecations on static methods
-		 * @dataProvider exactExpectations
-		 */
-		public function it_should_allow_setting_exact_expecations_on_static_methods( $times, $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting string exact expectations on static methods
-		 * @dataProvider exactExpectations
-		 */
-		public function it_should_allow_setting_string_exact_expectations_on_static_methods( $times, $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			$times = '==' . $times;
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( $times );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting greater than expectations on static methods
-		 * @dataProvider gt3Expectations
-		 */
-		public function it_should_allow_setting_greater_than_expectations_on_static_methods( $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '>3' );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting at least expectations on static methods
-		 * @dataProvider atLeast3Expectations
-		 */
-		public function it_should_allow_setting_at_least_expectations_on_static_methods( $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '>=3' );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting less than expectations on static methods
-		 * @dataProvider lessThan3Expectations
-		 */
-		public function it_should_allow_setting_less_than_expectations_on_static_methods( $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '<3' );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting at most expectations on static methods
-		 * @dataProvider atMost2Expectations
-		 */
-		public function it_should_allow_setting_at_most_expectations_on_static_methods( $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '<=2' );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should allow setting not expectations on static methods
-		 * @dataProvider not3Expectations
-		 */
-		public function it_should_allow_setting_not_expectations_on_static_methods( $calls, $shouldThrow ) {
-			if ( $shouldThrow ) {
-				$this->setExpectedException( '\PHPUnit_Framework_AssertionFailedError' );
-			}
-
-			FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::staticMethod' )->shouldBeCalledTimes( '!=3' );
-
-			for ( $i = 0; $i < $calls; $i ++ ) {
-				SomeClass::staticMethod();
-			}
-
-			// test only
-			FunctionMocker::verify();
-		}
-
-		/**
-		 * @test
-		 * it should return an instance of the mocked class when mocking an instance method
-		 */
-		public function it_should_return_an_instance_of_the_mocked_class_when_mocking_an_instance_method() {
-			$sut = FunctionMocker::mock( __NAMESPACE__ . '\SomeClass::instanceMethod' );
-			$this->assertInstanceOf( __NAMESPACE__ . '\SomeClass', $sut );
-		}
-
 
 	}
 
@@ -707,14 +260,19 @@
 		}
 	}
 
-	class SomeClassExtension extends  SomeClass{
+
+	class SomeClassExtension extends SomeClass {
+
 		public function instanceMethod() {
 			return 'foo';
 		}
 	}
 
-	class AnotherClass{
-		public function someMethod(){}
+
+	class AnotherClass {
+
+		public function someMethod() {
+		}
 	}
 
 
