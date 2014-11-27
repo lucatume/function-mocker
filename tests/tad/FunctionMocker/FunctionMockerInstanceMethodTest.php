@@ -230,6 +230,22 @@
 			$object2->wasCalledTimes( 1 );
 		}
 
+		/**
+		 * @test
+		 * it should allow calling the replacement inside a lambda function
+		 */
+		public function it_should_allow_calling_the_replacement_inside_a_lambda_function() {
+			$methodOne = FunctionMocker::replace( $this->testClass . '::methodOne' );
+
+			$caller = function(TestClass $testClass){
+				$testClass->methodOne();
+			};
+
+			$caller($methodOne);
+
+			$methodOne->wasCalledTimes( 1 );
+		}
+
 	}
 
 
