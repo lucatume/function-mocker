@@ -12,6 +12,6 @@
 	interface Extender {
 
 		public function getExtenderClassName();
-		public function getExtenderMethodsSignaturesAndCalls();
+		public function getExtendedMethodCallsAndNames();
 		public function getExtenderInterfaceName();
 	}

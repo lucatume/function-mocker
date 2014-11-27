@@ -76,8 +76,8 @@ CODESET;
 
 		public function getExtendedMethodTemplate() {
 			return <<< CODESET
-	%%signature%%{
-		\$this->__functionMocker_callHandler->%%call%%;
+	public function %%call%%{
+		call_user_func_array(array(\$this->__functionMocker_callHandler, '%%methodName%%'), func_get_args());
 		return \$this;
 	}
 
@@ -88,7 +88,7 @@ CODESET;
 		public function getMockTemplate( Extender $wrapping ) {
 
 			$vars = array(
-				'extendedMethods' => $wrapping ? $this->extender->getExtenderMethodsSignaturesAndCalls() : '',
+				'extendedMethods' => $wrapping ? $this->extender->getExtendedMethodCallsAndNames() : '',
 				'originalMethods' => $this->getOriginalMethodsCode()
 			);
 

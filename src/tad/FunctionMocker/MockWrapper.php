@@ -63,11 +63,11 @@
 				/** @noinspection PhpUndefinedMethodInspection */
 				$interfaceName = $extender->getExtenderInterfaceName();
 				/** @noinspection PhpUndefinedMethodInspection */
-				$extendedMethods = $extender->getExtenderMethodsSignaturesAndCalls();
+				$extendedMethods = $extender->getExtendedMethodCallsAndNames();
 
 				$extendedMethodsCode = array();
-				array_walk( $extendedMethods, function ( $call, $signature ) use ( &$extendedMethodsCode, $methodCodeTemplate ) {
-					$code = preg_replace( '/%%signature%%/', $signature, $methodCodeTemplate );
+				array_walk( $extendedMethods, function ( $methodName, $call ) use ( &$extendedMethodsCode, $methodCodeTemplate ) {
+					$code = preg_replace( '/%%methodName%%/', $methodName, $methodCodeTemplate );
 					$code = preg_replace( '/%%call%%/', $call, $code );
 					$extendedMethodsCode[] = $code;
 				} );
