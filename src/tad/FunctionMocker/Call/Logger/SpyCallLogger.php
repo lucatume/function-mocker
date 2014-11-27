@@ -1,13 +1,16 @@
 <?php
 
-	namespace tad\FunctionMocker;
+	namespace tad\FunctionMocker\Call\Logger;
 
-	class Invocation {
+
+	use tad\FunctionMocker\CallTrace;
+
+	class SpyCallLogger implements  Logger {
 
 		protected $calls = array();
 
 		public function called( array $args = null ) {
-			$this->calls[] = InvocationTrace::fromArguments( $args );
+			$this->calls[] = CallTrace::fromArguments( $args );
 		}
 
 		public function getCallTimes( array $args = null ) {
@@ -19,5 +22,13 @@
 			}
 
 			return count( $calls );
+		}
+
+		public function freeze() {
+			// TODO: Implement freeze() method.
+		}
+
+		public function unfreeze() {
+			// TODO: Implement unfreeze() method.
 		}
 	}

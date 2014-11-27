@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	class InvocationTrace {
+	class CallTrace {
 
 		protected $args;
 
