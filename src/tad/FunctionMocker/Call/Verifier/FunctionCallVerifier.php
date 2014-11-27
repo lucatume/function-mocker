@@ -3,8 +3,8 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 	use tad\FunctionMocker\Call\Logger\Logger;
+	use tad\FunctionMocker\Call\Logger\SpyCallLogger;
 	use tad\FunctionMocker\Checker;
-	use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory;
 	use tad\FunctionMocker\ReturnValue;
 
 	class FunctionCallVerifier extends AbstractVerifier {
@@ -53,10 +53,11 @@
 		 */
 		public function wasCalledTimes( $times ) {
 
-			$callTimes        = $this->__callLogger->getCallTimes();
+			/** @noinspection PhpUndefinedMethodInspection */
+			$callTimes    = $this->__callLogger->getCallTimes();
 			$functionName = $this->__getFunctionName();
 
-			return $this->matchCallTimes( $times, $callTimes, $functionName );
+			$this->matchCallTimes( $times, $callTimes, $functionName );
 		}
 
 		/**
@@ -70,9 +71,10 @@
 		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
 
-			$callTimes = $this->__callLogger->getCallTimes( $args );
+			/** @noinspection PhpUndefinedMethodInspection */
+			$callTimes    = $this->__callLogger->getCallTimes( $args );
 			$functionName = $this->__getFunctionName();
 
-			return $this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
+			$this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
 		}
 	}

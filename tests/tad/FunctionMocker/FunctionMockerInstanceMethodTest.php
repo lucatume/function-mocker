@@ -14,6 +14,11 @@
 
 		public function setUp() {
 			$this->testClass = __NAMESPACE__ . '\TestClass';
+			FunctionMocker::setUp();
+		}
+
+		public function tearDown() {
+			FunctionMocker::tearDown();
 		}
 
 		/**
@@ -131,7 +136,7 @@
 			$returnValue = function () {
 				return 'some';
 			};
-			$spy         = FunctionMocker::replace( $this->testClass . '::methodOne', $returnValue );
+			$spy = FunctionMocker::replace( $this->testClass . '::methodOne', $returnValue );
 
 			$this->assertEquals( 'some', $spy->methodOne() );
 		}
@@ -197,6 +202,48 @@
 			}
 
 			$spy->wasCalledWithTimes( array( 23, 23 ), $times );
+		}
+
+		/**
+		 * @test
+		 * it should return same extended mock object when replacing two instance methods from same class
+		 */
+		public function it_should_return_same_extended_mock_object_when_replacing_two_instance_methods_from_same_class() {
+			$object1 = FunctionMocker::replace( $this->testClass . '::methodOne' );
+			$object2 = FunctionMocker::replace( $this->testClass . '::methodTwo' );
+
+			$this->assertSame( $object1, $object2 );
+		}
+
+		/**
+		 * @test
+		 * it should allow testing for calls on different instance methods
+		 */
+		public function it_should_allow_testing_for_calls_on_different_instance_methods() {
+			$object1 = FunctionMocker::replace( $this->testClass . '::methodOne' );
+			$object2 = FunctionMocker::replace( $this->testClass . '::methodTwo' );
+
+			$object1->methodOne();
+			$object1->methodTwo( 23, 45 );
+
+			$object1->wasCalledTimes( 1 );
+			$object2->wasCalledTimes( 1 );
+		}
+
+		/**
+		 * @test
+		 * it should allow calling the replacement inside a lambda function
+		 */
+		public function it_should_allow_calling_the_replacement_inside_a_lambda_function() {
+			$methodOne = FunctionMocker::replace( $this->testClass . '::methodOne' );
+
+			$caller = function(TestClass $testClass){
+				$testClass->methodOne();
+			};
+
+			$caller($methodOne);
+
+			$methodOne->wasCalledTimes( 1 );
 		}
 
 	}

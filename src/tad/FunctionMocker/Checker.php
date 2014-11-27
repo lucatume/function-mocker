@@ -4,15 +4,15 @@
 
 	class Checker {
 
-		protected static $systemFuncs;
+		protected static $systemFunctions;
 		protected        $functionName;
 		protected        $isEvalCreated;
 
 		public static function fromName( $functionName ) {
-			if ( ! self::$systemFuncs ) {
-				self::$systemFuncs = get_defined_functions()['internal'];
+			if ( ! self::$systemFunctions ) {
+				self::$systemFunctions = get_defined_functions()['internal'];
 			}
-			$condition = ! in_array( $functionName, self::$systemFuncs );
+			$condition = ! in_array( $functionName, self::$systemFunctions );
 			\Arg::_( $functionName )->assert( $condition, 'Function must not be an internal one.' );
 
 			$instance                = new self;

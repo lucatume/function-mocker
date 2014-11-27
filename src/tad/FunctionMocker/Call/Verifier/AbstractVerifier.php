@@ -28,19 +28,19 @@
 		}
 
 		public function wasNotCalled() {
-			return $this->wasCalledTimes( 0 );
+			$this->wasCalledTimes( 0 );
 		}
 
 		public function wasNotCalledWith( array $args = null ) {
-			return $this->wasCalledWithTimes( $args, 0 );
+			$this->wasCalledWithTimes( $args, 0 );
 		}
 
 		public function wasCalledOnce() {
-			return $this->wasCalledTimes( 1 );
+			$this->wasCalledTimes( 1 );
 		}
 
 		public function wasCalledWithOnce( array $args = null ) {
-			return $this->wasCalledWithTimes( $args, 1 );
+			$this->wasCalledWithTimes( $args, 1 );
 		}
 
 		/**
@@ -65,6 +65,7 @@
 		 */
 		protected function matchCallTimes( $times, $callTimes, $functionName ) {
 			$matchingStrategy = MatchingStrategyFactory::make( $times );
+			/** @noinspection PhpUndefinedMethodInspection */
 			$condition        = $matchingStrategy->matches( $callTimes );
 			if ( ! $condition ) {
 				$message = sprintf( '%s was called %d times, %s times expected.', $functionName, $callTimes, $times );
@@ -86,6 +87,7 @@
 		 */
 		protected function matchCallWithTimes( array $args, $times, $functionName, $callTimes ) {
 			$matchingStrategy = MatchingStrategyFactory::make( $times );
+			/** @noinspection PhpUndefinedMethodInspection */
 			$condition        = $matchingStrategy->matches( $callTimes );
 			if ( ! $condition ) {
 				$args    = '[' . implode( ', ', $args ) . ']';

@@ -2,7 +2,6 @@
 
 	namespace tad\FunctionMocker\Template;
 
-	use tad\FunctionMocker\MockCallLogger;
 	use tad\FunctionMocker\Template\Extender\Extender;
 
 	class ClassTemplate {
@@ -46,13 +45,26 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 
 	private \$__functionMocker_callHandler;
 	private \$__functionMocker_originalMockObject;
+	private \$__functionMocker_invokedRecorder;
 
 	public function __set_functionMocker_callHandler(tad\FunctionMocker\Call\CallHandler \$callHandler){
 		\$this->__functionMocker_callHandler = \$callHandler;
 	}
 
+	public function __get_functionMocker_CallHandler(){
+		return \$this->__functionMocker_callHandler;
+	}
+
 	public function __set_functionMocker_originalMockObject(\PHPUnit_Framework_MockObject_MockObject \$mockObject){
 		\$this->__functionMocker_originalMockObject = \$mockObject;
+	}
+
+	public function __set_functionMocker_invokedRecorder(\PHPUnit_Framework_MockObject_Matcher_InvokedRecorder \$invokedRecorder){
+		\$this->__functionMocker_invokedRecorder = \$invokedRecorder;
+	}
+
+	public function __get_functionMocker_invokedRecorder(){
+		return \$this->__functionMocker_invokedRecorder;
 	}
 
 	%%extendedMethods%%
@@ -76,7 +88,6 @@ CODESET;
 		public function getMockTemplate( Extender $wrapping ) {
 
 			$vars = array(
-				// wwid
 				'extendedMethods' => $wrapping ? $this->extender->getExtenderMethodsSignaturesAndCalls() : '',
 				'originalMethods' => $this->getOriginalMethodsCode()
 			);
@@ -147,9 +158,5 @@ CODESET;
 
 		public function setExtender( Extender $extender ) {
 			$this->extender = $extender;
-		}
-
-		public function getClassTemplate() {
-			$classTemplate = $this->getMockTemplate( $this->extender );
 		}
 	}

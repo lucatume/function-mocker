@@ -7,7 +7,7 @@
 	use tad\FunctionMocker\ReplacementRequest;
 	use tad\FunctionMocker\ReturnValue;
 
-	class Factory {
+	class CallVerifierFactory {
 
 		public static function make( ReplacementRequest $request, Checker $checker, ReturnValue $returnValue, Logger $callLogger ) {
 			if ( $request->isFunction() ) {

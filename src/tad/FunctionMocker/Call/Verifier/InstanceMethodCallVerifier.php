@@ -13,9 +13,9 @@
 
 		//todo: probably get rid of the returnValue and the callLogger
 		public static function from( ReturnValue $returnValue, Logger $callLogger ) {
-			$instance              = new self;
+			$instance = new self;
 			$instance->returnValue = $returnValue;
-			$instance->callLogger  = $callLogger;
+			$instance->callLogger = $callLogger;
 
 			return $instance;
 		}
@@ -29,10 +29,10 @@
 		 * @return void
 		 */
 		public function wasCalledTimes( $times ) {
-			$callTimes    = $this->invokedRecorder->getInvocationCount();
+			$callTimes = $this->invokedRecorder->getInvocationCount();
 			$functionName = $this->request->getMethodName();
 
-			return $this->matchCallTimes( $times, $callTimes, $functionName );
+			$this->matchCallTimes( $times, $callTimes, $functionName );
 		}
 
 		/**
@@ -45,10 +45,10 @@
 		 * @return void
 		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
-			$callTimes = $this->getCallTimes($args);
+			$callTimes = $this->getCallTimes( $args );
 			$functionName = $this->request->getMethodName();
 
-			return $this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
+			$this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
 		}
 
 		/**
@@ -56,9 +56,9 @@
 		 *
 		 * @return array
 		 */
-		protected function getCallTimes(array $args) {
+		protected function getCallTimes( array $args ) {
 			$invocations = $this->invokedRecorder->getInvocations();
-			$callTimes   = 0;
+			$callTimes = 0;
 			array_map( function ( \PHPUnit_Framework_MockObject_Invocation_Object $invocation ) use ( &$callTimes, &$args ) {
 				$callTimes += $invocation->parameters === $args;
 			}, $invocations );

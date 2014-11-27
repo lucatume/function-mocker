@@ -17,6 +17,7 @@
 			$calls = $this->calls;
 			if ( $args ) {
 				$calls = array_filter( $calls, function ( $call ) use ( $args ) {
+					/** @noinspection PhpUndefinedMethodInspection */
 					return $call->getArguments() === $args;
 				} );
 			}
