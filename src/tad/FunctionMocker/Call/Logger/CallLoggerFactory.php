@@ -6,11 +6,9 @@
 	class CallLoggerFactory {
 
 		/**
-		 * @param $functionName
-		 *
-		 * @return Logger
+		 * @return SpyCallLogger
 		 */
-		public static function make( $functionName ) {
+		public static function make() {
 			$invocation = new SpyCallLogger();
 
 			return $invocation;

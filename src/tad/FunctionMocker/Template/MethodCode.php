@@ -41,7 +41,6 @@
 		}
 
 		public function getMockCallingFrom( $methodName ) {
-			$code       = $this->getMethodCode( $methodName );
 			$method     = is_a( $methodName, '\ReflectionMethod' ) ? $methodName : new \ReflectionMethod( $this->targetClass, $methodName );
 			$methodName = is_string( $methodName ) ? $methodName : $method->name;
 			$args       = array_map( function ( \ReflectionParameter $parameter ) {
@@ -93,6 +92,8 @@
 
 		/**
 		 * @param $methodName
+		 *
+		 * @param $body
 		 *
 		 * @return array|mixed|string
 		 */

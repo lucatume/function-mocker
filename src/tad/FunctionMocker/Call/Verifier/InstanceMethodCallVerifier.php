@@ -32,7 +32,7 @@
 			$callTimes    = $this->invokedRecorder->getInvocationCount();
 			$functionName = $this->request->getMethodName();
 
-			return $this->matchCallTimes( $times, $callTimes, $functionName );
+			$this->matchCallTimes( $times, $callTimes, $functionName );
 		}
 
 		/**
@@ -48,7 +48,7 @@
 			$callTimes = $this->getCallTimes($args);
 			$functionName = $this->request->getMethodName();
 
-			return $this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
+			$this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
 		}
 
 		/**

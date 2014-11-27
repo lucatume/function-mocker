@@ -1,10 +1,11 @@
 <?php
+	use tad\FunctionMocker\Call\Verifier\Verifier;
 
 	/**
 	 * @param      $functionName
 	 * @param null $returnValue
 	 *
-	 * @return mixed|\tad\FunctionMocker\Call\Verifier\InstanceMethodCallVerifier|static
+	 * @return Verifier
 	 */
 	function __replace( $functionName, $returnValue = null ) {
 		return tad\FunctionMocker\FunctionMocker::replace( $functionName, $returnValue );

@@ -10,7 +10,6 @@
 		public static function make( $times ) {
 			\Arg::_( $times, 'Times' )->is_int()->_or()->is_string();
 
-			$instance = new self;
 			if ( is_numeric( $times ) ) {
 				$times = (int) $times;
 

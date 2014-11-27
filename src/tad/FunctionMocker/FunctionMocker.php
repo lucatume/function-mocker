@@ -2,10 +2,8 @@
 
 	namespace tad\FunctionMocker;
 
-	use tad\FunctionMocker\Call\Logger\CallLoggerFactory as CallLoggerFactory;
-	use tad\FunctionMocker\Call\Logger\MockCallLogger;
-	use tad\FunctionMocker\Call\Verifier\Factory as CallVerifierFactory;
-	use tad\FunctionMocker\SpoofTestCase;
+	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
+	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
 
 	class FunctionMocker {
 
@@ -24,6 +22,7 @@
 			while ( true ) {
 				if ( file_exists( $dir . '/vendor' ) ) {
 					$patchworkFile = $dir . "/vendor/antecedent/patchwork/Patchwork.php";
+					/** @noinspection PhpIncludeInspection */
 					require_once $patchworkFile;
 					break;
 				} else {
@@ -135,7 +134,14 @@
 				} );
 				$args  = array_values( $args );
 				$args  = isset( $args[0] ) ? $args[0]['args'] : array();
+				/** @noinspection PhpUndefinedMethodInspection */
 				$invocation->called( $args );
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				/** @noinspection PhpUndefinedMethodInspection */
 
 				return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
 			};

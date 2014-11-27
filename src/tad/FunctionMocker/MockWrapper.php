@@ -2,10 +2,8 @@
 
 	namespace tad\FunctionMocker;
 
-	use tad\FunctionMocker\Call\CallHandler;
 	use tad\FunctionMocker\Template\ClassTemplate;
 	use tad\FunctionMocker\Template\Extender\SpyExtender;
-	use tad\FunctionMocker\Template\Extender\StubExtender;
 	use tad\FunctionMocker\Template\MethodCode;
 
 	class MockWrapper {
@@ -40,8 +38,11 @@
 
 
 		/**
-		 * @param \PHPUnit_Framework_MockObject_MockObject $object
-		 * @param                                          $extender
+		 * @param \PHPUnit_Framework_MockObject_MockObject              $object
+		 * @param                                                       $extender
+		 *
+		 * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder
+		 * @param ReplacementRequest                                    $request
 		 *
 		 * @throws \Exception
 		 * @internal param $extenderClassName
@@ -51,6 +52,7 @@
 		protected function getWrappedInstance( \PHPUnit_Framework_MockObject_MockObject $object, $extender, \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder = null, ReplacementRequest $request = null ) {
 			$mockClassName     = get_class( $object );
 			$extendClassName   = sprintf( '%s_%s', uniqid( 'Extended_' ), $mockClassName );
+			/** @noinspection PhpUndefinedMethodInspection */
 			$extenderClassName = $extender->getExtenderClassName();
 
 			if ( ! class_exists( $extendClassName ) ) {
@@ -58,7 +60,9 @@
 				$template           = $classTemplate->getExtendedMockTemplate();
 				$methodCodeTemplate = $classTemplate->getExtendedMethodTemplate();
 
+				/** @noinspection PhpUndefinedMethodInspection */
 				$interfaceName   = $extender->getExtenderInterfaceName();
+				/** @noinspection PhpUndefinedMethodInspection */
 				$extendedMethods = $extender->getExtenderMethodsSignaturesAndCalls();
 
 				$extendedMethodsCode = array();
@@ -88,14 +92,18 @@
 			}
 
 			$wrapperInstance = new $extendClassName;
+			/** @noinspection PhpUndefinedMethodInspection */
 			$wrapperInstance->__set_functionMocker_originalMockObject( $object );
 			$callHandler = new $extenderClassName;
 			if ( $invokedRecorder ) {
+				/** @noinspection PhpUndefinedMethodInspection */
 				$callHandler->setInvokedRecorder( $invokedRecorder );
 			}
 			if ( $request ) {
+				/** @noinspection PhpUndefinedMethodInspection */
 				$callHandler->setRequest( $request );
 			}
+			/** @noinspection PhpUndefinedMethodInspection */
 			$wrapperInstance->__set_functionMocker_callHandler( $callHandler );
 
 			return $wrapperInstance;
