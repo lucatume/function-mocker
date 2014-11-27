@@ -20,6 +20,7 @@
     "autoload":{
         "psr-0":{
             "tad\\FunctionMocker": "src"
-        }
+        },
+        "files": ["src/tad/functions.php"]
     }
 }
