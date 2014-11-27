@@ -19,18 +19,13 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
 
         public function testSomeMethodCallsSomeFunction(){
             // Setup
-            // replacing a defined function
             $functionMock = FunctionMocker::replace('some_function');
-            // replacing an undefined function
-            $undefinedFunctionMock = FunctionMocker::replace('undefined_function');
-            $sut = new SomeClass();
 
             // Exercise
-            $sut->someMethod();
+            some_function();
 
             // Assert
             $functionMock->wasCalledTimes(1);
-            $undefinedFunctionMock->wasNotCalled();
         }
     }
 
@@ -72,8 +67,8 @@ as badly as it's written it can be tested in a [PHPUnit](http://phpunit.de/) tes
          * @test
          */
         public function it_will_call_manipulatePostContent(){
-            FunctionMocker::mock('Post::getPostContent', 'foo');
-            $f = FunctionMocker::mock('manipulatePostContent');
+            FunctionMocker::replace('Post::getPostContent', 'foo');
+            $f = FunctionMocker::replace('manipulatePostContent');
 
             new SomeClass(23);
 
@@ -82,7 +77,7 @@ as badly as it's written it can be tested in a [PHPUnit](http://phpunit.de/) tes
 
     }
 
-When trying to mock instance method the `FunctionMocker::mock` will merely return a PHPUnit mock object acting, for all intents and purposes, as such
+When trying to replace an instance method the `FunctionMocker::replace` will return an extended PHPUnit mock object implementing all the [original methods](https://phpunit.de/manual/current/en/test-doubles.html).
 
     // file SomeClass.php
 
@@ -109,7 +104,7 @@ When trying to mock instance method the `FunctionMocker::mock` will merely retur
          * @test
          */
         public function it_will_call_manipulatePostContent(){
-            $dep = FunctionMocker::mock('Dep::go', 23);
+            $dep = FunctionMocker::replace('Dep::go', 23);
 
             $sut = new SomeClass($dep);
 
@@ -121,10 +116,55 @@ The `FunctionMocker::mock` method will set up the PHPUnit mock object using the 
 
     $dep->expects($this->any())->method('go')->willReturn(23);
 
+Replacing different methods from the same class in the same test and in subsequent calls will return the same object with updated invocation expectations
+
+    // file SomeClass.php
+
+    class SomeClass{
+
+        public function methodOne(){
+            ...
+        }
+
+        public function methodTwo(){
+            ...
+        }
+    }
+
+    // file SomeClassTest.php   
+    
+    use tad\FunctionMocker\FunctionMocker;
+
+    class SomeClassTest extends PHPUnit_Framework_TestCase {
+    
+        /**
+         * @test
+         */
+        public function returns_the_same_replacement_object(){
+            // replace both class instance methods to return 23
+            $methodOne = FunctionMocker::replace('SomeClass::methodOne', 23);
+            $methodTwo = FunctionMocker::replace('SomeClass::methodTwo', 23);
+            
+            // passes
+            $this->assertSame($methodOne, $methodOne);
+
+            $methodOne->methodOne();
+            // same object so no difference which one is called
+            $methodOne->methodTwo();
+
+            // passes
+            $methodOne->wasCalledOnce();
+            // passes
+            $methodTwo->wasCalledOnce();
+        }
+    }
+
 ## Methods
-For methods related to checks and expectations for instance methods refer to [PHPUnit](http://phpunit.de/), these metods will apply to any function and static method mocked
+Beside the methods defined as part of a [PHPUnit](http://phpunit.de/) mock object interface (see [here](https://phpunit.de/manual/3.7/en/test-doubles.html)) the function mocker will extend the replaced objects with the following methods:
 
 * `wasCalledTimes(int $times)` - will assert a PHPUnit assertion if the function or static method was called `$times` times.
+* `wasCalledOnce()` - will assert a PHPUnit assertion if the function or static method was called once.
+* `wasNotCalled()` - will assert a PHPUnit assertion if the function or static method was not called.
 * `wasCalledWithTimes(array $args, int $times)` - will assert a PHPUnit assertion if the function or static method was called with `$args` arguments `$times` times.
-* `wasNotCalledTimes(int $times)` - will assert a PHPUnit assertion if the function or static method was not called `$times` times.
-* `wasNotCalledWithTimes(array $args, int $times)` - will assert a PHPUnit assertion if the function or static method was not called with `$args` arguments `$times` times.
+* `wasCalledWithOnce(array $args)` - will assert a PHPUnit assertion if the function or static method was called with `$args` arguments once.
+* `wasNotCalledWith(array $args)` - will assert a PHPUnit assertion if the function or static method was not called with `$args` arguments.
