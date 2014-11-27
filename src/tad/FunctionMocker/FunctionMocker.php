@@ -42,15 +42,21 @@
 		}
 
 		/**
+		 * Replaces a function, a static method or an instance method.
+		 *
+		 * The function or methods to be replaced must be specified with fully
+		 * qualified names like
+		 *
+		 *     FunctionMocker::replace('my\name\space\aFunction');
+		 *     FunctionMocker::replace('my\name\space\SomeClass::someMethod');
+		 *
+		 * not specifying a return value will make the replaced function or value
+		 * return `null`.
+		 *
 		 * @param      $functionName
 		 * @param null $returnValue
-		 * @param bool $shouldPass
 		 *
-		 * @internal param bool $shouldReturnObject
-		 * @internal param bool $spying
-		 * @internal param bool $mocking
-		 *
-		 * @return null|\PHPUnit_Framework_MockObject_MockObject|MockCallLogger|Call\Logger\SpyCallLogger|Call\Logger\StubCallLogger|Call\Verifier\InstanceMethodCallVerifier|static
+		 * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
 		 */
 		public static function replace( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
