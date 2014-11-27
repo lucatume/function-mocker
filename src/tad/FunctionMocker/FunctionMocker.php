@@ -2,7 +2,9 @@
 
 	namespace tad\FunctionMocker;
 
-	use tad\FunctionMocker\SpoofTestCase;
+	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
+	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
+	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
 
 	class FunctionMocker {
 
@@ -12,21 +14,28 @@
 		protected static $testCase;
 
 		/**
+		 * @var array
+		 */
+		protected static $replacedClassInstances = array();
+
+		/**
 		 * Loads Patchwork, use in setUp method of the test case.
 		 *
 		 * @return void
 		 */
-		public static function load() {
+		public static function setUp() {
 			$dir = __DIR__;
 			while ( true ) {
 				if ( file_exists( $dir . '/vendor' ) ) {
 					$patchworkFile = $dir . "/vendor/antecedent/patchwork/Patchwork.php";
+					/** @noinspection PhpIncludeInspection */
 					require_once $patchworkFile;
 					break;
 				} else {
 					$dir = dirname( $dir );
 				}
 			}
+			self::$replacedClassInstances = array();
 		}
 
 		/**
@@ -34,62 +43,109 @@
 		 *
 		 * @return void
 		 */
-		public static function unload() {
+		public static function tearDown() {
 			\Patchwork\undoAll();
 		}
 
 		/**
-		 * Mocks a function, a static method or an instance method.
-		 * 
-		 * To mock functions and static methods Patchwork will be used
-		 * hence `load` and `unload` methods are required.  
-		 * When mocking instance methods a PHPUnit mock object will be
-		 * returned and the expectation on it will be set using the
-		 * `PHPUnit_Framework_TestCase::any` method.
-		 * 
-		 * @param string $functionName The name of the function to mock.
-		 *                             Name spaced or not; to mock a class
-		 *                             method use the `Class::method`
-		 *                             notation.
-		 * @param null|mixed|callable $returnValue The return value.
-		 *        					   Either null, a value or a callable
-		 *                             that will be returned when the
-		 *                             function or method is invoked.
-		 * 
-		 * @return PHPUnit_Framework_MockObject_MockObject|tad\FunctionMocker\Matcher
+		 * Replaces a function, a static method or an instance method.
+		 *
+		 * The function or methods to be replaced must be specified with fully
+		 * qualified names like
+		 *
+		 *     FunctionMocker::replace('my\name\space\aFunction');
+		 *     FunctionMocker::replace('my\name\space\SomeClass::someMethod');
+		 *
+		 * not specifying a return value will make the replaced function or value
+		 * return `null`.
+		 *
+		 * @param      $functionName
+		 * @param null $returnValue
+		 *
+		 * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
 		 */
-		public static function mock( $functionName, $returnValue = null ) {
+		public static function replace( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
 
-			$request = MockRequestParser::on( $functionName );
+			$request = ReplacementRequest::on( $functionName );
 			$checker = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
-			$invocation = new Invocation();
-			$matcher = Matcher::__from( $checker, $returnValue, $invocation );
 
+			$callLogger = CallLoggerFactory::make( $functionName );
+			$verifier = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
+
+			$invokedRecorder = null;
+
+			$methodName = $request->getMethodName();
 			if ( $request->isInstanceMethod() ) {
 				$testCase = self::getTestCase();
-				$mockInstance = $testCase->getMock( $request->getClassName() );
+				$className = $request->getClassName();
+
+				$methods = array( '__construct', $methodName );
+				if ( array_key_exists( $className, self::$replacedClassInstances ) ) {
+					$replacedMethods = self::$replacedClassInstances[ $className ]['replacedMethods'];
+					$replacedMethods[] = $methodName;
+					$methods = array_unique( $replacedMethods );
+				}
+				self::$replacedClassInstances[ $className ]['replacedMethods'] = $methods;
+
+				$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
+				                       ->setMethods( $methods )->getMock();
+				$times = 'any';
+
+				/**
+				 * @var PHPUnit_Framework_MockObject_Matcher_InvokedRecorder
+				 */
+				$invokedRecorder = $testCase->$times();
+
 				if ( $returnValue->isCallable() ) {
-
-					$mockInstance->expects( $testCase->any() )->method( $request->getMethodName() )
-					             ->willReturnCallback( $returnValue->getValue() );
+					$mockObject->expects( $invokedRecorder )->method( $methodName )
+					           ->willReturnCallback( $returnValue->getValue() );
 				} else {
-
-					$mockInstance->expects( $testCase->any() )->method( $request->getMethodName() )
-					             ->willReturn( $returnValue->getValue() );
+					$mockObject->expects( $invokedRecorder )->method( $methodName )
+					           ->willReturn( $returnValue->getValue() );
 				}
 
-				return $mockInstance;
+				$wrapperInstance = null;
+				if ( empty( self::$replacedClassInstances[ $className ]['instance'] ) ) {
+					$mockWrapper = new MockWrapper();
+					$mockWrapper->setOriginalClassName( $className );
+					$wrapperInstance = $mockWrapper->wrap( $mockObject, $invokedRecorder, $request );
+					self::$replacedClassInstances[ $className ]['instance'] = $wrapperInstance;
+				} else {
+					$wrapperInstance = self::$replacedClassInstances[ $className ]['instance'];
+					/** @noinspection PhpUndefinedMethodInspection */
+					$prevInvokedRecorder = $wrapperInstance->__get_functionMocker_invokedRecorder();
+					// set the new invokedRecorder on the wrapper instance
+					/** @noinspection PhpUndefinedMethodInspection */
+					$wrapperInstance->__set_functionMocker_invokedRecorder( $invokedRecorder );
+					// set the new invoked recorder on the callHandler
+					$callHandler = $wrapperInstance->__get_functionMocker_CallHandler();
+					$callHandler->setInvokedRecorder( $invokedRecorder );
+					// sync the prev and the actual invokedRecorder
+					$invocations = $prevInvokedRecorder->getInvocations();
+					array_map( function ( \PHPUnit_Framework_MockObject_Invocation $invocation ) use ( &$invokedRecorder ) {
+						$invokedRecorder->invoked( $invocation );
+					}, $invocations );
+					// set the mock object to the new one
+					$wrapperInstance->__set_functionMocker_originalMockObject( $mockObject );
+				}
+
+				return $wrapperInstance;
 			}
 
-			$replacementFunction = self::getReplacementFunction( $functionName, $returnValue, $invocation );
+			// function or static method
+			$functionOrMethodName = $request->isMethod() ? $methodName : $functionName;
+
+			$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $callLogger );
 
 			if ( function_exists( '\Patchwork\replace' ) ) {
+
 				\Patchwork\replace( $functionName, $replacementFunction );
 			}
 
-			return $matcher;
+
+			return $verifier;
 		}
 
 		/**
@@ -121,7 +177,14 @@
 				} );
 				$args = array_values( $args );
 				$args = isset( $args[0] ) ? $args[0]['args'] : array();
+				/** @noinspection PhpUndefinedMethodInspection */
 				$invocation->called( $args );
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				/** @noinspection PhpUndefinedMethodInspection */
 
 				return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
 			};
