@@ -3,7 +3,7 @@
 	namespace tad\FunctionMocker\Call\Logger;
 
 
-	class Factory {
+	class CallLoggerFactory {
 
 		/**
 		 * @param $functionName

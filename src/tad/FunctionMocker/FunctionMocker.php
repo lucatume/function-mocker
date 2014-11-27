@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker;
 
-	use tad\FunctionMocker\Call\Logger\Factory as CallLoggerFactory;
+	use tad\FunctionMocker\Call\Logger\CallLoggerFactory as CallLoggerFactory;
 	use tad\FunctionMocker\Call\Logger\MockCallLogger;
 	use tad\FunctionMocker\Call\Verifier\Factory as CallVerifierFactory;
 	use tad\FunctionMocker\SpoofTestCase;
