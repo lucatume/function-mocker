@@ -29,10 +29,13 @@
 		 * @return void
 		 */
 		public function wasCalledTimes( $times ) {
-			$callTimes = $this->invokedRecorder->getInvocationCount();
-			$functionName = $this->request->getMethodName();
+			$args = func_get_args();
+			$methodName = ! empty( $args[1] ) ? $args[1] : false;
+			$methodName = $methodName ? $methodName : $this->request->getMethodName();
 
-			$this->matchCallTimes( $times, $callTimes, $functionName );
+			$callTimes = $this->getCallTimesForMethod( $methodName );
+
+			$this->matchCallTimes( $times, $callTimes, $methodName );
 		}
 
 		/**
@@ -45,7 +48,7 @@
 		 * @return void
 		 */
 		public function wasCalledWithTimes( array $args = array(), $times ) {
-			$callTimes = $this->getCallTimes( $args );
+			$callTimes = $this->getCallTimesWithArgs( $args );
 			$functionName = $this->request->getMethodName();
 
 			$this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
@@ -56,11 +59,26 @@
 		 *
 		 * @return array
 		 */
-		protected function getCallTimes( array $args ) {
+		protected function getCallTimesWithArgs( array $args ) {
 			$invocations = $this->invokedRecorder->getInvocations();
 			$callTimes = 0;
 			array_map( function ( \PHPUnit_Framework_MockObject_Invocation_Object $invocation ) use ( &$callTimes, &$args ) {
 				$callTimes += $invocation->parameters === $args;
+			}, $invocations );
+
+			return $callTimes;
+		}
+
+		/**
+		 * @param $methodName
+		 *
+		 * @return int
+		 */
+		protected function getCallTimesForMethod( $methodName ) {
+			$invocations = $this->invokedRecorder->getInvocations();
+			$callTimes = 0;
+			array_map( function ( $invocation ) use ( &$callTimes, $methodName ) {
+				$callTimes += $invocation->methodName === $methodName;
 			}, $invocations );
 
 			return $callTimes;

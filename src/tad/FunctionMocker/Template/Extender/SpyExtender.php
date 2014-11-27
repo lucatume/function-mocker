@@ -8,14 +8,14 @@
 		protected $extenderClassName     = 'tad\FunctionMocker\Call\Verifier\InstanceMethodCallVerifier';
 		protected $extenderInterfaceName = 'tad\FunctionMocker\Call\Verifier\Verifier';
 
-		public function getExtenderMethodsSignaturesAndCalls() {
+		public function getExtendedMethodCallsAndNames() {
 			return array(
-				'public function wasCalledTimes( $times )'                            => 'wasCalledTimes( $times )',
-				'public function wasCalledWithTimes( array $args = array(), $times )' => 'wasCalledWithTimes( $args, $times )',
-				'public function wasNotCalled()'                                      => 'wasNotCalled()',
-				'public function wasNotCalledWith( array $args = null )'              => 'wasNotCalledWith( $args )',
-				'public function wasCalledWithOnce( array $args = null )'              => 'wasCalledWithOnce( $args )',
-				'public function wasCalledOnce()'                                     => 'wasCalledOnce()'
+				'wasCalledTimes($times)' => 'wasCalledTimes',
+				'wasCalledWithTimes(array $args = array(), $times)' => 'wasCalledWithTimes',
+				'wasNotCalled()' => 'wasNotCalled',
+				'wasNotCalledWith(array $args = array())' => 'wasNotCalledWith',
+				'wasCalledWithOnce(array $args = array())' => 'wasCalledWithOnce',
+				'wasCalledOnce()' => 'wasCalledOnce'
 			);
 		}
 

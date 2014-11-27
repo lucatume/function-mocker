@@ -8,7 +8,7 @@
 		 * Checks if the function or method was called the specified number
 		 * of times.
 		 *
-		 * @param  int $times
+		 * @param  int|string $times
 		 *
 		 * @return void
 		 */
@@ -19,7 +19,7 @@
 		 * arguments a number of times.
 		 *
 		 * @param  array $args
-		 * @param  int   $times
+		 * @param  int|string   $times
 		 *
 		 * @return void
 		 */
