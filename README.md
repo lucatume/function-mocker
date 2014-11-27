@@ -13,16 +13,16 @@ Given this code
 
 This can be written in a [PHPUnit](http://phpunit.de/) test suite
 
-    use tad\FunctionMocker\FunctionMocker as FMocker;
+    use tad\FunctionMocker\FunctionMocker ;
 
     class SomeClassTest extends \PHPUnit_Framework_TestCase {
 
         public function testSomeMethodCallsSomeFunction(){
             // Setup
-            // mocking a defined function
-            $functionMock = FMocker::mock('some_function');
-            // mocking an undefined function
-            $undefinedFunctionMock = FMocker::mock('undefined_function');
+            // replacing a defined function
+            $functionMock = FunctionMocker::replace('some_function');
+            // replacing an undefined function
+            $undefinedFunctionMock = FunctionMocker::replace('undefined_function');
             $sut = new SomeClass();
 
             // Exercise
