@@ -220,14 +220,16 @@
 		 * it should allow testing for calls on different instance methods
 		 */
 		public function it_should_allow_testing_for_calls_on_different_instance_methods() {
-			$object1 = FunctionMocker::replace( $this->testClass . '::methodOne' );
-			$object2 = FunctionMocker::replace( $this->testClass . '::methodTwo' );
+			$replacement = FunctionMocker::replace( $this->testClass . '::methodOne' );
+			FunctionMocker::replace( $this->testClass . '::methodTwo' );
 
-			$object1->methodOne();
-			$object1->methodTwo( 23, 45 );
+			$replacement->methodOne();
+			$replacement->methodOne();
+			$replacement->methodOne();
+			$replacement->methodTwo( 23, 45 );
 
-			$object1->wasCalledTimes( 1 );
-			$object2->wasCalledTimes( 1 );
+			$replacement->wasCalledTimes( 3, 'methodOne' );
+			$replacement->wasCalledTimes( 1, 'methodTwo' );
 		}
 
 		/**
@@ -237,13 +239,25 @@
 		public function it_should_allow_calling_the_replacement_inside_a_lambda_function() {
 			$methodOne = FunctionMocker::replace( $this->testClass . '::methodOne' );
 
-			$caller = function(TestClass $testClass){
+			$caller = function ( TestClass $testClass ) {
 				$testClass->methodOne();
 			};
 
-			$caller($methodOne);
+			$caller( $methodOne );
 
 			$methodOne->wasCalledTimes( 1 );
+		}
+
+		/**
+		 * @test
+		 * it should allow setting and getting different return values for different instance methods
+		 */
+		public function it_should_allow_setting_and_getting_different_return_values_for_different_instance_methods() {
+			$testClass = FunctionMocker::replace( $this->testClass . '::methodOne', 'foo' );
+			FunctionMocker::replace( $this->testClass . '::methodTwo', 'bar' );
+
+			$this->assertEquals( 'foo', $testClass->methodOne() );
+			$this->assertEquals( 'bar', $testClass->methodTwo( 23, 45 ) );
 		}
 
 	}

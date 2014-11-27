@@ -81,13 +81,17 @@
 				$testCase = self::getTestCase();
 				$className = $request->getClassName();
 
-				$methods = array( '__construct', $methodName );
-				if ( array_key_exists( $className, self::$replacedClassInstances ) ) {
-					$replacedMethods = self::$replacedClassInstances[ $className ]['replacedMethods'];
-					$replacedMethods[] = $methodName;
-					$methods = array_unique( $replacedMethods );
+				if ( ! array_key_exists( $className, self::$replacedClassInstances ) ) {
+					self::$replacedClassInstances[ $className ] = array();
+					self::$replacedClassInstances[ $className ]['replacedMethods'] = array();
 				}
-				self::$replacedClassInstances[ $className ]['replacedMethods'] = $methods;
+				self::$replacedClassInstances[ $className ]['replacedMethods'][ $methodName ] = $returnValue;
+
+				$classReplacedMethods = self::$replacedClassInstances[ $className ]['replacedMethods'];
+				$methods = array_map( function ( $methodName ) {
+					return $methodName;
+				}, array_keys( $classReplacedMethods ) );
+				$methods[] = '__construct';
 
 				$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
 				                       ->setMethods( $methods )->getMock();
@@ -98,13 +102,15 @@
 				 */
 				$invokedRecorder = $testCase->$times();
 
-				if ( $returnValue->isCallable() ) {
-					$mockObject->expects( $invokedRecorder )->method( $methodName )
-					           ->willReturnCallback( $returnValue->getValue() );
-				} else {
-					$mockObject->expects( $invokedRecorder )->method( $methodName )
-					           ->willReturn( $returnValue->getValue() );
-				}
+				array_walk( $classReplacedMethods, function ( ReturnValue $returnValue, $methodName, &$mockObject ) use ( $invokedRecorder ) {
+					if ( $returnValue->isCallable() ) {
+						$mockObject->expects( $invokedRecorder )->method( $methodName )
+						           ->willReturnCallback( $returnValue->getValue() );
+					} else {
+						$mockObject->expects( $invokedRecorder )->method( $methodName )
+						           ->willReturn( $returnValue->getValue() );
+					}
+				}, $mockObject );
 
 				$wrapperInstance = null;
 				if ( empty( self::$replacedClassInstances[ $className ]['instance'] ) ) {
