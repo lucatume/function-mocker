@@ -7,7 +7,7 @@
 	use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory;
 	use tad\FunctionMocker\ReplacementRequest;
 
-	abstract class AbstractVerifier implements Verifier, CallHandlerInterface {
+	abstract class AbstractVerifier implements VerifierInterface, CallHandlerInterface {
 
 		/**
 		 * @var PHPUnit_Framework_MockObject_Matcher_InvokedRecorder

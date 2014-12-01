@@ -5,7 +5,7 @@
 
 	use tad\FunctionMocker\CallTrace;
 
-	class SpyCallLogger implements Logger {
+	class SpyCallLogger implements LoggerInterface {
 
 		protected $calls = array();
 

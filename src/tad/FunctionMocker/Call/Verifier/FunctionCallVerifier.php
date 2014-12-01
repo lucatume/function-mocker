@@ -2,8 +2,8 @@
 
 	namespace tad\FunctionMocker\Call\Verifier;
 
-	use tad\FunctionMocker\Call\Logger\Logger;
-	use tad\FunctionMocker\Call\Logger\SpyCallLogger;
+	use tad\FunctionMocker\Call\Logger\LoggerInterface;
+	use tad\FunctionMocker\Call\Logger\SpyCallLoggerInterface;
 	use tad\FunctionMocker\Checker;
 	use tad\FunctionMocker\ReturnValue;
 
@@ -18,11 +18,11 @@
 		protected $__returnValue;
 
 		/**
-		 * @var SpyCallLogger
+		 * @var SpyCallLoggerInterface
 		 */
 		protected $__callLogger;
 
-		public static function __from( Checker $checker, ReturnValue $returnValue, Logger $callLogger ) {
+		public static function __from( Checker $checker, ReturnValue $returnValue, LoggerInterface $callLogger ) {
 			$instance                = new static;
 			$instance->__checker     = $checker;
 			$instance->__returnValue = $returnValue;

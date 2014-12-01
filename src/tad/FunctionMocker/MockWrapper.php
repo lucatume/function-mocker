@@ -3,7 +3,7 @@
 	namespace tad\FunctionMocker;
 
 	use tad\FunctionMocker\Template\ClassTemplate;
-	use tad\FunctionMocker\Template\Extender\Extender;
+	use tad\FunctionMocker\Template\Extender\ExtenderInterface;
 	use tad\FunctionMocker\Template\Extender\SpyExtender;
 	use tad\FunctionMocker\Template\MethodCode;
 
@@ -50,7 +50,7 @@
 		 *
 		 * @return mixed
 		 */
-		protected function getWrappedInstance( \PHPUnit_Framework_MockObject_MockObject $object, Extender $extender, \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder = null, ReplacementRequest $request = null ) {
+		protected function getWrappedInstance( \PHPUnit_Framework_MockObject_MockObject $object, ExtenderInterface $extender, \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder = null, ReplacementRequest $request = null ) {
 			$mockClassName = get_class( $object );
 			$extendClassName = sprintf( '%s_%s', uniqid( 'Extended_' ), $mockClassName );
 			/** @noinspection PhpUndefinedMethodInspection */

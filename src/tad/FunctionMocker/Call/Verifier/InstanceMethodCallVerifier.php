@@ -4,7 +4,7 @@
 
 
 	use PHPUnit_Framework_MockObject_Invocation;
-	use tad\FunctionMocker\Call\Logger\Logger;
+	use tad\FunctionMocker\Call\Logger\LoggerInterface;
 	use tad\FunctionMocker\ReturnValue;
 
 	class InstanceMethodCallVerifier extends AbstractVerifier {
@@ -12,7 +12,7 @@
 		protected $returnValue;
 		protected $callLogger;
 
-		public static function from( ReturnValue $returnValue, Logger $callLogger ) {
+		public static function from( ReturnValue $returnValue, LoggerInterface $callLogger ) {
 			$instance = new self;
 			$instance->returnValue = $returnValue;
 			$instance->callLogger = $callLogger;
