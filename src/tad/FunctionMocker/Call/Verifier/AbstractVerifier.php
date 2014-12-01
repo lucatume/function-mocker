@@ -3,11 +3,11 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
-	use tad\FunctionMocker\Call\CallHandler;
+	use tad\FunctionMocker\Call\CallHandlerInterface;
 	use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory;
 	use tad\FunctionMocker\ReplacementRequest;
 
-	abstract class AbstractVerifier implements Verifier, CallHandler {
+	abstract class AbstractVerifier implements VerifierInterface, CallHandlerInterface {
 
 		/**
 		 * @var PHPUnit_Framework_MockObject_Matcher_InvokedRecorder

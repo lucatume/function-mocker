@@ -2,7 +2,7 @@
 	namespace tad\FunctionMocker\Call\Logger;
 
 
-	interface Logger {
+	interface LoggerInterface {
 
 		public function called( array $args = null );
 	}

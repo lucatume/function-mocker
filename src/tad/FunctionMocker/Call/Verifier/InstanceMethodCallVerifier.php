@@ -3,7 +3,8 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 
-	use tad\FunctionMocker\Call\Logger\Logger;
+	use PHPUnit_Framework_MockObject_Invocation;
+	use tad\FunctionMocker\Call\Logger\LoggerInterface;
 	use tad\FunctionMocker\ReturnValue;
 
 	class InstanceMethodCallVerifier extends AbstractVerifier {
@@ -11,8 +12,7 @@
 		protected $returnValue;
 		protected $callLogger;
 
-		//todo: probably get rid of the returnValue and the callLogger
-		public static function from( ReturnValue $returnValue, Logger $callLogger ) {
+		public static function from( ReturnValue $returnValue, LoggerInterface $callLogger ) {
 			$instance = new self;
 			$instance->returnValue = $returnValue;
 			$instance->callLogger = $callLogger;
@@ -116,7 +116,7 @@
 		protected function getCallTimesForMethod( $methodName ) {
 			$invocations = $this->invokedRecorder->getInvocations();
 			$callTimes = 0;
-			array_map( function ( $invocation ) use ( &$callTimes, $methodName ) {
+			array_map( function ( PHPUnit_Framework_MockObject_Invocation $invocation ) use ( &$callTimes, $methodName ) {
 				$callTimes += $invocation->methodName === $methodName;
 			}, $invocations );
 

@@ -3,7 +3,7 @@
 	namespace tad\FunctionMocker\Template\Extender;
 
 
-	abstract class AbstractExtender implements Extender {
+	abstract class AbstractExtender implements ExtenderInterface {
 
 		/**
 		 * @var string
