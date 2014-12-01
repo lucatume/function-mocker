@@ -47,7 +47,7 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 	private \$__functionMocker_originalMockObject;
 	private \$__functionMocker_invokedRecorder;
 
-	public function __set_functionMocker_callHandler(tad\FunctionMocker\Call\CallHandler \$callHandler){
+	public function __set_functionMocker_callHandler(tad\FunctionMocker\Call\CallHandlerInterface \$callHandler){
 		\$this->__functionMocker_callHandler = \$callHandler;
 	}
 
