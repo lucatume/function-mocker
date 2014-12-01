@@ -15,13 +15,18 @@
 			$condition = ! in_array( $functionName, self::$systemFunctions );
 			\Arg::_( $functionName )->assert( $condition, 'Function must not be an internal one.' );
 
-			$instance                = new self;
+			$instance = new self;
 			$instance->isEvalCreated = false;
-			if ( ! function_exists( $functionName ) ) {
-				@eval( sprintf( 'function %s(){return null;}', $functionName ) );
+			$instance->functionName = $functionName;
+			$isMethod = preg_match( "/^[\\w\\d_\\\\]+::[\\w\\d_]+$/", $functionName );
+			if ( ! $isMethod && ! function_exists( $functionName ) ) {
+				$code = sprintf( 'function %s(){return null;}', $functionName );
+				$ok = eval( $code );
+				if ( $ok === false ) {
+					throw new \Exception( "Could not eval code $code for function $functionName" );
+				}
 				$instance->isEvalCreated = true;
 			}
-			$instance->functionName = $functionName;
 
 			return $instance;
 		}
