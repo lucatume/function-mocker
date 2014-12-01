@@ -6,7 +6,7 @@
 	class SpyExtender extends AbstractExtender {
 
 		protected $extenderClassName     = 'tad\FunctionMocker\Call\Verifier\InstanceMethodCallVerifier';
-		protected $extenderInterfaceName = 'tad\FunctionMocker\Call\Verifier\Verifier';
+		protected $extenderInterfaceName = 'tad\FunctionMocker\Call\Verifier\VerifierInterface';
 
 		public function getExtendedMethodCallsAndNames() {
 			return array(

@@ -3,7 +3,7 @@
 	namespace tad\FunctionMocker\MatchingStrategy;
 
 
-	Abstract class AbstractMatchingStrategy implements MatchingStrategy {
+	Abstract class AbstractMatchingStrategy implements MatchingStrategyInterface {
 
 		protected $times;
 

@@ -2,7 +2,7 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 
-	interface Verifier {
+	interface VerifierInterface {
 
 		/**
 		 * Checks if the function or method was called the specified number

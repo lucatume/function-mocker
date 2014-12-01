@@ -6,7 +6,7 @@
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
 	use tad\FunctionMocker\ReplacementRequest;
 
-	interface CallHandler {
+	interface CallHandlerInterface {
 
 		/**
 		 * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder

@@ -102,7 +102,7 @@
 				 */
 				$invokedRecorder = $testCase->$times();
 
-				array_walk( $classReplacedMethods, function ( ReturnValue $returnValue, $methodName, &$mockObject ) use ( $invokedRecorder ) {
+				array_walk( $classReplacedMethods, function ( ReturnValue $returnValue, $methodName, \PHPUnit_Framework_MockObject_MockObject &$mockObject ) use ( $invokedRecorder ) {
 					if ( $returnValue->isCallable() ) {
 						$mockObject->expects( $invokedRecorder )->method( $methodName )
 						           ->willReturnCallback( $returnValue->getValue() );

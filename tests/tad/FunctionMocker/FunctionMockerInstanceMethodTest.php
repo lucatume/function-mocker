@@ -43,12 +43,12 @@
 
 		/**
 		 * @test
-		 * it should return an object implementing the Verifier interface when replacing
+		 * it should return an object implementing the VerifierInterface interface when replacing
 		 */
 		public function it_should_return_an_object_implementing_the_verifier_interface_when_replacing() {
 			$replacement = FunctionMocker::replace( $this->testClass . '::methodOne' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\Verifier', $replacement );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\VerifierInterface', $replacement );
 		}
 
 		/**
@@ -99,12 +99,12 @@
 
 		/**
 		 * @test
-		 * it should return an object implementing the Verifier interface when spying
+		 * it should return an object implementing the VerifierInterface interface when spying
 		 */
 		public function it_should_return_an_object_implementing_the_verifier_interface_when_spying() {
 			$spy = FunctionMocker::replace( $this->testClass . '::methodOne' );
 
-			$this->assertInstanceOf( '\tad\FunctionMocker\Call\Verifier\Verifier', $spy );
+			$this->assertInstanceOf( '\tad\FunctionMocker\Call\Verifier\VerifierInterface', $spy );
 		}
 
 		/**

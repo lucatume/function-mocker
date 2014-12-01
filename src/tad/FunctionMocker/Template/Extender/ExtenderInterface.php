@@ -9,7 +9,7 @@
 	namespace tad\FunctionMocker\Template\Extender;
 
 
-	interface Extender {
+	interface ExtenderInterface {
 
 		public function getExtenderClassName();
 		public function getExtendedMethodCallsAndNames();
