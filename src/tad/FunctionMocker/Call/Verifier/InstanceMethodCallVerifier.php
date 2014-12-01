@@ -3,6 +3,7 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 
+	use PHPUnit_Framework_MockObject_Invocation;
 	use tad\FunctionMocker\Call\Logger\Logger;
 	use tad\FunctionMocker\ReturnValue;
 
@@ -115,7 +116,7 @@
 		protected function getCallTimesForMethod( $methodName ) {
 			$invocations = $this->invokedRecorder->getInvocations();
 			$callTimes = 0;
-			array_map( function ( $invocation ) use ( &$callTimes, $methodName ) {
+			array_map( function ( PHPUnit_Framework_MockObject_Invocation $invocation ) use ( &$callTimes, $methodName ) {
 				$callTimes += $invocation->methodName === $methodName;
 			}, $invocations );
 
