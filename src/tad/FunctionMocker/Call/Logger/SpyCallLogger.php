@@ -24,12 +24,4 @@
 
 			return count( $calls );
 		}
-
-		public function freeze() {
-			// TODO: Implement freeze() method.
-		}
-
-		public function unfreeze() {
-			// TODO: Implement unfreeze() method.
-		}
 	}
