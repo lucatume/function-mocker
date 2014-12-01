@@ -19,6 +19,7 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
 
         public function testSomeMethodCallsSomeFunction(){
             // Setup
+            // please note: it can replace not defined functions too!
             $functionMock = FunctionMocker::replace('some_function');
 
             // Exercise
