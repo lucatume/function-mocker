@@ -11,7 +11,6 @@
 		protected $returnValue;
 		protected $callLogger;
 
-		//todo: probably get rid of the returnValue and the callLogger
 		public static function from( ReturnValue $returnValue, Logger $callLogger ) {
 			$instance = new self;
 			$instance->returnValue = $returnValue;
