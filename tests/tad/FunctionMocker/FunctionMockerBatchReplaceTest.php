@@ -63,6 +63,23 @@
 				$this->assertEquals( 'foo', $function() );
 			}
 		}
+
+		/**
+		 * @test
+		 * it should allow batch replacing static methods
+		 */
+		public function it_should_allow_batch_replacing_static_methods() {
+			$_functions = [ 'staticOne', 'staticTwo', 'staticThree' ];
+			$functions = array_map( function ( $name ) {
+				return __NAMESPACE__ . '\\FooBazClass::' . $name;
+			}, $_functions );
+
+			FunctionMocker::replace( $functions, 'foo' );
+
+			$this->assertEquals( 'foo', FooBazClass::staticOne() );
+			$this->assertEquals( 'foo', FooBazClass::staticTwo() );
+			$this->assertEquals( 'foo', FooBazClass::staticThree() );
+		}
 	}
 
 
@@ -78,3 +95,19 @@
 		return 3;
 	}
 
+
+	class FooBazClass {
+
+		static function staticOne() {
+
+		}
+
+		static function staticTwo() {
+
+		}
+
+		static function staticThree() {
+
+		}
+
+	}
