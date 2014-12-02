@@ -20,7 +20,9 @@
 			$instance->functionName = $functionName;
 			$isMethod = preg_match( "/^[\\w\\d_\\\\]+::[\\w\\d_]+$/", $functionName );
 			if ( ! $isMethod && ! function_exists( $functionName ) ) {
-				$code = sprintf( 'function %s(){return null;}', $functionName );
+				$namespace = self::hasnamespace( $functionName ) ? 'namespace ' . self::getnamespacefrom( $functionName ) . ";" : '';
+				$functionName = self::hasNamespace( $functionName ) ? self::getFunctionNameFrom( $functionName ) : $functionName;
+				$code = sprintf( '%sfunction %s(){return null;}', $namespace, $functionName );
 				$ok = eval( $code );
 				if ( $ok === false ) {
 					throw new \Exception( "Could not eval code $code for function $functionName" );
@@ -29,6 +31,38 @@
 			}
 
 			return $instance;
+		}
+
+		/**
+		 * @param $functionName
+		 *
+		 * @return bool
+		 */
+		private static function hasNamespace( $functionName ) {
+			$namespaceElements = explode( '\\', $functionName );
+			if ( count( $namespaceElements ) === 1 ) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * @param $functionName
+		 *
+		 * @return string
+		 */
+		private static function getNamespaceFrom( $functionName ) {
+			$namespaceElements = explode( '\\', $functionName );
+			array_pop( $namespaceElements );
+
+			return implode( '\\', $namespaceElements );
+		}
+
+		private static function getFunctionNameFrom( $functionName ) {
+			$elems = explode( '\\', $functionName );
+
+			return array_pop( $elems );
 		}
 
 		public function getFunctionName() {
