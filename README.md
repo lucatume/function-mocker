@@ -138,7 +138,21 @@ When in need to stub out a batch of functions needed for a component to work thi
         }
     }
 
-Being a *rough cut* tool no value will be returned from the `FunctionMocker::replace` method and spying on the stubbed functions will not be possible when batch replacing functions.
+When replacing a batch of functions the return value will be an `array` of spy objects that can be referenced using the function name:
+
+    public function testBatchFunctionReplacement(){
+        $functions = ['functionOne', 'functionTwo', 'functionThree', ...];
+
+        $replacedFunctions = FunctionMocker::replace($functions, function($arg){
+            return $arg;
+            });
+        
+        functionOne();
+
+        $functionOne = $replacedFunctions['functionOne'];
+        $functionOne->wasCalledOnce();
+
+    }
 
 ### Static methods
 
@@ -188,6 +202,20 @@ Static methods too can be replaced in a batch assigning to any replaced method t
         $this->assertEquals('foo', Foo::two());
         $this->assertEquals('foo', Foo::three());
     }
+
+When batch replacing static methods `FunctionMocker::replace` will return an array of spy objects indexed by the method name that can be used as any other static method spy object;
+
+    public function testBatchReplaceStaticMethods(){
+        $methods = ['Foo::one', 'Foo::two', 'Foo::three'];
+
+        $replacedMethods = FunctionMocker::replace($methods, 'foo');
+        
+        Foo::one();
+
+        $one = $replacedMethods['one'];
+        $one->wasCalledOnce();
+    }
+
 ### Instance methods
 
 ### Replacing instance methods
