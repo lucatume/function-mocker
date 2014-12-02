@@ -80,6 +80,28 @@
 			$this->assertEquals( 'foo', FooBazClass::staticTwo() );
 			$this->assertEquals( 'foo', FooBazClass::staticThree() );
 		}
+
+		/**
+		 * @test
+		 * it should allow batch replacement of instance methods
+		 */
+		public function it_should_allow_batch_replacement_of_instance_methods() {
+			$_functions = [ 'instanceOne', 'instanceTwo', 'instanceThree' ];
+			$functions = array_map( function ( $name ) {
+				return __NAMESPACE__ . '\\BazClass::' . $name;
+			}, $_functions );
+
+			$replacement = FunctionMocker::replace( $functions, 'foo' );
+
+			$this->assertEquals( 'foo', $replacement->instanceOne() );
+			$this->assertEquals( 'foo', $replacement->instanceTwo() );
+			$replacement->instanceTwo();
+			$this->assertEquals( 'foo', $replacement->instanceThree() );
+
+			$replacement->wasCalledOnce( 'instanceOne' );
+			$replacement->wasCalledTimes( 2, 'instanceTwo' );
+			$replacement->wasCalledOnce( 'instanceThree' );
+		}
 	}
 
 
@@ -93,6 +115,22 @@
 
 	function functionThree() {
 		return 3;
+	}
+
+
+	class BazClass {
+
+		function instanceOne() {
+
+		}
+
+		function instanceTwo() {
+
+		}
+
+		function instanceThree() {
+
+		}
 	}
 
 

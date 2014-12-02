@@ -67,11 +67,12 @@
 		public static function replace( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string()->_or()->is_array();
 			if ( is_array( $functionName ) ) {
-				array_map( function ( $_functionName ) use ( $returnValue ) {
-					self::_replace( $_functionName, $returnValue );
+				$replacement = null;
+				array_map( function ( $_functionName ) use ( $returnValue, &$replacement ) {
+					$replacement = self::_replace( $_functionName, $returnValue );
 				}, $functionName );
 
-				return;
+				return $replacement;
 			}
 
 			return self::_replace( $functionName, $returnValue );
