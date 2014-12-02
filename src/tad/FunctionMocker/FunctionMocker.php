@@ -67,12 +67,12 @@
 		public static function replace( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string()->_or()->is_array();
 			if ( is_array( $functionName ) ) {
-				$replacement = null;
-				array_map( function ( $_functionName ) use ( $returnValue, &$replacement ) {
-					$replacement = self::_replace( $_functionName, $returnValue );
+				$replacements = array();
+				array_map( function ( $_functionName ) use ( $returnValue, &$replacements ) {
+					$replacements[] = self::_replace( $_functionName, $returnValue );
 				}, $functionName );
 
-				return $replacement;
+				return self::arrayUnique( $replacements );
 			}
 
 			return self::_replace( $functionName, $returnValue );
@@ -215,5 +215,22 @@
 
 
 			return $verifier;
+		}
+
+		/**
+		 * @param $elements
+		 *
+		 * @return array|mixed
+		 */
+		private static function arrayUnique( $elements ) {
+			$uniqueReplacements = array();
+			array_map( function ( $replacement ) use ( &$uniqueReplacements ) {
+				if ( ! in_array( $replacement, $uniqueReplacements ) ) {
+					$uniqueReplacements[] = $replacement;
+				}
+			}, $elements );
+			$uniqueReplacements = array_values( $uniqueReplacements );
+
+			return count( $uniqueReplacements ) === 1 ? $uniqueReplacements[0] : $uniqueReplacements;
 		}
 	}

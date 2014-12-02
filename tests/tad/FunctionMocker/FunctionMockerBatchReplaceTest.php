@@ -102,6 +102,40 @@
 			$replacement->wasCalledTimes( 2, 'instanceTwo' );
 			$replacement->wasCalledOnce( 'instanceThree' );
 		}
+
+		/**
+		 * @test
+		 * it should allow getting an array of replaced functions to spy
+		 */
+		public function it_should_allow_getting_an_array_of_replaced_functions_to_spy() {
+			$_functions = [ 'functionOne', 'functionTwo', 'functionThree' ];
+			$functions = array_map( function ( $name ) {
+				return __NAMESPACE__ . '\\' . $name;
+			}, $_functions );
+
+			list( $functionOne, $functionTwo, $functionThree ) = FunctionMocker::replace( $functions, 'foo' );
+
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $functionOne );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $functionTwo );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $functionThree );
+		}
+
+		/**
+		 * @test
+		 * it should return an array of replaced static methods to spy
+		 */
+		public function it_should_return_an_array_of_replaced_static_methods_to_spy() {
+			$_functions = [ 'staticOne', 'staticTwo', 'staticThree' ];
+			$functions = array_map( function ( $name ) {
+				return __NAMESPACE__ . '\\FooBazClass::' . $name;
+			}, $_functions );
+
+			list( $staticOne, $staticTwo, $staticThree ) = FunctionMocker::replace( $functions, 'foo' );
+
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $staticOne );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $staticTwo );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $staticThree );
+		}
 	}
 
 
