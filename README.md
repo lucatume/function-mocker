@@ -68,46 +68,130 @@ Either zip and move it to the appropriate folder or use [Composer](https://getco
 In a perfect world you should never need to mock static methods and functions, should use [TDD](http://en.wikipedia.org/wiki/Test-driven_development) to write better object-oriented code and use it as a design tool.  
 But sometimes a grim and sad need to mock those functions and static methods might arise and this library is here to help.
 
-    // file SomeClass.php
+### setUp and tearDown
+The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/) test case and provides two `static` methods that **must** be inserted in the test case `setUp` and `tearDown` method for the function mocker to work properly:
 
-    class SomeClass {
+    class MyTest extends \PHPUnit_Framework_TestCase {
+        public function setUp(){
+            // first
+            FunctionMocker::setUp();
+            ...
+        }
 
-        protected $postContent;
+        public function tearDown(){
+            ...
 
-        public function __construct($postId) {
-            // static method
-            $this->postContent = Post::getPostContent($postId);
-
-            if($this->postContent) {
-                // function
-                $this->postContent = manipulatePostContent($this->postContent);
-            }
+            // last
+            FunctionMocker::tearDown();
         }
     }
 
-as badly as it's written it can be tested in a [PHPUnit](http://phpunit.de/) test case like
+### Functions
 
-    // file SomeClassTest.php   
+#### Replacing functions
+The library will allow for replacement of functions both defined and undefined at test run time using the `FunctionMocker::replace` method like:
 
-    use tad\FunctionMocker\FunctionMocker;
+    FunctionMocker::replace('myFunction', $returnValue);
 
-    class SomeClassTest extends PHPUnit_Framework_TestCase {
+and will allow setting a return value as a real value or as a function callback:
     
-        /**
-         * @test
-         */
-        public function it_will_call_manipulatePostContent(){
-            FunctionMocker::replace('Post::getPostContent', 'foo');
-            $f = FunctionMocker::replace('manipulatePostContent');
+    public function testReplacedFunctionReturnsValue(){
+        FunctionMocker::replace('myFunction', 23);
 
-            new SomeClass(23);
-
-            $f->wasCalledWithTimes(['foo'], 1);
-        }
-
+        $this->assertEquals(23, myFunction());
     }
 
-When trying to replace an instance method the `FunctionMocker::replace` will return an extended PHPUnit mock object implementing all the [original methods](https://phpunit.de/manual/current/en/test-doubles.html) and some (see below)
+    public fuction testReplacedFunctionReturnsCallback(){
+        FunctionMocker::replace('myFunction', function($arg){
+                return $arg + 1;
+            });
+
+        $this->assertEquals(24, myFunction());
+    }
+
+#### Spying on functions
+If the value returned by the `FunctionMocker::replace` method is stored in a variable than checks for calls can be made on that function:
+    
+    public function testReplacedFunctionReturnsValue(){
+        $myFunction = FunctionMocker::replace('myFunction', 23);
+
+        $this->assertEquals(23, myFunction());
+
+        $myFunction->wasCalledOnce();
+        $myFunction->wasCalledWithOnce(23);
+    }
+
+The methods available for a function spy are the ones listed below in the "Methods" section.
+
+#### Batch replacement of functions
+When in need to stub out a batch of functions needed for a component to work this can be done:
+
+    public function testBatchFunctionReplacement(){
+        $functions = ['functionOne', 'functionTwo', 'functionThree', ...];
+
+        FunctionMocker::replace($functions, function($arg){
+            return $arg;
+            });
+
+        foreach ($functions as $f){
+            $this->assertEquals('foo', $f('foo'));
+        }
+    }
+
+Being a *rough cut* tool no value will be returned from the `FunctionMocker::replace` method and spying on the stubbed functions will not be possible when batch replacing functions.
+
+### Static methods
+
+#### Replacing static methods
+Similarly to functions the library will allow for replacement of **defined** static methods using the `FunctionMocker::replace` method
+
+    public function testReplacedStaticMethodReturnsValue(){
+        FunctionMocker::replace('Post::getContent', 'Lorem ipsum');
+
+        $this->assertEquals('Lorem ipsum', Post::getContent());
+    }
+
+again similarly to functions a callback function return value can be set:
+
+    public function testReplacedStaticMethodReturnsCallback(){
+        FunctionMocker::replace('Post::formatTitle', function($string){
+            return "foo $string baz";
+            });
+
+        $this->assertEquals('foo lorem baz', Post::formatTitle('lorem'));
+    }
+
+>Note that only `public static` methods can be replaced.
+
+#### Spying of static methods
+Storing the return value of the `FunctionMocker::replace` function allows spying on static methods using the methods listed in the "Methods" section below like:
+
+    public function testReplacedStaticMethodReturnsValue(){
+        $getContent = FunctionMocker::replace('Post::getContent', 'Lorem ipsum');
+
+        $this->assertEquals('Lorem ipsum', Post::getContent());
+
+        $getContent->wasCalledOnce();
+        $getContent->wasNotCalledWith('some');
+        ...
+    }
+
+#### Batch replacement of static methods
+Static methods too can be replaced in a batch assigning to any replaced method the same return value or callback:
+
+    public function testBatchReplaceStaticMethods(){
+        $methods = ['Foo::one', 'Foo::two', 'Foo::three'];
+
+        FunctionMocker::replace($methods, 'foo');
+
+        $this->assertEquals('foo', Foo::one());
+        $this->assertEquals('foo', Foo::two());
+        $this->assertEquals('foo', Foo::three());
+    }
+### Instance methods
+
+### Replacing instance methods
+When trying to replace an instance method the `FunctionMocker::replace` method will return an extended PHPUnit mock object implementing all the [original methods](https://phpunit.de/manual/current/en/test-doubles.html) and some (see below)
 
     // file SomeClass.php
 
@@ -148,6 +232,9 @@ The `FunctionMocker::replace` method will set up the PHPUnit mock object using t
 
 Replacing different methods from the same class in the same test and in subsequent calls will return the same object with updated invocation expectations
 
+#### Spying instance methods
+The object returned by the `FunctionMocker::replace` method called on an instance method will allow for the methods specified in the "Methods" section to be used to check for calls made to the replaced method with the additional `methodName` parameter specified:
+
     // file SomeClass.php
 
     class SomeClass{
@@ -173,20 +260,34 @@ Replacing different methods from the same class in the same test and in subseque
         public function returns_the_same_replacement_object(){
             // replace both class instance methods to return 23
             $replacement = FunctionMocker::replace('SomeClass::methodOne', 23);
-            FunctionMocker::replace('SomeClass::methodTwo', 23);
+            // $replacement === $replacement2
+            $replacement2 = FunctionMocker::replace('SomeClass::methodTwo', 23);
 
             $replacement->methodOne();
             $replacement->methodTwo();
 
-            // passes
             $replacement->wasCalledOnce('methodOne');
-            // passes
             $replacement->wasCalledOnce('methodTwo');
         }
     }
 
+#### Batch replacing instance methods
+It's possible to batch replace instance method **of the same classs** using the same syntax used for batch function and static method replacement; differently from batch replacement of functions and static methods the value returned from the `FunctionMocker::replace` function can be used to spy. Given the `SomeClass` above:
+
+        public function testBatchInstanceMethodReplacement(){
+            $methods = ['SomeClass::methodOne', 'SomeClass::methodTwo'];
+            // replace both class instance methods to return 23
+            $replacement = FunctionMocker::replace($methods, 23);
+
+            $replacement->methodOne();
+            $replacement->methodTwo();
+
+            $replacement->wasCalledOnce('methodOne');
+            $replacement->wasCalledOnce('methodTwo');
+        }
+
 ## Methods
-Beside the methods defined as part of a [PHPUnit](http://phpunit.de/) mock object interface (see [here](https://phpunit.de/manual/3.7/en/test-doubles.html)), available on a replaced instance methods only, the function mocker will extend the replaced functions and methods with the following methods:
+Beside the methods defined as part of a [PHPUnit](http://phpunit.de/) mock object interface (see [here](https://phpunit.de/manual/3.7/en/test-doubles.html)), available only when replacing instance methods, the function mocker will extend the replaced functions and methods with the following methods:
 
 * `wasCalledTimes(int $times [, string $methodName])` - will assert a PHPUnit assertion if the function or static method was called `$times` times; the `$times` parameter can come using the times syntax below.
 * `wasCalledOnce([string $methodName])` - will assert a PHPUnit assertion if the function or static method was called once.
