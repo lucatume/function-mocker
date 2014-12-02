@@ -5,6 +5,7 @@
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
 	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
+	use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
 
 	class FunctionMocker {
 
@@ -67,12 +68,19 @@
 		public static function replace( $functionName, $returnValue = null ) {
 			\Arg::_( $functionName, 'Function name' )->is_string()->_or()->is_array();
 			if ( is_array( $functionName ) ) {
-				$replacement = null;
-				array_map( function ( $_functionName ) use ( $returnValue, &$replacement ) {
-					$replacement = self::_replace( $_functionName, $returnValue );
+				$replacements = array();
+				array_map( function ( $_functionName ) use ( $returnValue, &$replacements ) {
+					$replacements[] = self::_replace( $_functionName, $returnValue );
 				}, $functionName );
 
-				return $replacement;
+				$return = self::arrayUnique( $replacements );
+				if ( ! is_array( $return ) ) {
+					return $return;
+				}
+
+				$indexedReplacements = self::getIndexedReplacements( $return );
+
+				return $indexedReplacements;
 			}
 
 			return self::_replace( $functionName, $returnValue );
@@ -215,5 +223,42 @@
 
 
 			return $verifier;
+		}
+
+		/**
+		 * @param $elements
+		 *
+		 * @return array|mixed
+		 */
+		private static function arrayUnique( $elements ) {
+			$uniqueReplacements = array();
+			array_map( function ( $replacement ) use ( &$uniqueReplacements ) {
+				if ( ! in_array( $replacement, $uniqueReplacements ) ) {
+					$uniqueReplacements[] = $replacement;
+				}
+			}, $elements );
+			$uniqueReplacements = array_values( $uniqueReplacements );
+
+			return count( $uniqueReplacements ) === 1 ? $uniqueReplacements[0] : $uniqueReplacements;
+		}
+
+		/**
+		 * @param $return
+		 *
+		 * @return array
+		 */
+		private static function getIndexedReplacements( $return ) {
+			$indexedReplacements = array();
+			if ( $return[0] instanceof FunctionCallVerifier ) {
+				array_map( function ( FunctionCallVerifier $replacement ) use ( &$indexedReplacements ) {
+					$fullFunctionName = $replacement->__getFunctionName();
+					$functionNameElements = preg_split( '/(\\\\|::)/', $fullFunctionName );
+					$functionName = array_pop( $functionNameElements );
+					$indexedReplacements[ $functionName ] = $replacement;
+				}, $return );
+
+			}
+
+			return $indexedReplacements;
 		}
 	}
