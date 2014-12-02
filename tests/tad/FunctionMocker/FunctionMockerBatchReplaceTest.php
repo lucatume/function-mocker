@@ -113,11 +113,11 @@
 				return __NAMESPACE__ . '\\' . $name;
 			}, $_functions );
 
-			list( $functionOne, $functionTwo, $functionThree ) = FunctionMocker::replace( $functions, 'foo' );
+			$replacedFunctions = FunctionMocker::replace( $functions, 'foo' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $functionOne );
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $functionTwo );
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $functionThree );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $replacedFunctions['functionOne'] );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $replacedFunctions['functionTwo'] );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $replacedFunctions['functionThree'] );
 		}
 
 		/**
@@ -130,11 +130,28 @@
 				return __NAMESPACE__ . '\\FooBazClass::' . $name;
 			}, $_functions );
 
-			list( $staticOne, $staticTwo, $staticThree ) = FunctionMocker::replace( $functions, 'foo' );
+			$replacedFunctions = FunctionMocker::replace( $functions, 'foo' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $staticOne );
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $staticTwo );
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $staticThree );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $replacedFunctions['staticOne'] );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $replacedFunctions['staticTwo'] );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\StaticMethodCallVerifier', $replacedFunctions['staticThree'] );
+		}
+
+		/**
+		 * @test
+		 * it should allow getting a function name indexed list of functions when batch replacing
+		 */
+		public function it_should_allow_getting_a_function_name_indexed_list_of_functions_when_batch_replacing() {
+			$_functions = [ 'functionOne', 'functionTwo', 'functionThree' ];
+			$functions = array_map( function ( $name ) {
+				return __NAMESPACE__ . '\\' . $name;
+			}, $_functions );
+
+			$replacedFunctions = FunctionMocker::replace( $functions, 'foo' );
+
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $replacedFunctions['functionOne'] );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $replacedFunctions['functionTwo'] );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\FunctionCallVerifier', $replacedFunctions['functionThree'] );
 		}
 	}
 
