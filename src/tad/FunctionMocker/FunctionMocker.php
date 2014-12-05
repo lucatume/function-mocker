@@ -5,6 +5,7 @@
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
 	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
+	use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
 
 	class FunctionMocker {
 
@@ -65,8 +66,78 @@
 		 * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
 		 */
 		public static function replace( $functionName, $returnValue = null ) {
-			\Arg::_( $functionName, 'Function name' )->is_string();
+			\Arg::_( $functionName, 'Function name' )->is_string()->_or()->is_array();
+			if ( is_array( $functionName ) ) {
+				$replacements = array();
+				array_map( function ( $_functionName ) use ( $returnValue, &$replacements ) {
+					$replacements[] = self::_replace( $_functionName, $returnValue );
+				}, $functionName );
 
+				$return = self::arrayUnique( $replacements );
+				if ( ! is_array( $return ) ) {
+					return $return;
+				}
+
+				$indexedReplacements = self::getIndexedReplacements( $return );
+
+				return $indexedReplacements;
+			}
+
+			return self::_replace( $functionName, $returnValue );
+		}
+
+		/**
+		 * @return SpoofTestCase
+		 */
+		protected static function getTestCase() {
+			if ( ! self::$testCase ) {
+				self::$testCase = new SpoofTestCase();
+			}
+			$testCase = self::$testCase;
+
+			return $testCase;
+		}
+
+		/**
+		 * @param $functionName
+		 * @param $returnValue
+		 * @param $invocation
+		 *
+		 * @return callable
+		 */
+		protected static function getReplacementFunction( $functionName, $returnValue, $invocation ) {
+			$replacementFunction = function () use ( $functionName, $returnValue, $invocation ) {
+				$trace = debug_backtrace();
+				$args = array_filter( $trace, function ( $stackLog ) use ( $functionName ) {
+					$check = isset( $stackLog['args'] ) && is_array( $stackLog['args'] ) && $stackLog['function'] === $functionName;
+
+					return $check ? true : false;
+				} );
+				$args = array_values( $args );
+				$args = isset( $args[0] ) ? $args[0]['args'] : array();
+				/** @noinspection PhpUndefinedMethodInspection */
+				$invocation->called( $args );
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				/** @noinspection PhpUndefinedMethodInspection */
+
+				return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
+			};
+
+			return $replacementFunction;
+		}
+
+		/**
+		 * @param $functionName
+		 * @param $returnValue
+		 *
+		 * @return mixed|null|Call\Verifier\InstanceMethodCallVerifier|static
+		 * @throws \Exception
+		 */
+		private static function _replace( $functionName, $returnValue ) {
 			$request = ReplacementRequest::on( $functionName );
 			$checker = Checker::fromName( $functionName );
 			$returnValue = ReturnValue::from( $returnValue );
@@ -102,7 +173,7 @@
 				 */
 				$invokedRecorder = $testCase->$times();
 
-				array_walk( $classReplacedMethods, function ( ReturnValue $returnValue, $methodName, &$mockObject ) use ( $invokedRecorder ) {
+				array_walk( $classReplacedMethods, function ( ReturnValue $returnValue, $methodName, \PHPUnit_Framework_MockObject_MockObject &$mockObject ) use ( $invokedRecorder ) {
 					if ( $returnValue->isCallable() ) {
 						$mockObject->expects( $invokedRecorder )->method( $methodName )
 						           ->willReturnCallback( $returnValue->getValue() );
@@ -155,46 +226,39 @@
 		}
 
 		/**
-		 * @return SpoofTestCase
+		 * @param $elements
+		 *
+		 * @return array|mixed
 		 */
-		protected static function getTestCase() {
-			if ( ! self::$testCase ) {
-				self::$testCase = new SpoofTestCase();
-			}
-			$testCase = self::$testCase;
+		private static function arrayUnique( $elements ) {
+			$uniqueReplacements = array();
+			array_map( function ( $replacement ) use ( &$uniqueReplacements ) {
+				if ( ! in_array( $replacement, $uniqueReplacements ) ) {
+					$uniqueReplacements[] = $replacement;
+				}
+			}, $elements );
+			$uniqueReplacements = array_values( $uniqueReplacements );
 
-			return $testCase;
+			return count( $uniqueReplacements ) === 1 ? $uniqueReplacements[0] : $uniqueReplacements;
 		}
 
 		/**
-		 * @param $functionName
-		 * @param $returnValue
-		 * @param $invocation
+		 * @param $return
 		 *
-		 * @return callable
+		 * @return array
 		 */
-		protected static function getReplacementFunction( $functionName, $returnValue, $invocation ) {
-			$replacementFunction = function () use ( $functionName, $returnValue, $invocation ) {
-				$trace = debug_backtrace();
-				$args = array_filter( $trace, function ( $stackLog ) use ( $functionName ) {
-					$check = isset( $stackLog['args'] ) && is_array( $stackLog['args'] ) && $stackLog['function'] === $functionName;
+		private static function getIndexedReplacements( $return ) {
+			$indexedReplacements = array();
+			if ( $return[0] instanceof FunctionCallVerifier ) {
+				array_map( function ( FunctionCallVerifier $replacement ) use ( &$indexedReplacements ) {
+					$fullFunctionName = $replacement->__getFunctionName();
+					$functionNameElements = preg_split( '/(\\\\|::)/', $fullFunctionName );
+					$functionName = array_pop( $functionNameElements );
+					$indexedReplacements[ $functionName ] = $replacement;
+				}, $return );
 
-					return $check ? true : false;
-				} );
-				$args = array_values( $args );
-				$args = isset( $args[0] ) ? $args[0]['args'] : array();
-				/** @noinspection PhpUndefinedMethodInspection */
-				$invocation->called( $args );
+			}
 
-				/** @noinspection PhpUndefinedMethodInspection */
-
-				/** @noinspection PhpUndefinedMethodInspection */
-
-				/** @noinspection PhpUndefinedMethodInspection */
-
-				return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
-			};
-
-			return $replacementFunction;
+			return $indexedReplacements;
 		}
 	}

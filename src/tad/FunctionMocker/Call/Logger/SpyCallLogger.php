@@ -5,7 +5,7 @@
 
 	use tad\FunctionMocker\CallTrace;
 
-	class SpyCallLogger implements  Logger {
+	class SpyCallLogger implements LoggerInterface {
 
 		protected $calls = array();
 
@@ -16,20 +16,11 @@
 		public function getCallTimes( array $args = null ) {
 			$calls = $this->calls;
 			if ( $args ) {
-				$calls = array_filter( $calls, function ( $call ) use ( $args ) {
-					/** @noinspection PhpUndefinedMethodInspection */
+				$calls = array_filter( $calls, function ( CallTrace $call ) use ( $args ) {
 					return $call->getArguments() === $args;
 				} );
 			}
 
 			return count( $calls );
-		}
-
-		public function freeze() {
-			// TODO: Implement freeze() method.
-		}
-
-		public function unfreeze() {
-			// TODO: Implement unfreeze() method.
 		}
 	}

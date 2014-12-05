@@ -18,12 +18,12 @@
 
 		/**
 		 * @test
-		 * it should return a Verifier object when replacing a function
+		 * it should return a VerifierInterface object when replacing a function
 		 */
 		public function it_should_return_null_when_stubbin_a_function() {
 			$ret = FunctionMocker::replace( __NAMESPACE__ . '\someFunction' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\Verifier', $ret );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\VerifierInterface', $ret );
 		}
 
 		/**

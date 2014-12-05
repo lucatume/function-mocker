@@ -3,11 +3,11 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
-	use tad\FunctionMocker\Call\CallHandler;
+	use tad\FunctionMocker\Call\CallHandlerInterface;
 	use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory;
 	use tad\FunctionMocker\ReplacementRequest;
 
-	abstract class AbstractVerifier implements Verifier, CallHandler {
+	abstract class AbstractVerifier implements VerifierInterface, CallHandlerInterface {
 
 		/**
 		 * @var PHPUnit_Framework_MockObject_Matcher_InvokedRecorder
@@ -89,8 +89,11 @@
 			$matchingStrategy = MatchingStrategyFactory::make( $times );
 			/** @noinspection PhpUndefinedMethodInspection */
 			$condition        = $matchingStrategy->matches( $callTimes );
-			if ( ! $condition ) {
-				$args    = '[' . implode( ', ', $args ) . ']';
+            if ( ! $condition ) {
+                $printArgs = array_map( function( $arg ) {
+                    return print_r( $arg, true );
+                }, $args);
+				$args    = "[\n\t" . implode( ",\n\t", $printArgs ) . ']';
 				$message = sprintf( '%s was called %d times with %s, %d times expected.', $functionName, $callTimes, $args, $times );
 				\PHPUnit_Framework_Assert::fail( $message );
 			}

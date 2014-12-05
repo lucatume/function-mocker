@@ -2,7 +2,7 @@
 
 	namespace tad\FunctionMocker\Template;
 
-	use tad\FunctionMocker\Template\Extender\Extender;
+	use tad\FunctionMocker\Template\Extender\ExtenderInterface;
 
 	class ClassTemplate {
 
@@ -27,7 +27,7 @@
 		protected $methodCode;
 
 		/**
-		 * @var Extender
+		 * @var ExtenderInterface
 		 */
 		protected $extender;
 
@@ -47,7 +47,7 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 	private \$__functionMocker_originalMockObject;
 	private \$__functionMocker_invokedRecorder;
 
-	public function __set_functionMocker_callHandler(tad\FunctionMocker\Call\CallHandler \$callHandler){
+	public function __set_functionMocker_callHandler(tad\FunctionMocker\Call\CallHandlerInterface \$callHandler){
 		\$this->__functionMocker_callHandler = \$callHandler;
 	}
 
@@ -85,7 +85,7 @@ CODESET;
 
 		}
 
-		public function getMockTemplate( Extender $wrapping ) {
+		public function getMockTemplate( ExtenderInterface $wrapping ) {
 
 			$vars = array(
 				'extendedMethods' => $wrapping ? $this->extender->getExtendedMethodCallsAndNames() : '',
@@ -156,7 +156,7 @@ CODESET;
 
 		}
 
-		public function setExtender( Extender $extender ) {
+		public function setExtender( ExtenderInterface $extender ) {
 			$this->extender = $extender;
 		}
 	}

@@ -18,12 +18,12 @@
 
 		/**
 		 * @test
-		 * it should return a Verifier when replacing a static method
+		 * it should return a VerifierInterface when replacing a static method
 		 */
 		public function it_should_return_a_verifier_when_replacing_a_static_method() {
 			$ret = FunctionMocker::replace( __NAMESPACE__ . '\SomeClass::staticMethod' );
 
-			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\Verifier', $ret );
+			$this->assertInstanceOf( 'tad\FunctionMocker\Call\Verifier\VerifierInterface', $ret );
 		}
 
 		/**
