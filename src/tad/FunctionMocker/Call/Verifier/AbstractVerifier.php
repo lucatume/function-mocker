@@ -89,8 +89,11 @@
 			$matchingStrategy = MatchingStrategyFactory::make( $times );
 			/** @noinspection PhpUndefinedMethodInspection */
 			$condition        = $matchingStrategy->matches( $callTimes );
-			if ( ! $condition ) {
-				$args    = '[' . implode( ', ', $args ) . ']';
+            if ( ! $condition ) {
+                $printArgs = array_map( function( $arg ) {
+                    return print_r( $arg, true );
+                }, $args);
+				$args    = "[\n\t" . implode( ",\n\t", $printArgs ) . ']';
 				$message = sprintf( '%s was called %d times with %s, %d times expected.', $functionName, $callTimes, $args, $times );
 				\PHPUnit_Framework_Assert::fail( $message );
 			}
