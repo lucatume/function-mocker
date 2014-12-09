@@ -83,7 +83,7 @@
 		 * @return mixed
 		 */
 		protected function replaceBody( $body, $code ) {
-			$code = preg_replace( '/\\{.*\\}/', '{' . $body . '}', $code );
+			$code = preg_replace( '/\\{.*\\}$|;$/', '{' . $body . '}', $code );	
 			$code = preg_replace( '/\\(\\s+/', '(', $code );
 			$code = preg_replace( '/\\s+\\)/', ')', $code );
 
