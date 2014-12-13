@@ -93,7 +93,7 @@
 		protected function getCallTimesForMethod( $methodName ) {
 			$invocations = $this->invokedRecorder->getInvocations();
 			$callTimes = 0;
-			array_map( function ( PHPUnit_Framework_MockObject_Invocation $invocation ) use ( &$callTimes, $methodName ) {
+			array_map( function ( \PHPUnit_Framework_MockObject_Invocation_Object $invocation ) use ( &$callTimes, $methodName ) {
 				$callTimes += $invocation->methodName === $methodName;
 			}, $invocations );
 
