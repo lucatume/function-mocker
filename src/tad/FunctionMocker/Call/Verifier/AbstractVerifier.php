@@ -23,7 +23,7 @@
 			throw new \Exception( 'Method not implemented' );
 		}
 
-		public function wasCalledWithTimes( array $args = array(), $times ) {
+		public function wasCalledWithTimes( array $args, $times ) {
 			throw new \Exception( 'Method not implemented' );
 		}
 
@@ -31,7 +31,7 @@
 			$this->wasCalledTimes( 0 );
 		}
 
-		public function wasNotCalledWith( array $args = null ) {
+		public function wasNotCalledWith( array $args ) {
 			$this->wasCalledWithTimes( $args, 0 );
 		}
 
@@ -39,7 +39,7 @@
 			$this->wasCalledTimes( 1 );
 		}
 
-		public function wasCalledWithOnce( array $args = null ) {
+		public function wasCalledWithOnce( array $args ) {
 			$this->wasCalledWithTimes( $args, 1 );
 		}
 

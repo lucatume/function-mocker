@@ -16,7 +16,6 @@
 				return EqualMatchingStrategy::on( $times );
 			}
 
-			$matchingStrategy = null;
 			$matches          = array();
 			if ( ! preg_match( "/(>|>=|<|<=|==|!=)*(\\d)+/uU", $times, $matches ) ) {
 
