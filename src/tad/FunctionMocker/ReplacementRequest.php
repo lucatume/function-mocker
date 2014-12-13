@@ -51,7 +51,7 @@
 				$reflection = new \ReflectionMethod( $className, $methodName );
 				$instance->isInstanceMethod = ! $reflection->isStatic();
 				$instance->isStaticMethod = $reflection->isStatic();
-				$instance->requestClassName = $reflection->getDeclaringClass()->getName();
+				$instance->requestClassName = $reflection->class;
 				$instance->methodName = $reflection->name;
 			}
 
