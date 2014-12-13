@@ -18,7 +18,7 @@
 		protected $__returnValue;
 
 		/**
-		 * @var SpyCallLoggerInterface
+		 * @var LoggerInterface
 		 */
 		protected $__callLogger;
 
