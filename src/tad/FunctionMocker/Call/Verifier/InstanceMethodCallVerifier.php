@@ -22,34 +22,22 @@
 
 		public function wasNotCalled() {
 			$funcArgs = func_get_args();
-			$methodName = ! empty( $funcArgs[0] ) ? $funcArgs[0] : false;
-			$methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-			$this->wasCalledTimes( 0, $methodName );
+			$this->realWasCalledTimes( 0, $funcArgs );
 		}
 
 		public function wasNotCalledWith( array $args ) {
 			$funcArgs = func_get_args();
-			$methodName = ! empty( $funcArgs[1] ) ? $funcArgs[1] : false;
-			$methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-			$this->wasCalledWithTimes( $args, 0, $methodName );
+			$this->realWasCalledWithTimes( $args, 0, $funcArgs );
 		}
 
 		public function wasCalledOnce() {
 			$funcArgs = func_get_args();
-			$methodName = ! empty( $funcArgs[0] ) ? $funcArgs[0] : false;
-			$methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-			$this->wasCalledTimes( 1, $methodName );
+			$this->realWasCalledTimes( 1, $funcArgs );
 		}
 
 		public function wasCalledWithOnce( array $args ) {
 			$funcArgs = func_get_args();
-			$methodName = ! empty( $funcArgs[1] ) ? $funcArgs[1] : false;
-			$methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-			$this->wasCalledWithTimes( $args, 1, $methodName );
+			$this->realWasCalledWithTimes( $args, 1, $funcArgs );
 		}
 
 
@@ -63,12 +51,7 @@
 		 */
 		public function wasCalledTimes( $times ) {
 			$funcArgs = func_get_args();
-			$methodName = ! empty( $funcArgs[1] ) ? $funcArgs[1] : false;
-			$methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-			$callTimes = $this->getCallTimesForMethod( $methodName );
-
-			$this->matchCallTimes( $times, $callTimes, $methodName );
+			$this->realWasCalledTimes( $times, $funcArgs );
 		}
 
 		/**
@@ -82,13 +65,7 @@
 		 */
 		public function wasCalledWithTimes( array $args, $times ) {
 			$funcArgs = func_get_args();
-			$methodName = ! empty( $funcArgs[2] ) ? $funcArgs[2] : false;
-			$methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-			$callTimes = $this->getCallTimesWithArgs( $args, $methodName );
-			$functionName = $this->request->getMethodName();
-
-			$this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
+			$this->realWasCalledWithTimes( $args, $times, $funcArgs );
 		}
 
 		/**
@@ -121,5 +98,33 @@
 			}, $invocations );
 
 			return $callTimes;
+		}
+
+		/**
+		 * @param $times
+		 * @param $funcArgs
+		 */
+		private function realWasCalledTimes( $times, $funcArgs ) {
+			$methodName = ! empty( $funcArgs[1] ) ? $funcArgs[1] : false;
+			$methodName = $methodName ? $methodName : $this->request->getMethodName();
+
+			$callTimes = $this->getCallTimesForMethod( $methodName );
+
+			$this->matchCallTimes( $times, $callTimes, $methodName );
+		}
+
+		/**
+		 * @param array $args
+		 * @param       $times
+		 * @param       $funcArgs
+		 */
+		private function realWasCalledWithTimes( array $args, $times, $funcArgs ) {
+			$methodName = ! empty( $funcArgs[2] ) ? $funcArgs[2] : false;
+			$methodName = $methodName ? $methodName : $this->request->getMethodName();
+
+			$callTimes = $this->getCallTimesWithArgs( $args, $methodName );
+			$functionName = $this->request->getMethodName();
+
+			$this->matchCallWithTimes( $args, $times, $functionName, $callTimes );
 		}
 	}
