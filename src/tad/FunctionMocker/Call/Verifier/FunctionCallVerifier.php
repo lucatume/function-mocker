@@ -69,7 +69,7 @@
 		 *
 		 * @return void
 		 */
-		public function wasCalledWithTimes( array $args = array(), $times ) {
+		public function wasCalledWithTimes( array $args, $times ) {
 
 			/** @noinspection PhpUndefinedMethodInspection */
 			$callTimes    = $this->__callLogger->getCallTimes( $args );

@@ -28,7 +28,7 @@
 			$this->wasCalledTimes( 0, $methodName );
 		}
 
-		public function wasNotCalledWith( array $args = null ) {
+		public function wasNotCalledWith( array $args ) {
 			$funcArgs = func_get_args();
 			$methodName = ! empty( $funcArgs[1] ) ? $funcArgs[1] : false;
 			$methodName = $methodName ? $methodName : $this->request->getMethodName();
@@ -44,7 +44,7 @@
 			$this->wasCalledTimes( 1, $methodName );
 		}
 
-		public function wasCalledWithOnce( array $args = null ) {
+		public function wasCalledWithOnce( array $args ) {
 			$funcArgs = func_get_args();
 			$methodName = ! empty( $funcArgs[1] ) ? $funcArgs[1] : false;
 			$methodName = $methodName ? $methodName : $this->request->getMethodName();
@@ -80,7 +80,7 @@
 		 *
 		 * @return void
 		 */
-		public function wasCalledWithTimes( array $args = array(), $times ) {
+		public function wasCalledWithTimes( array $args, $times ) {
 			$funcArgs = func_get_args();
 			$methodName = ! empty( $funcArgs[2] ) ? $funcArgs[2] : false;
 			$methodName = $methodName ? $methodName : $this->request->getMethodName();
