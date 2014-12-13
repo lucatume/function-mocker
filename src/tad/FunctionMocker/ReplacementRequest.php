@@ -43,7 +43,7 @@
 			if ( $instance->isFunction ) {
 				$instance->isStaticMethod = false;
 				$instance->isInstanceMethod = false;
-				$instance->requestClassName = false;
+				$instance->requestClassName = '';
 			} else {
 				$request = explode( '::', $mockRequest );
 				$className = $request[0];
