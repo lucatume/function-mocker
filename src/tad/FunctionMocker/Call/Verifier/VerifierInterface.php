@@ -23,7 +23,7 @@
 		 *
 		 * @return void
 		 */
-		public function wasCalledWithTimes( array $args = array(), $times );
+		public function wasCalledWithTimes( array $args, $times );
 
 		/**
 		 * Checks that the function or method was not called.
@@ -40,7 +40,7 @@
 		 *
 		 * @return void
 		 */
-		public function wasNotCalledWith( array $args = null );
+		public function wasNotCalledWith( array $args );
 
 		/**
 		 * Checks if a given function or method was called just one time.
@@ -54,5 +54,5 @@
 		 *
 		 * @return mixed
 		 */
-		public function wasCalledWithOnce( array $args = null );
+		public function wasCalledWithOnce( array $args );
 	}

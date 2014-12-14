@@ -145,8 +145,6 @@
 			$callLogger = CallLoggerFactory::make( $functionName );
 			$verifier = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
 
-			$invokedRecorder = null;
-
 			$methodName = $request->getMethodName();
 			if ( $request->isInstanceMethod() ) {
 				$testCase = self::getTestCase();
