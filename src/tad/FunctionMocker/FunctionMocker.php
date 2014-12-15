@@ -259,4 +259,16 @@
 
 			return $indexedReplacements;
 		}
+
+		/**
+		 * Calls the original function or static method with the given arguments
+		 * and returns the return value if any.
+		 *
+		 * @param array $args
+		 *
+		 * @return mixed
+		 */
+		public static function callOriginal( array $args = null ) {
+			return \Patchwork\callOriginal( $args );
+		}
 	}
