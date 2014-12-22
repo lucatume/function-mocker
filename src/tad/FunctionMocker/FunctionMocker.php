@@ -3,6 +3,7 @@
 	namespace tad\FunctionMocker;
 
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
+	use src\tad\FunctionMocker\Utils;
 	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
 	use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
@@ -19,23 +20,21 @@
 		 */
 		protected static $replacedClassInstances = array();
 
+		/** @var  array */
+		public static $defaultBlacklist = array(
+			'vendor/bin',
+			'vendor/codecept',
+			'vendor/phpunit',
+			'vendor/phpspec',
+			'vendor/sebastian'
+		);
+
 		/**
 		 * Loads Patchwork, use in setUp method of the test case.
 		 *
 		 * @return void
 		 */
 		public static function setUp() {
-			$dir = __DIR__;
-			while ( true ) {
-				if ( file_exists( $dir . '/vendor' ) ) {
-					$patchworkFile = $dir . "/vendor/antecedent/patchwork/Patchwork.php";
-					/** @noinspection PhpIncludeInspection */
-					require_once $patchworkFile;
-					break;
-				} else {
-					$dir = dirname( $dir );
-				}
-			}
 			self::$replacedClassInstances = array();
 		}
 
@@ -270,5 +269,18 @@
 		 */
 		public static function callOriginal( array $args = null ) {
 			return \Patchwork\callOriginal( $args );
+		}
+
+		public static function init( array $blacklist = null ) {
+			$rootDir = Utils::findParentContainingFrom( 'vendor', dirname( __FILE__ ) );
+			$patchworkFile = $rootDir . "/vendor/antecedent/patchwork/Patchwork.php";
+			/** @noinspection PhpIncludeInspection */
+			require_once $patchworkFile;
+
+			$blacklist = $blacklist ? $blacklist : self::$defaultBlacklist;
+			array_map( function ( $path ) use ( $rootDir ) {
+				\Patchwork\blacklist( $rootDir . DIRECTORY_SEPARATOR . Utils::normalizePathFrag( $path ) );
+			}, $blacklist );
+
 		}
 	}
