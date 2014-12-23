@@ -8,7 +8,7 @@
 		/**
 		 * @param string $functionName
 		 *
-		 * @return SpyCallLoggerInterface
+		 * @return LoggerInterface
 		 */
 		public static function make( $functionName ) {
 			\Arg::_( $functionName, 'Function name' )->is_string();
