@@ -83,15 +83,15 @@ To make Fucntion Mocker behave in its wrapping power (a power granted by [patchw
 By default any library in the `vendor` folder will be excluded from the input wrapping and everything else will be included. If files in any of the `vendor` sub-folders need to be wrapped for testing purposes, or a folder that's not in the `vendor` folder needs to be excluded, then an array of options can be passed to the `init` method like
 
     <?php
-    // This is global bootstrap for autoloading
-    use tad\FunctionMocker\FunctionMocker;
+        // This is global bootstrap for autoloading
+        use tad\FunctionMocker\FunctionMocker;
 
-    require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
+        require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
 
-    FunctionMocker::init([
-    'include' => ['vendor/package', 'vendor/another'],
-    'exclude' => ['libs/folder', 'src/another-folder']
-    ]);
+        FunctionMocker::init([
+            'include' => ['vendor/package', 'vendor/another'],
+            'exclude' => ['libs/folder', 'src/another-folder']
+        ]);
 
 If the call to the `init` method is omitted then it will be called on the first call to the `setUp` method in the tests.
 
