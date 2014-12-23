@@ -3,7 +3,6 @@
 	namespace tad\FunctionMocker;
 
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
-	use src\tad\FunctionMocker\Utils;
 	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
 	use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
@@ -25,12 +24,18 @@
 			'vendor/antecedent'
 		);
 
+		/** @var  bool */
+		private static $didInit = false;
+
 		/**
 		 * Loads Patchwork, use in setUp method of the test case.
 		 *
 		 * @return void
 		 */
 		public static function setUp() {
+			if ( ! self::$didInit ) {
+				self::init();
+			}
 			self::$replacedClassInstances = array();
 		}
 
@@ -268,22 +273,28 @@
 		}
 
 		public static function init( array $options = null ) {
+			if ( self::$didInit ) {
+				return;
+			}
 			$rootDir = Utils::findParentContainingFrom( 'vendor', dirname( __FILE__ ) );
 			$patchworkFile = $rootDir . "/vendor/antecedent/patchwork/Patchwork.php";
 			/** @noinspection PhpIncludeInspection */
 			require_once $patchworkFile;
 
-			$_whitelist = is_array( $options['whitelist'] ) ? $options['whitelist'] : self::$defaultWhitelist;
+			$_whitelist = is_array( $options['include'] ) ? array_merge( self::$defaultWhitelist, $options['include'] ) : self::$defaultWhitelist;
 			$whitelist = array_map( function ( $frag ) use ( $rootDir ) {
 				return $rootDir . DIRECTORY_SEPARATOR . Utils::normalizePathFrag( $frag );
 			}, $_whitelist );
 
 			$blacklist = glob( $rootDir . '/vendor/*', GLOB_ONLYDIR );
+			$blacklist = is_array( $options['exclude'] ) ? array_merge( $blacklist, $options['exclude'] ) : $blacklist;
+
 			$blacklist = array_diff( $blacklist, $whitelist );
 
 			array_map( function ( $path ) {
 				\Patchwork\blacklist( $path );
 			}, $blacklist );
 
+			self::$didInit = true;
 		}
 	}
