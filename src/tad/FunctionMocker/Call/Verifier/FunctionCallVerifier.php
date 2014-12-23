@@ -3,7 +3,6 @@
 	namespace tad\FunctionMocker\Call\Verifier;
 
 	use tad\FunctionMocker\Call\Logger\LoggerInterface;
-	use tad\FunctionMocker\Call\Logger\SpyCallLoggerInterface;
 	use tad\FunctionMocker\Checker;
 	use tad\FunctionMocker\ReturnValue;
 
