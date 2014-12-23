@@ -181,7 +181,6 @@
 					}
 				}, $mockObject );
 
-				$wrapperInstance = null;
 				if ( empty( self::$replacedClassInstances[ $className ]['instance'] ) ) {
 					$mockWrapper = new MockWrapper();
 					$mockWrapper->setOriginalClassName( $className );
