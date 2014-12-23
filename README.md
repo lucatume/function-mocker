@@ -1,4 +1,4 @@
-#Function Mocker
+j#Function Mocker
 
 *A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker.*
 
@@ -67,6 +67,33 @@ Either zip and move it to the appropriate folder or use [Composer](https://getco
 ## Usage
 In a perfect world you should never need to mock static methods and functions, should use [TDD](http://en.wikipedia.org/wiki/Test-driven_development) to write better object-oriented code and use it as a design tool.  
 But sometimes a grim and sad need to mock those functions and static methods might arise and this library is here to help.
+
+### Bootstrapping
+To make Fucntion Mocker behave in its wrapping power (a power granted by [patchwork](https://github.com/antecedent/patchwork)) the `FunctionMocker::init` method needs to be called in the proper bootstrap file of [Codeception](http://codeception.com/) or [PHPUnit](http://phpunit.de/) like this
+
+    <?php
+    // This is global bootstrap for autoloading
+    use tad\FunctionMocker\FunctionMocker;
+
+    require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
+
+    FunctionMocker::init();
+
+#### Including and excluding files from the wrapping
+By default any library in the `vendor` folder will be excluded from the input wrapping and everything else will be included. If files in any of the `vendor` sub-folders need to be wrapped for testing purposes, or a folder that's not in the `vendor` folder needs to be excluded, then an array of options can be passed to the `init` method like
+
+    <?php
+    // This is global bootstrap for autoloading
+    use tad\FunctionMocker\FunctionMocker;
+
+    require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
+
+    FunctionMocker::init([
+    'include' => ['vendor/package', 'vendor/another'],
+    'exclude' => ['libs/folder', 'src/another-folder']
+    ]);
+
+If the call to the `init` method is omitted then it will be called on the first call to the `setUp` method in the tests.
 
 ### setUp and tearDown
 The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/) test case and provides two `static` methods that **must** be inserted in the test case `setUp` and `tearDown` method for the function mocker to work properly:
