@@ -1,6 +1,6 @@
 <?php
 
-	namespace src\tad\FunctionMocker;
+	namespace tad\FunctionMocker;
 
 
 	class Utils {

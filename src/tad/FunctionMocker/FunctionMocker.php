@@ -3,7 +3,6 @@
 	namespace tad\FunctionMocker;
 
 	use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
-	use src\tad\FunctionMocker\Utils;
 	use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 	use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
 	use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
