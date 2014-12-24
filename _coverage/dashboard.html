@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /Users/Luca/Dropbox/Developer/WebDeveloper/websites/php52/composer-packages/function-mocker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/nv.d3.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <!--[if lt IE 9]>
+  <script src="js/html5shiv.min.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+ </head>
+ <body>
+  <header>
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="index.html">/Users/Luca/Dropbox/Developer/WebDeveloper/websites/php52/composer-packages/function-mocker</a></li>
+        <li class="active">(Dashboard)</li>
+
+      </ol>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Exceptions.php.html#40">DefinedTooEarly</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#36">AnotherClass</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#28">SomeClassExtension</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#16">SomeClass</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Exceptions.php.html#52">CacheLocationUnavailable</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#273">ScalarArg</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/AbstractState.php.html#2">tad_Arg_Check_AbstractState</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#397">ObjectArg</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#342">ArrayArg</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#322">StringArg</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#4">AClass</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Exceptions.php.html#27">CallbackException</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#55">Blacklist</a></td><td class="text-right">4%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#7">ClassTemplate</a></td><td class="text-right">7%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#13">Stream</a></td><td class="text-right">25%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/FailingState.php.html#2">tad_Arg_Check_FailingState</a></td><td class="text-right">33%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/OrPassingState.php.html#4">tad_Arg_Check_OrPassingState</a></td><td class="text-right">33%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/OrFailingState.php.html#2">tad_Arg_Check_OrFailingState</a></td><td class="text-right">33%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#56">Snapshot</a></td><td class="text-right">39%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#46">ArgObject</a></td><td class="text-right">44%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/NotEqualMatchingStrategy.php.html#5">NotEqualMatchingStrategy</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/LessThanMatchingStrategy.php.html#6">LessThanMatchingStrategy</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AtLeastMatchingStrategy.php.html#6">AtLeastMatchingStrategy</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AtMostMatchingStrategy.php.html#6">AtMostMatchingStrategy</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/EqualMatchingStrategy.php.html#4">EqualMatchingStrategy</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/GreaterThanMatchingStrategy.php.html#6">GreaterThanMatchingStrategy</a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#4">Arg</a></td><td class="text-right">60%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Restorer.php.html#55">Restorer</a></td><td class="text-right">65%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AbstractMatchingStrategy.php.html#6">AbstractMatchingStrategy</a></td><td class="text-right">66%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#10">AbstractVerifier</a></td><td class="text-right">75%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/InstanceMethodCallVerifier.php.html#10">InstanceMethodCallVerifier</a></td><td class="text-right">78%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Interceptor/MethodPatchDecorator.php.html#15">MethodPatchDecorator</a></td><td class="text-right">82%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check.php.html#2">tad_Arg_Check</a></td><td class="text-right">82%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/ReturnValue.php.html#5">ReturnValue</a></td><td class="text-right">83%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/MatchingStrategyFactory.php.html#5">MatchingStrategyFactory</a></td><td class="text-right">84%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/FunctionCallVerifier.php.html#9">FunctionCallVerifier</a></td><td class="text-right">87%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#13">Stream</a></td><td class="text-right">891</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#56">Snapshot</a></td><td class="text-right">692</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#55">Blacklist</a></td><td class="text-right">266</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#46">ArgObject</a></td><td class="text-right">209</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#7">ClassTemplate</a></td><td class="text-right">125</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#342">ArrayArg</a></td><td class="text-right">90</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Restorer.php.html#55">Restorer</a></td><td class="text-right">34</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/InstanceMethodCallVerifier.php.html#10">InstanceMethodCallVerifier</a></td><td class="text-right">22</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Interceptor/MethodPatchDecorator.php.html#15">MethodPatchDecorator</a></td><td class="text-right">17</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#10">AbstractVerifier</a></td><td class="text-right">15</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#322">StringArg</a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#4">Arg</a></td><td class="text-right">10</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/MatchingStrategyFactory.php.html#5">MatchingStrategyFactory</a></td><td class="text-right">9</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/ReturnValue.php.html#5">ReturnValue</a></td><td class="text-right">7</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#397">ObjectArg</a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#289"><abbr title="ScalarArg::greater_than">greater_than</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#296"><abbr title="ScalarArg::less_than">less_than</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#282"><abbr title="ScalarArg::at_most">at_most</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#275"><abbr title="ScalarArg::at_least">at_least</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#257"><abbr title="ArgObject::aut">aut</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#264"><abbr title="ArgObject::throw_exception">throw_exception</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#324"><abbr title="StringArg::length">length</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#335"><abbr title="StringArg::match">match</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#368"><abbr title="ArrayArg::defaults">defaults</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#374"><abbr title="ArrayArg::contains">contains</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#361"><abbr title="ArrayArg::extends_structure">extends_structure</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#354"><abbr title="ArrayArg::has_structure">has_structure</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#344"><abbr title="ArrayArg::count">count</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#247"><abbr title="ArgObject::vel">vel</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#236"><abbr title="ArgObject::is_null">is_null</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#156"><abbr title="ArgObject::is_bool">is_bool</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#163"><abbr title="ArgObject::is_object">is_object</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#291"><abbr title="Snapshot::snapshotFunctions">snapshotFunctions</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#131"><abbr title="ArgObject::get_name">get_name</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#111"><abbr title="ArgObject::not">not</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#22"><abbr title="AbstractVerifier::wasCalledTimes">wasCalledTimes</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#177"><abbr title="ArgObject::is_associative_array">is_associative_array</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#185"><abbr title="ArgObject::is_scalar">is_scalar</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#215"><abbr title="ArgObject::is_double">is_double</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#229"><abbr title="ArgObject::is_resource">is_resource</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#209"><abbr title="ArgObject::is_float">is_float</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#203"><abbr title="ArgObject::is_numeric">is_numeric</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#192"><abbr title="ArgObject::did_pass">did_pass</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#384"><abbr title="ArrayArg::has_key">has_key</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#399"><abbr title="ObjectArg::is_set">is_set</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Restorer.php.html#110"><abbr title="Restorer::restoreStaticAttributes">restoreStaticAttributes</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#279"><abbr title="Snapshot::snapshotConstants">snapshotConstants</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Restorer.php.html#64"><abbr title="Restorer::restoreFunctions">restoreFunctions</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#154"><abbr title="Blacklist::isStaticAttributeBlacklisted">isStaticAttributeBlacklisted</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#122"><abbr title="Blacklist::addClassNamePrefix">addClassNamePrefix</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#131"><abbr title="Blacklist::addStaticAttribute">addStaticAttribute</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#215"><abbr title="Snapshot::staticAttributes">staticAttributes</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#223"><abbr title="Snapshot::iniSettings">iniSettings</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#255"><abbr title="Snapshot::interfaces">interfaces</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#263"><abbr title="Snapshot::classes">classes</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#247"><abbr title="Snapshot::functions">functions</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#239"><abbr title="Snapshot::constants">constants</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#231"><abbr title="Snapshot::includedFiles">includedFiles</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#114"><abbr title="Blacklist::addImplementorsOf">addImplementorsOf</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#106"><abbr title="Blacklist::addSubclassesOf">addSubclassesOf</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/AbstractState.php.html#23"><abbr title="tad_Arg_Check_AbstractState::or_condition">or_condition</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/FailingState.php.html#7"><abbr title="tad_Arg_Check_FailingState::fail">fail</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/AbstractState.php.html#15"><abbr title="tad_Arg_Check_AbstractState::fail">fail</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/AbstractState.php.html#7"><abbr title="tad_Arg_Check_AbstractState::pass">pass</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check.php.html#49"><abbr title="tad_Arg_Check::is_failing">is_failing</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check.php.html#57"><abbr title="tad_Arg_Check::is_or_failing">is_or_failing</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/FailingState.php.html#15"><abbr title="tad_Arg_Check_FailingState::pass">pass</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/OrFailingState.php.html#7"><abbr title="tad_Arg_Check_OrFailingState::fail">fail</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#90"><abbr title="Blacklist::addGlobalVariable">addGlobalVariable</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#98"><abbr title="Blacklist::addClass">addClass</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/OrPassingState.php.html#14"><abbr title="tad_Arg_Check_OrPassingState::or_condition">or_condition</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/OrPassingState.php.html#6"><abbr title="tad_Arg_Check_OrPassingState::pass">pass</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/tad/Arg/Check/OrFailingState.php.html#15"><abbr title="tad_Arg_Check_OrFailingState::or_condition">or_condition</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#40"><abbr title="Arg::reset_exception">reset_exception</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#33"><abbr title="Arg::set_exception">set_exception</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MockWrapper.php.html#22"><abbr title="MockWrapper::getWrappedObject">getWrappedObject</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/ReturnValue.php.html#26"><abbr title="ReturnValue::isValue">isValue</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/NotEqualMatchingStrategy.php.html#11"><abbr title="NotEqualMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#319"><abbr title="Snapshot::snapshotInterfaces">snapshotInterfaces</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/GreaterThanMatchingStrategy.php.html#12"><abbr title="GreaterThanMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/LessThanMatchingStrategy.php.html#12"><abbr title="LessThanMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/ReturnValue.php.html#34"><abbr title="ReturnValue::isNull">isNull</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#34"><abbr title="ClassTemplate::setTargetClass">setTargetClass</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#111"><abbr title="ClassTemplate::getTemplate">getTemplate</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#151"><abbr title="ClassTemplate::removeDoubleBlanksFrom">removeDoubleBlanksFrom</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#105"><abbr title="ClassTemplate::setMethodCode">setMethodCode</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#139"><abbr title="ClassTemplate::anonymous function">anonymous function</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#88"><abbr title="ClassTemplate::getMockTemplate">getMockTemplate</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/EqualMatchingStrategy.php.html#10"><abbr title="EqualMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AtMostMatchingStrategy.php.html#12"><abbr title="AtMostMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/FunctionCallVerifier.php.html#33"><abbr title="FunctionCallVerifier::__willReturnCallable">__willReturnCallable</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/FunctionCallVerifier.php.html#37"><abbr title="FunctionCallVerifier::__wasEvalCreated">__wasEvalCreated</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#374"><abbr title="Snapshot::snapshotStaticAttributes">snapshotStaticAttributes</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#42"><abbr title="AbstractVerifier::wasCalledWithOnce">wasCalledWithOnce</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#26"><abbr title="AbstractVerifier::wasCalledWithTimes">wasCalledWithTimes</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#30"><abbr title="AbstractVerifier::wasNotCalled">wasNotCalled</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/InstanceMethodCallVerifier.php.html#23"><abbr title="InstanceMethodCallVerifier::wasNotCalled">wasNotCalled</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/InstanceMethodCallVerifier.php.html#28"><abbr title="InstanceMethodCallVerifier::wasNotCalledWith">wasNotCalledWith</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AbstractMatchingStrategy.php.html#23"><abbr title="AbstractMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AtLeastMatchingStrategy.php.html#12"><abbr title="AtLeastMatchingStrategy::__toString">__toString</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/AbstractMatchingStrategy.php.html#19"><abbr title="AbstractMatchingStrategy::matches">matches</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Checker.php.html#72"><abbr title="Checker::isEvalCreated">isEvalCreated</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/InstanceMethodCallVerifier.php.html#38"><abbr title="InstanceMethodCallVerifier::wasCalledWithOnce">wasCalledWithOnce</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#155"><abbr title="ClassTemplate::getExtendedSpyTemplate">getExtendedSpyTemplate</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#159"><abbr title="ClassTemplate::setExtender">setExtender</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#134"><abbr title="Stream::rename">rename</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#146"><abbr title="Stream::rmdir">rmdir</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#122"><abbr title="Stream::mkdir">mkdir</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#116"><abbr title="Stream::dir_rewinddir">dir_rewinddir</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#99"><abbr title="Stream::dir_opendir">dir_opendir</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#111"><abbr title="Stream::dir_readdir">dir_readdir</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#158"><abbr title="Stream::stream_cast">stream_cast</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#163"><abbr title="Stream::stream_lock">stream_lock</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#201"><abbr title="Stream::stream_metadata">stream_metadata</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#228"><abbr title="Stream::stream_truncate">stream_truncate</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#189"><abbr title="Stream::unlink">unlink</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#184"><abbr title="Stream::stream_write">stream_write</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#168"><abbr title="Stream::stream_set_option">stream_set_option</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#93"><abbr title="Stream::dir_closedir">dir_closedir</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#80"><abbr title="Stream::stream_tell">stream_tell</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#22"><abbr title="SomeClass::instanceMethod">instanceMethod</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#30"><abbr title="SomeClassExtension::instanceMethod">instanceMethod</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#18"><abbr title="SomeClass::staticMethod">staticMethod</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#10"><abbr title="AClass::instanceMethod">instanceMethod</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/MethodCode.php.html#37"><abbr title="MethodCode::getTemplateFrom">getTemplateFrom</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#6"><abbr title="AClass::staticMethod">staticMethod</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="tests/classes.php.html#38"><abbr title="AnotherClass::someMethod">someMethod</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Exceptions.php.html#29"><abbr title="CallbackException::__construct">__construct</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Source.php.html#130"><abbr title="Source::flush">flush</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#70"><abbr title="Stream::stream_seek">stream_seek</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#301"><abbr title="Snapshot::snapshotClasses">snapshotClasses</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Exceptions.php.html#54"><abbr title="CacheLocationUnavailable::__construct">__construct</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Exceptions.php.html#43"><abbr title="DefinedTooEarly::__construct">__construct</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#271"><abbr title="Snapshot::traits">traits</a></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#125"><abbr title="ArgObject::__destruct">__destruct</a></a></td><td class="text-right">50%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#408"><abbr title="Snapshot::setupSuperGlobalArrays">setupSuperGlobalArrays</a></a></td><td class="text-right">52%</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#132"><abbr title="Snapshot::__construct">__construct</a></a></td><td class="text-right">52%</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Interceptor/MethodPatchDecorator.php.html#28"><abbr title="MethodPatchDecorator::__invoke">__invoke</a></a></td><td class="text-right">71%</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#141"><abbr title="ArgObject::assert">assert</a></a></td><td class="text-right">77%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/MatchingStrategyFactory.php.html#10"><abbr title="MatchingStrategyFactory::make">make</a></a></td><td class="text-right">84%</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#66"><abbr title="AbstractVerifier::matchCallTimes">matchCallTimes</a></a></td><td class="text-right">87%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#154"><abbr title="Blacklist::isStaticAttributeBlacklisted">isStaticAttributeBlacklisted</abbr></a></td><td class="text-right">90</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#201"><abbr title="Stream::stream_metadata">stream_metadata</abbr></a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#374"><abbr title="Snapshot::snapshotStaticAttributes">snapshotStaticAttributes</abbr></a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#168"><abbr title="Stream::stream_set_option">stream_set_option</abbr></a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#132"><abbr title="Snapshot::__construct">__construct</abbr></a></td><td class="text-right">27</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Restorer.php.html#110"><abbr title="Restorer::restoreStaticAttributes">restoreStaticAttributes</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#319"><abbr title="Snapshot::snapshotInterfaces">snapshotInterfaces</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Restorer.php.html#64"><abbr title="Restorer::restoreFunctions">restoreFunctions</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#301"><abbr title="Snapshot::snapshotClasses">snapshotClasses</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/MatchingStrategy/MatchingStrategyFactory.php.html#10"><abbr title="MatchingStrategyFactory::make">make</abbr></a></td><td class="text-right">9</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Interceptor/MethodPatchDecorator.php.html#28"><abbr title="MethodPatchDecorator::__invoke">__invoke</abbr></a></td><td class="text-right">8</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#384"><abbr title="ArrayArg::has_key">has_key</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#399"><abbr title="ObjectArg::is_set">is_set</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Blacklist.php.html#131"><abbr title="Blacklist::addStaticAttribute">addStaticAttribute</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#279"><abbr title="Snapshot::snapshotConstants">snapshotConstants</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#374"><abbr title="ArrayArg::contains">contains</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#264"><abbr title="ArgObject::throw_exception">throw_exception</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#134"><abbr title="Stream::rename">rename</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#146"><abbr title="Stream::rmdir">rmdir</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#122"><abbr title="Stream::mkdir">mkdir</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#99"><abbr title="Stream::dir_opendir">dir_opendir</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Template/ClassTemplate.php.html#88"><abbr title="ClassTemplate::getMockTemplate">getMockTemplate</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#344"><abbr title="ArrayArg::count">count</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/antecedent/patchwork/lib/Preprocessor/Stream.php.html#189"><abbr title="Stream::unlink">unlink</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#324"><abbr title="StringArg::length">length</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#33"><abbr title="Arg::set_exception">set_exception</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#125"><abbr title="ArgObject::__destruct">__destruct</abbr></a></td><td class="text-right">4</td></tr>
+       <tr><td><a href="vendor/lucatume/args/src/Arg.php.html#141"><abbr title="ArgObject::assert">assert</abbr></a></td><td class="text-right">3</td></tr>
+       <tr><td><a href="vendor/sebastian/global-state/src/Snapshot.php.html#408"><abbr title="Snapshot::setupSuperGlobalArrays">setupSuperGlobalArrays</abbr></a></td><td class="text-right">2</td></tr>
+       <tr><td><a href="src/tad/FunctionMocker/Call/Verifier/AbstractVerifier.php.html#66"><abbr title="AbstractVerifier::matchCallTimes">matchCallTimes</abbr></a></td><td class="text-right">2</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 3.0-gde8096a</a> using <a href="http://php.net/" target="_top">PHP 5.4.33</a> and <a href="http://phpunit.de/">PHPUnit 4.6-g2a1f874</a> at Tue Dec 23 19:01:38 CET 2014.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="js/jquery.min.js" type="text/javascript"></script>
+  <script src="js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="js/holder.js" type="text/javascript"></script>
+  <script src="js/d3.min.js" type="text/javascript"></script>
+  <script src="js/nv.d3.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([12,2,0,1,4,1,6,3,2,5,5,23], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([119,0,0,0,0,0,3,0,2,2,5,133], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.scatter.onlyCircles(false);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Logger\/CallLoggerFactory.php.html#6\">CallLoggerFactory<\/a>"],[100,4,"<a href=\"src\/tad\/FunctionMocker\/Call\/Logger\/SpyCallLogger.php.html#8\">SpyCallLogger<\/a>"],[75.757575757576,13,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#10\">AbstractVerifier<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/CallVerifierFactory.php.html#10\">CallVerifierFactory<\/a>"],[87.5,6,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#9\">FunctionCallVerifier<\/a>"],[78.048780487805,19,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#10\">InstanceMethodCallVerifier<\/a>"],[100,0,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/StaticMethodCallVerifier.php.html#6\">StaticMethodCallVerifier<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/CallTrace.php.html#5\">CallTrace<\/a>"],[93.333333333333,13,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#5\">Checker<\/a>"],[98.275862068966,32,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#10\">FunctionMocker<\/a>"],[66.666666666667,3,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AbstractMatchingStrategy.php.html#6\">AbstractMatchingStrategy<\/a>"],[50,2,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AtLeastMatchingStrategy.php.html#6\">AtLeastMatchingStrategy<\/a>"],[50,2,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AtMostMatchingStrategy.php.html#6\">AtMostMatchingStrategy<\/a>"],[50,2,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/EqualMatchingStrategy.php.html#4\">EqualMatchingStrategy<\/a>"],[50,2,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/GreaterThanMatchingStrategy.php.html#6\">GreaterThanMatchingStrategy<\/a>"],[50,2,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/LessThanMatchingStrategy.php.html#6\">LessThanMatchingStrategy<\/a>"],[84.375,9,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/MatchingStrategyFactory.php.html#5\">MatchingStrategyFactory<\/a>"],[50,2,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/NotEqualMatchingStrategy.php.html#5\">NotEqualMatchingStrategy<\/a>"],[95.744680851064,10,"<a href=\"src\/tad\/FunctionMocker\/MockWrapper.php.html#10\">MockWrapper<\/a>"],[100,11,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#5\">ReplacementRequest<\/a>"],[83.333333333333,7,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#5\">ReturnValue<\/a>"],[100,0,"<a href=\"src\/tad\/FunctionMocker\/SpoofTestCase.php.html#6\">SpoofTestCase<\/a>"],[7.6923076923077,12,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#7\">ClassTemplate<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/Template\/Extender\/AbstractExtender.php.html#6\">AbstractExtender<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/Extender\/SpyExtender.php.html#6\">SpyExtender<\/a>"],[94.594594594595,12,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#5\">MethodCode<\/a>"],[100,4,"<a href=\"src\/tad\/FunctionMocker\/Utils.php.html#6\">Utils<\/a>"],[0,2,"<a href=\"tests\/classes.php.html#4\">AClass<\/a>"],[0,2,"<a href=\"tests\/classes.php.html#16\">SomeClass<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#28\">SomeClassExtension<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#36\">AnotherClass<\/a>"],[100,0,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#14\">Exception<\/a>"],[100,0,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#18\">NoResult<\/a>"],[100,0,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#22\">StackEmpty<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#27\">CallbackException<\/a>"],[100,0,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#35\">NotUserDefined<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#40\">DefinedTooEarly<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#52\">CacheLocationUnavailable<\/a>"],[100,0,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Stack.php.html#92\">State<\/a>"],[82.608695652174,16,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/MethodPatchDecorator.php.html#15\">MethodPatchDecorator<\/a>"],[100,6,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/PatchHandle.php.html#11\">PatchHandle<\/a>"],[97.014925373134,30,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#13\">Source<\/a>"],[25.242718446602,45,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#13\">Stream<\/a>"],[60,7,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#4\">Arg<\/a>"],[44.285714285714,32,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#46\">ArgObject<\/a>"],[0,4,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#273\">ScalarArg<\/a>"],[100,0,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#307\">BooleanArg<\/a>"],[100,0,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#312\">IntegerArg<\/a>"],[100,0,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#317\">DoubleArg<\/a>"],[0,3,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#322\">StringArg<\/a>"],[0,9,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#342\">ArrayArg<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#397\">ObjectArg<\/a>"],[100,0,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#411\">ResourceArg<\/a>"],[100,0,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#416\">NULLArg<\/a>"],[100,0,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#421\">UnknownTypeArg<\/a>"],[82.608695652174,9,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#2\">tad_Arg_Check<\/a>"],[0,3,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/AbstractState.php.html#2\">tad_Arg_Check_AbstractState<\/a>"],[33.333333333333,3,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/FailingState.php.html#2\">tad_Arg_Check_FailingState<\/a>"],[33.333333333333,3,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrFailingState.php.html#2\">tad_Arg_Check_OrFailingState<\/a>"],[33.333333333333,3,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrPassingState.php.html#4\">tad_Arg_Check_OrPassingState<\/a>"],[100,3,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/PassingState.php.html#2\">tad_Arg_Check_PassingState<\/a>"],[4.7619047619048,17,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#55\">Blacklist<\/a>"],[65.30612244898,19,"<a href=\"vendor\/sebastian\/global-state\/src\/Restorer.php.html#55\">Restorer<\/a>"],[39.735099337748,54,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#56\">Snapshot<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.scatter.onlyCircles(false);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Logger\/CallLoggerFactory.php.html#13\">CallLoggerFactory::make<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Logger\/SpyCallLogger.php.html#12\">SpyCallLogger::called<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/Call\/Logger\/SpyCallLogger.php.html#16\">SpyCallLogger::getCallTimes<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Logger\/SpyCallLogger.php.html#19\">SpyCallLogger::anonymous function<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#22\">AbstractVerifier::wasCalledTimes<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#26\">AbstractVerifier::wasCalledWithTimes<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#30\">AbstractVerifier::wasNotCalled<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#34\">AbstractVerifier::wasNotCalledWith<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#38\">AbstractVerifier::wasCalledOnce<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#42\">AbstractVerifier::wasCalledWithOnce<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#51\">AbstractVerifier::setInvokedRecorder<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#55\">AbstractVerifier::setRequest<\/a>"],[87.5,2,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#66\">AbstractVerifier::matchCallTimes<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#88\">AbstractVerifier::matchCallWithTimes<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/AbstractVerifier.php.html#93\">AbstractVerifier::anonymous function<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/CallVerifierFactory.php.html#12\">CallVerifierFactory::make<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#24\">FunctionCallVerifier::__from<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#33\">FunctionCallVerifier::__willReturnCallable<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#37\">FunctionCallVerifier::__wasEvalCreated<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#41\">FunctionCallVerifier::__getFunctionName<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#53\">FunctionCallVerifier::wasCalledTimes<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/FunctionCallVerifier.php.html#71\">FunctionCallVerifier::wasCalledWithTimes<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#15\">InstanceMethodCallVerifier::from<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#23\">InstanceMethodCallVerifier::wasNotCalled<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#28\">InstanceMethodCallVerifier::wasNotCalledWith<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#33\">InstanceMethodCallVerifier::wasCalledOnce<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#38\">InstanceMethodCallVerifier::wasCalledWithOnce<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#52\">InstanceMethodCallVerifier::wasCalledTimes<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#66\">InstanceMethodCallVerifier::wasCalledWithTimes<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#78\">InstanceMethodCallVerifier::getCallTimesWithArgs<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#81\">InstanceMethodCallVerifier::anonymous function<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#96\">InstanceMethodCallVerifier::realWasCalledTimes<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Call\/Verifier\/InstanceMethodCallVerifier.php.html#110\">InstanceMethodCallVerifier::realWasCalledWithTimes<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/CallTrace.php.html#9\">CallTrace::fromArguments<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/CallTrace.php.html#16\">CallTrace::getArguments<\/a>"],[94.736842105263,7,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#11\">Checker::fromName<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#41\">Checker::hasNamespace<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#55\">Checker::getNamespaceFrom<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#62\">Checker::getFunctionNameFrom<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#68\">Checker::getFunctionName<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Checker.php.html#72\">Checker::isEvalCreated<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#35\">FunctionMocker::setUp<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#47\">FunctionMocker::tearDown<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#68\">FunctionMocker::replace<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#293\">FunctionMocker::anonymous function<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#92\">FunctionMocker::getTestCase<\/a>"],[100,6,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#108\">FunctionMocker::getReplacementFunction<\/a>"],[98.039215686275,7,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#140\">FunctionMocker::_replace<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#230\">FunctionMocker::arrayUnique<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#247\">FunctionMocker::getIndexedReplacements<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#270\">FunctionMocker::callOriginal<\/a>"],[90.909090909091,4,"<a href=\"src\/tad\/FunctionMocker\/FunctionMocker.php.html#274\">FunctionMocker::init<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AbstractMatchingStrategy.php.html#10\">AbstractMatchingStrategy::on<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AbstractMatchingStrategy.php.html#19\">AbstractMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AbstractMatchingStrategy.php.html#23\">AbstractMatchingStrategy::__toString<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AtLeastMatchingStrategy.php.html#8\">AtLeastMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AtLeastMatchingStrategy.php.html#12\">AtLeastMatchingStrategy::__toString<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AtMostMatchingStrategy.php.html#8\">AtMostMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/AtMostMatchingStrategy.php.html#12\">AtMostMatchingStrategy::__toString<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/EqualMatchingStrategy.php.html#6\">EqualMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/EqualMatchingStrategy.php.html#10\">EqualMatchingStrategy::__toString<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/GreaterThanMatchingStrategy.php.html#8\">GreaterThanMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/GreaterThanMatchingStrategy.php.html#12\">GreaterThanMatchingStrategy::__toString<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/LessThanMatchingStrategy.php.html#8\">LessThanMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/LessThanMatchingStrategy.php.html#12\">LessThanMatchingStrategy::__toString<\/a>"],[84.375,9,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/MatchingStrategyFactory.php.html#10\">MatchingStrategyFactory::make<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/NotEqualMatchingStrategy.php.html#7\">NotEqualMatchingStrategy::matches<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MatchingStrategy\/NotEqualMatchingStrategy.php.html#11\">NotEqualMatchingStrategy::__toString<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/MockWrapper.php.html#22\">MockWrapper::getWrappedObject<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MockWrapper.php.html#26\">MockWrapper::wrap<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/MockWrapper.php.html#33\">MockWrapper::setOriginalClassName<\/a>"],[100,5,"<a href=\"src\/tad\/FunctionMocker\/MockWrapper.php.html#53\">MockWrapper::getWrappedInstance<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/MockWrapper.php.html#70\">MockWrapper::anonymous function<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#37\">ReplacementRequest::on<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#61\">ReplacementRequest::isFunction<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#65\">ReplacementRequest::isStaticMethod<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#69\">ReplacementRequest::isInstanceMethod<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#73\">ReplacementRequest::isMethod<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#77\">ReplacementRequest::getClassName<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReplacementRequest.php.html#81\">ReplacementRequest::getMethodName<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#12\">ReturnValue::from<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#22\">ReturnValue::isCallable<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#26\">ReturnValue::isValue<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#30\">ReturnValue::getValue<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#34\">ReturnValue::isNull<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/ReturnValue.php.html#38\">ReturnValue::call<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#34\">ClassTemplate::setTargetClass<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#42\">ClassTemplate::getExtendedMockTemplate<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#77\">ClassTemplate::getExtendedMethodTemplate<\/a>"],[0,2,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#88\">ClassTemplate::getMockTemplate<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#139\">ClassTemplate::anonymous function<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#105\">ClassTemplate::setMethodCode<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#111\">ClassTemplate::getTemplate<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#138\">ClassTemplate::getOriginalMethodsCode<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#151\">ClassTemplate::removeDoubleBlanksFrom<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#155\">ClassTemplate::getExtendedSpyTemplate<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/ClassTemplate.php.html#159\">ClassTemplate::setExtender<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/Extender\/AbstractExtender.php.html#18\">AbstractExtender::getExtenderClassName<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/Extender\/AbstractExtender.php.html#22\">AbstractExtender::getExtenderInterfaceName<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/Extender\/SpyExtender.php.html#11\">SpyExtender::getExtendedMethodCallsAndNames<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#25\">MethodCode::setTargetClass<\/a>"],[0,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#37\">MethodCode::getTemplateFrom<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#43\">MethodCode::getMockCallingFrom<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#109\">MethodCode::anonymous function<\/a>"],[100,2,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#60\">MethodCode::getMethodCode<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#85\">MethodCode::replaceBody<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#100\">MethodCode::getMethodCodeForWithBody<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Template\/MethodCode.php.html#108\">MethodCode::getAllMockCallings<\/a>"],[100,1,"<a href=\"src\/tad\/FunctionMocker\/Utils.php.html#8\">Utils::normalizePathFrag<\/a>"],[100,3,"<a href=\"src\/tad\/FunctionMocker\/Utils.php.html#14\">Utils::findParentContainingFrom<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#6\">AClass::staticMethod<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#10\">AClass::instanceMethod<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#18\">SomeClass::staticMethod<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#22\">SomeClass::instanceMethod<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#30\">SomeClassExtension::instanceMethod<\/a>"],[0,1,"<a href=\"tests\/classes.php.html#38\">AnotherClass::someMethod<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#29\">CallbackException::__construct<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#43\">DefinedTooEarly::__construct<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Exceptions.php.html#54\">CacheLocationUnavailable::__construct<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/MethodPatchDecorator.php.html#23\">MethodPatchDecorator::__construct<\/a>"],[71.428571428571,7,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/MethodPatchDecorator.php.html#28\">MethodPatchDecorator::__invoke<\/a>"],[100,3,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/MethodPatchDecorator.php.html#46\">MethodPatchDecorator::superclassMatches<\/a>"],[100,3,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/MethodPatchDecorator.php.html#53\">MethodPatchDecorator::instanceMatches<\/a>"],[100,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/MethodPatchDecorator.php.html#59\">MethodPatchDecorator::methodMatches<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/PatchHandle.php.html#16\">PatchHandle::__destruct<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/PatchHandle.php.html#21\">PatchHandle::addReference<\/a>"],[100,3,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/PatchHandle.php.html#26\">PatchHandle::removePatches<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Interceptor\/PatchHandle.php.html#37\">PatchHandle::addExpirationHandler<\/a>"],[100,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#25\">Source::__construct<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#30\">Source::initialize<\/a>"],[100,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#39\">Source::indexTokensByType<\/a>"],[100,10,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#48\">Source::matchBrackets<\/a>"],[100,3,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#74\">Source::findNext<\/a>"],[100,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#83\">Source::findAll<\/a>"],[100,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#92\">Source::findMatchingBracket<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#97\">Source::splice<\/a>"],[100,4,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#104\">Source::createCodeFromTokens<\/a>"],[100,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#122\">Source::__toString<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Source.php.html#130\">Source::flush<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#21\">Stream::wrap<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#27\">Stream::unwrap<\/a>"],[100,4,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#32\">Stream::stream_open<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#50\">Stream::stream_close<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#55\">Stream::stream_eof<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#60\">Stream::stream_flush<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#65\">Stream::stream_read<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#70\">Stream::stream_seek<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#75\">Stream::stream_stat<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#80\">Stream::stream_tell<\/a>"],[100,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#85\">Stream::url_stat<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#93\">Stream::dir_closedir<\/a>"],[0,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#99\">Stream::dir_opendir<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#111\">Stream::dir_readdir<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#116\">Stream::dir_rewinddir<\/a>"],[0,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#122\">Stream::mkdir<\/a>"],[0,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#134\">Stream::rename<\/a>"],[0,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#146\">Stream::rmdir<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#158\">Stream::stream_cast<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#163\">Stream::stream_lock<\/a>"],[0,6,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#168\">Stream::stream_set_option<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#184\">Stream::stream_write<\/a>"],[0,2,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#189\">Stream::unlink<\/a>"],[0,8,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#201\">Stream::stream_metadata<\/a>"],[0,1,"<a href=\"vendor\/antecedent\/patchwork\/lib\/Preprocessor\/Stream.php.html#228\">Stream::stream_truncate<\/a>"],[100,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#14\">Arg::__construct<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#20\">Arg::get_arg_for_type<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#27\">Arg::_<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#33\">Arg::set_exception<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#40\">Arg::reset_exception<\/a>"],[100,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#104\">ArgObject::get_negation<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#111\">ArgObject::not<\/a>"],[100,3,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#117\">ArgObject::__construct<\/a>"],[50,3,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#125\">ArgObject::__destruct<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#131\">ArgObject::get_name<\/a>"],[77.777777777778,3,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#141\">ArgObject::assert<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#156\">ArgObject::is_bool<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#163\">ArgObject::is_object<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#170\">ArgObject::is_array<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#177\">ArgObject::is_associative_array<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#185\">ArgObject::is_scalar<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#192\">ArgObject::did_pass<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#196\">ArgObject::is_int<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#203\">ArgObject::is_numeric<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#209\">ArgObject::is_float<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#215\">ArgObject::is_double<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#222\">ArgObject::is_string<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#229\">ArgObject::is_resource<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#236\">ArgObject::is_null<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#243\">ArgObject::reset_negation<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#247\">ArgObject::vel<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#251\">ArgObject::_or<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#257\">ArgObject::aut<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#264\">ArgObject::throw_exception<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#275\">ScalarArg::at_least<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#282\">ScalarArg::at_most<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#289\">ScalarArg::greater_than<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#296\">ScalarArg::less_than<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#324\">StringArg::length<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#335\">StringArg::match<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#344\">ArrayArg::count<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#354\">ArrayArg::has_structure<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#361\">ArrayArg::extends_structure<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#368\">ArrayArg::defaults<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#374\">ArrayArg::contains<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#384\">ArrayArg::has_key<\/a>"],[0,2,"<a href=\"vendor\/lucatume\/args\/src\/Arg.php.html#399\">ObjectArg::is_set<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#9\">tad_Arg_Check::__construct<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#17\">tad_Arg_Check::pass<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#25\">tad_Arg_Check::fail<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#33\">tad_Arg_Check::or_condition<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#41\">tad_Arg_Check::is_passing<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#49\">tad_Arg_Check::is_failing<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#57\">tad_Arg_Check::is_or_failing<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#65\">tad_Arg_Check::is_failed<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check.php.html#70\">tad_Arg_Check::setState<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/AbstractState.php.html#7\">tad_Arg_Check_AbstractState::pass<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/AbstractState.php.html#15\">tad_Arg_Check_AbstractState::fail<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/AbstractState.php.html#23\">tad_Arg_Check_AbstractState::or_condition<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/FailingState.php.html#7\">tad_Arg_Check_FailingState::fail<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/FailingState.php.html#15\">tad_Arg_Check_FailingState::pass<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/FailingState.php.html#23\">tad_Arg_Check_FailingState::or_condition<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrFailingState.php.html#7\">tad_Arg_Check_OrFailingState::fail<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrFailingState.php.html#15\">tad_Arg_Check_OrFailingState::or_condition<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrFailingState.php.html#23\">tad_Arg_Check_OrFailingState::pass<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrPassingState.php.html#6\">tad_Arg_Check_OrPassingState::pass<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrPassingState.php.html#10\">tad_Arg_Check_OrPassingState::fail<\/a>"],[0,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/OrPassingState.php.html#14\">tad_Arg_Check_OrPassingState::or_condition<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/PassingState.php.html#7\">tad_Arg_Check_PassingState::pass<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/PassingState.php.html#15\">tad_Arg_Check_PassingState::or_condition<\/a>"],[100,1,"<a href=\"vendor\/lucatume\/args\/src\/tad\/Arg\/Check\/PassingState.php.html#23\">tad_Arg_Check_PassingState::fail<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#90\">Blacklist::addGlobalVariable<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#98\">Blacklist::addClass<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#106\">Blacklist::addSubclassesOf<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#114\">Blacklist::addImplementorsOf<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#122\">Blacklist::addClassNamePrefix<\/a>"],[0,2,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#131\">Blacklist::addStaticAttribute<\/a>"],[100,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#144\">Blacklist::isGlobalVariableBlacklisted<\/a>"],[0,9,"<a href=\"vendor\/sebastian\/global-state\/src\/Blacklist.php.html#154\">Blacklist::isStaticAttributeBlacklisted<\/a>"],[0,3,"<a href=\"vendor\/sebastian\/global-state\/src\/Restorer.php.html#64\">Restorer::restoreFunctions<\/a>"],[93.75,7,"<a href=\"vendor\/sebastian\/global-state\/src\/Restorer.php.html#82\">Restorer::restoreGlobalVariables<\/a>"],[0,3,"<a href=\"vendor\/sebastian\/global-state\/src\/Restorer.php.html#110\">Restorer::restoreStaticAttributes<\/a>"],[94.444444444444,6,"<a href=\"vendor\/sebastian\/global-state\/src\/Restorer.php.html#127\">Restorer::restoreSuperGlobalArray<\/a>"],[52.941176470588,12,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#132\">Snapshot::__construct<\/a>"],[100,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#181\">Snapshot::blacklist<\/a>"],[100,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#189\">Snapshot::globalVariables<\/a>"],[100,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#197\">Snapshot::superGlobalVariables<\/a>"],[100,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#207\">Snapshot::superGlobalArrays<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#215\">Snapshot::staticAttributes<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#223\">Snapshot::iniSettings<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#231\">Snapshot::includedFiles<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#239\">Snapshot::constants<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#247\">Snapshot::functions<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#255\">Snapshot::interfaces<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#263\">Snapshot::classes<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#271\">Snapshot::traits<\/a>"],[0,2,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#279\">Snapshot::snapshotConstants<\/a>"],[0,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#291\">Snapshot::snapshotFunctions<\/a>"],[0,3,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#301\">Snapshot::snapshotClasses<\/a>"],[0,3,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#319\">Snapshot::snapshotInterfaces<\/a>"],[100,7,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#337\">Snapshot::snapshotGlobals<\/a>"],[100,4,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#360\">Snapshot::snapshotSuperGlobalArray<\/a>"],[0,7,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#374\">Snapshot::snapshotStaticAttributes<\/a>"],[52.380952380952,2,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#408\">Snapshot::setupSuperGlobalArrays<\/a>"],[100,1,"<a href=\"vendor\/sebastian\/global-state\/src\/Snapshot.php.html#440\">Snapshot::canBeSerialized<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>
