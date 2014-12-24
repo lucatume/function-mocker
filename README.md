@@ -80,7 +80,7 @@ To make Fucntion Mocker behave in its wrapping power (a power granted by [patchw
     FunctionMocker::init();
 
 #### Including and excluding files from the wrapping
-By default any library in the `vendor` folder will be excluded from the input wrapping and everything else will be included. If files in any of the `vendor` sub-folders need to be wrapped for testing purposes, or a folder that's not in the `vendor` folder needs to be excluded, then an array of options can be passed to the `init` method like
+By default some libraries in the `vendor` folder will be excluded from the input wrapping and everything else will be included. If files in any of the `vendor` sub-folders need (or need not) to be wrapped for testing purposes, or a folder that's not in the `vendor` folder needs to be excluded, then an array of options can be passed to the `init` method like
 
     <?php
         // This is global bootstrap for autoloading
