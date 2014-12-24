@@ -20,8 +20,14 @@
 		protected static $replacedClassInstances = array();
 
 		/** @var  array */
-		public static $defaultWhitelist = array(
+		protected static $defaultWhitelist = array(
 			'vendor/antecedent'
+		);
+
+		protected static $defaultBlacklist = array(
+			'vendor/codeception',
+			'vendor/phpunit',
+			'vendor/phpspec'
 		);
 
 		/** @var  bool */
@@ -275,18 +281,16 @@
 			if ( self::$didInit ) {
 				return;
 			}
-			$rootDir = Utils::findParentContainingFrom( 'vendor', dirname( __FILE__ ) );
-			$patchworkFile = $rootDir . "/vendor/antecedent/patchwork/Patchwork.php";
+
 			/** @noinspection PhpIncludeInspection */
-			require_once $patchworkFile;
+			require_once Utils::getPatchworkFilePath();
 
 			$_whitelist = is_array( $options['include'] ) ? array_merge( self::$defaultWhitelist, $options['include'] ) : self::$defaultWhitelist;
-			$whitelist = array_map( function ( $frag ) use ( $rootDir ) {
-				return $rootDir . DIRECTORY_SEPARATOR . Utils::normalizePathFrag( $frag );
-			}, $_whitelist );
+			$_blacklist = is_array( $options['exclude'] ) ? array_merge( self::$defaultBlacklist, $options['exclude'] ) : self::$defaultBlacklist;
 
-			$blacklist = glob( $rootDir . '/vendor/*', GLOB_ONLYDIR );
-			$blacklist = is_array( $options['exclude'] ) ? array_merge( $blacklist, $options['exclude'] ) : $blacklist;
+			$rootDir = Utils::findParentContainingFrom( 'vendor', dirname( __FILE__ ) );
+			$whitelist = Utils::filterPathListFrom( $_whitelist, $rootDir );
+			$blacklist = Utils::filterPathListFrom( $_blacklist, $rootDir );
 
 			$blacklist = array_diff( $blacklist, $whitelist );
 
