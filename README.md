@@ -1,4 +1,4 @@
-j#Function Mocker
+#Function Mocker
 
 *A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker.*
 
@@ -245,7 +245,7 @@ When batch replacing static methods `FunctionMocker::replace` will return an arr
 
 ### Instance methods
 
-### Replacing instance methods
+#### Replacing instance methods
 When trying to replace an instance method the `FunctionMocker::replace` method will return an extended PHPUnit mock object implementing all the [original methods](https://phpunit.de/manual/current/en/test-doubles.html) and some (see below)
 
     // file SomeClass.php
@@ -286,6 +286,79 @@ The `FunctionMocker::replace` method will set up the PHPUnit mock object using t
     $dep->expects($this->any())->method('go')->willReturn(23);
 
 Replacing different methods from the same class in the same test and in subsequent calls will return the same object with updated invocation expectations
+
+#### Mocking chaining methods
+Since version `0.2.13` it's possible mocking instance methods meant to be chained. Given the following dependency class
+
+    class Query {
+
+        ...
+
+        public funtion where($column, $condition, $constraint){
+            ...
+
+            return $this;
+        }
+
+        public function getResults(){
+            return $this->results;
+        }
+
+        ...
+
+    }
+
+and a possible client class
+
+    class QueryUser{
+
+        ...
+
+       public function getOne($id){
+        $this->query
+            ->where('ID', '=', $id)
+            ->where('type', '=', $this->type)
+            ->getFirst();
+       }
+
+       ...
+
+    }
+
+mocking the self-returning `where` method is possible in a test case using the `->` as return value
+
+    public function test_will_call_where_with_proper_args(){
+        // tell FunctionMocker to return the mock object itself when
+        // the `where` method is called
+        FunctionMocker::replace('Query::where', '->');
+        $query = FunctionMocker::replace('Query::getFirst', $mockResult);
+        $sut = new QueryUser();
+        $sut->setQuery($query);
+        
+        // execute
+        $sut->getOne(23);
+
+        // verify
+        ...
+    }
+
+#### Mocking abstract classes, interfaces and traits
+Relying on PHPUnit instance mocking engine FunctionMocker retains its ability to mock interfaces, abstract classes and traits; the syntax to do so is the same used to mock instance methods 
+
+    interface SalutingInterface {
+        public function sayHi();
+    }
+
+the interface above can be replaced in a test like this
+
+    public function test_say_hi(){
+        $mock = FunctionMocker::replace('SalutingInterface::sayHi', 'Hello World!');
+        
+        // passes
+        $this->assertEquals('Hello World!', $mock->sayHi());
+    }
+
+See PHPUnit docs for a more detailed approach.
 
 #### Spying instance methods
 The object returned by the `FunctionMocker::replace` method called on an instance method will allow for the methods specified in the "Methods" section to be used to check for calls made to the replaced method with the additional `methodName` parameter specified:
