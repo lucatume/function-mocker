@@ -168,24 +168,7 @@
 				}, array_keys( $classReplacedMethods ) );
 				$methods[] = '__construct';
 
-				$rc = new \ReflectionClass( $className );
-				$type = 100 * $rc->isInterface() + 10 * $rc->isAbstract() + $rc->isTrait();
-				switch ( $type ) {
-					case 110:
-						// Interfaces will also be abstract classes
-						$mockObject = $testCase->getMock( $className );
-						break;
-					case 10:
-						$mockObject = $testCase->getMockForAbstractClass( $className );
-						break;
-					case 1:
-						$mockObject = $testCase->getMockForTrait( $className );
-						break;
-					default:
-						$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
-						                       ->setMethods( $methods )->getMock();
-						break;
-				}
+				$mockObject = self::getPHPUnitMockObject( $className, $testCase, $methods );
 
 				$times = 'any';
 
