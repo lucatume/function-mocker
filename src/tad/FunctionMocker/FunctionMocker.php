@@ -179,9 +179,14 @@
 
 				array_walk( $classReplacedMethods, function ( ReturnValue $returnValue, $methodName, \PHPUnit_Framework_MockObject_MockObject &$mockObject ) use ( $invokedRecorder ) {
 					if ( $returnValue->isCallable() ) {
+						// callback
 						$mockObject->expects( $invokedRecorder )->method( $methodName )
 						           ->willReturnCallback( $returnValue->getValue() );
+					} else if ( $returnValue->isSelf() ) {
+						// ->
+						$mockObject->expects( $invokedRecorder )->method( $methodName )->willReturn( $mockObject );
 					} else {
+						// value
 						$mockObject->expects( $invokedRecorder )->method( $methodName )
 						           ->willReturn( $returnValue->getValue() );
 					}
@@ -299,5 +304,35 @@
 			}, $blacklist );
 
 			self::$didInit = true;
+		}
+
+		/**
+		 * @param $className
+		 * @param $testCase
+		 * @param $methods
+		 *
+		 * @return mixed
+		 */
+		private static function getPHPUnitMockObject( $className, $testCase, $methods ) {
+			$rc = new \ReflectionClass( $className );
+			$type = 100 * $rc->isInterface() + 10 * $rc->isAbstract() + $rc->isTrait();
+			switch ( $type ) {
+				case 110:
+					// Interfaces will also be abstract classes
+					$mockObject = $testCase->getMock( $className );
+					break;
+				case 10:
+					$mockObject = $testCase->getMockForAbstractClass( $className );
+					break;
+				case 1:
+					$mockObject = $testCase->getMockForTrait( $className );
+					break;
+				default:
+					$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
+					                       ->setMethods( $methods )->getMock();
+					break;
+			}
+
+			return $mockObject;
 		}
 	}
