@@ -168,8 +168,14 @@
 				}, array_keys( $classReplacedMethods ) );
 				$methods[] = '__construct';
 
-				$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
-				                       ->setMethods( $methods )->getMock();
+				$rc = new \ReflectionClass( $className );
+				if ( $rc->isAbstract() || $rc->isInterface() ) {
+					$mockObject = $testCase->getMock( $className );
+				} else {
+					$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
+					                       ->setMethods( $methods )->getMock();
+				}
+
 				$times = 'any';
 
 				/**
