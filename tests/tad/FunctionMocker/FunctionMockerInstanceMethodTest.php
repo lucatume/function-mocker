@@ -63,13 +63,8 @@
 
 		public function returnValues() {
 			return array(
-				array( 23 ),
-				array( 'foo' ),
-				array( array() ),
-				array( array( 1, 2, 3 ) ),
-				array( array( 'one' => 1, 'two' => 2, 'three' => 3 ) ),
-				array( new \stdClass() ),
-				array( null )
+				array( 23 ), array( 'foo' ), array( array() ), array( array( 1, 2, 3 ) ),
+				array( array( 'one' => 1, 'two' => 2, 'three' => 3 ) ), array( new \stdClass() ), array( null )
 			);
 		}
 
@@ -86,7 +81,8 @@
 
 		/**
 		 * @test
-		 * it should return the return value of a callback function when replacing and setting the return value to a callback function
+		 * it should return the return value of a callback function when replacing and setting the return value to a
+		 * callback function
 		 */
 		public function it_should_return_the_return_value_of_a_callback_function_when_replacing_and_setting_the_return_value_to_a_callback_function() {
 			$returnValue = function () {
@@ -130,7 +126,8 @@
 
 		/**
 		 * @test
-		 * it should return the return value of a callback function when spying and setting a callback function as return value
+		 * it should return the return value of a callback function when spying and setting a callback function as
+		 * return value
 		 */
 		public function it_should_return_the_return_value_of_a_callback_function_when_spying_and_setting_a_callback_function_as_return_value() {
 			$returnValue = function () {
@@ -143,28 +140,12 @@
 
 		public function timesCallsAndThrows() {
 			return array(
-				array( 2, 2, false ),
-				array( 2, 1, true ),
-				array( 2, 3, true ),
-				array( '2', 2, false ),
-				array( '>=2', 2, false ),
-				array( '>=2', 3, false ),
-				array( '>=2', 1, true ),
-				array( '<=2', 2, false ),
-				array( '<=2', 3, true ),
-				array( '<=2', 1, false ),
-				array( '<2', 2, true ),
-				array( '<2', 1, false ),
-				array( '<2', 4, true ),
-				array( '>2', 2, true ),
-				array( '>2', 1, true ),
-				array( '>2', 3, false ),
-				array( '!=2', 2, true ),
-				array( '!=2', 1, false ),
-				array( '!=2', 3, false ),
-				array( '==2', 3, true ),
-				array( '==2', 2, false ),
-				array( '==2', 1, true )
+				array( 2, 2, false ), array( 2, 1, true ), array( 2, 3, true ), array( '2', 2, false ),
+				array( '>=2', 2, false ), array( '>=2', 3, false ), array( '>=2', 1, true ), array( '<=2', 2, false ),
+				array( '<=2', 3, true ), array( '<=2', 1, false ), array( '<2', 2, true ), array( '<2', 1, false ),
+				array( '<2', 4, true ), array( '>2', 2, true ), array( '>2', 1, true ), array( '>2', 3, false ),
+				array( '!=2', 2, true ), array( '!=2', 1, false ), array( '!=2', 3, false ), array( '==2', 3, true ),
+				array( '==2', 2, false ), array( '==2', 1, true )
 			);
 		}
 
@@ -260,6 +241,17 @@
 			$this->assertEquals( 'bar', $testClass->methodTwo( 23, 45 ) );
 		}
 
+		/**
+		 * @test
+		 * it should allow replacing a concrete class instance method with a callback and pass arguments to it
+		 */
+		public function it_should_allow_replacing_a_concrete_class_instance_method_with_a_callback_and_pass_arguments_to_it() {
+			$testClass = FunctionMocker::replace( $this->testClass . '::methodTwo', function ( $one, $two ) {
+				return $one + $two;
+			} );
+
+			$this->assertEquals( 4, $testClass->methodTwo( 1, 3 ) );
+		}
 	}
 
 
