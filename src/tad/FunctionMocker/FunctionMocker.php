@@ -25,9 +25,7 @@
 		);
 
 		protected static $defaultBlacklist = array(
-			'vendor/codeception',
-			'vendor/phpunit',
-			'vendor/phpspec'
+			'vendor/codeception', 'vendor/phpunit', 'vendor/phpspec'
 		);
 
 		/** @var  bool */
@@ -313,7 +311,7 @@
 		 *
 		 * @return mixed
 		 */
-		private static function getPHPUnitMockObject( $className, $testCase, $methods ) {
+		private static function getPHPUnitMockObject( $className, $testCase, array $methods ) {
 			$rc = new \ReflectionClass( $className );
 			$type = 100 * $rc->isInterface() + 10 * $rc->isAbstract() + $rc->isTrait();
 			switch ( $type ) {
@@ -322,7 +320,11 @@
 					$mockObject = $testCase->getMock( $className );
 					break;
 				case 10:
-					$mockObject = $testCase->getMockForAbstractClass( $className );
+					// abstract class
+					$mockObject = $testCase->getMockBuilder($className)
+						->disableOriginalConstructor()
+						->setMethods($methods)
+						->getMockForAbstractClass();
 					break;
 				case 1:
 					$mockObject = $testCase->getMockForTrait( $className );
