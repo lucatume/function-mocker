@@ -321,13 +321,13 @@
 					break;
 				case 10:
 					// abstract class
-					$mockObject = $testCase->getMockBuilder($className)
-						->disableOriginalConstructor()
-						->setMethods($methods)
-						->getMockForAbstractClass();
+					$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
+					                       ->setMethods( $methods )->getMockForAbstractClass();
 					break;
-				case 1:
-					$mockObject = $testCase->getMockForTrait( $className );
+				case 11:
+					// traits will also be abstract classes
+					$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
+					                       ->setMethods( $methods )->getMockForTrait();
 					break;
 				default:
 					$mockObject = $testCase->getMockBuilder( $className )->disableOriginalConstructor()
