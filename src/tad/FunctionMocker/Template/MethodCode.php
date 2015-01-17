@@ -71,6 +71,8 @@
 
 			$code = array_splice( $lines, $startLine - 1, $endLine - $startLine + 1 );
 
+			$code[0] = preg_replace('/\\s*abstract\\s*/', '', $code[0]);
+
 			$code = implode( " ", $code );
 
 			return $code;

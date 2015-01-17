@@ -32,7 +32,7 @@
 
 		public function setOriginalClassName( $className ) {
 			\Arg::_( $className, "Original class name" )->is_string()
-			    ->assert( class_exists( $className ) || interface_exists( $className ), 'Original class or interface must be defined' );
+			    ->assert( class_exists( $className ) || interface_exists( $className ) || trait_exists( $className ), 'Original class, interface or trait must be defined' );
 
 			$this->originalClassName = $className;
 		}
