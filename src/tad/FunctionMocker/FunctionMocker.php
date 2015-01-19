@@ -9,6 +9,8 @@ use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
 
 class FunctionMocker
 {
+    // allows wrapping assert methods
+    use PHPUnitFrameworkAssertWrapper;
 
     /**
      * @var \PHPUnit_Framework_TestCase
@@ -33,6 +35,13 @@ class FunctionMocker
     private static $didInit = false;
 
     /**
+     * Stores the previous values of each global replaced.
+     *
+     * @var array
+     */
+    protected static $globalsBackup = [];
+
+    /**
      * Loads Patchwork, use in setUp method of the test case.
      *
      * @return void
@@ -53,6 +62,14 @@ class FunctionMocker
     public static function tearDown()
     {
         \Patchwork\undoAll();
+
+        // restore the globals
+        if(empty(self::$globalsBackup)){
+            return;
+        }
+        array_walk(self::$globalsBackup, function($value, $key){
+            $GLOBALS[$key] = $value;
+        });
     }
 
     /**
@@ -350,9 +367,22 @@ class FunctionMocker
         return $mockObject;
     }
 
+    /**
+     * Replaces/sets a global object with an instance replacement of the class.
+     * 
+     * The $GLOBALS state will be reset at the next `FunctionMocker::tearDown` call.
+     *
+     * @param  string $globalHandle The key the value is associated to in the $GLOBALS array.
+     * @param  string $functionName A `Class::method` format string
+     * @param  mixed $returnValue  The return value or callback, see `replace` method.
+     *
+     * @return mixed               The object that's been set in the $GLOBALS array.
+     */
     public static function replaceGlobal($globalHandle, $functionName, $returnValue = null)
     {
         \Arg::_($globalHandle, 'Global var key')->is_string();
+
+        self::backupGlobal($globalHandle);
 
         $replacement = FunctionMocker::_replace($functionName, $returnValue);
         $GLOBALS[$globalHandle] = $replacement;
@@ -360,12 +390,38 @@ class FunctionMocker
         return $replacement;
     }
 
+    /**
+     * Sets a global value restoring the state after the test ran.
+     *
+     * @param string $globalHandle The key the value will be associated to in the $GLOBALS array.
+     * @param mixed $replacement  The value that will be set in the $GLOBALS array.
+     * 
+     * @return mixed               The object that's been set in the $GLOBALS array.
+     */
     public static function setGlobal($globalHandle, $replacement = null)
     {
         \Arg::_($globalHandle, 'Global var key')->is_string();
 
+        self::backupGlobal($globalHandle);
+
         $GLOBALS[$globalHandle] = $replacement;
 
         return $replacement;
+    }
+
+    protected static function backupGlobal($globalHandle){
+        $shouldSave = !isset(self::$globalsBackup[$globalHandle]);
+        if(!$shouldSave){
+            return;
+        }
+        self::$globalsBackup[$globalHandle] = isset($GLOBALS[$globalHandle]) ? $GLOBALS[$globalHandle] : null;
+    }
+
+    /**
+     * @param \PHPUnit_Framework_TestCase $testCase
+     */
+    public static function setTestCase($testCase)
+    {
+        self::$testCase = $testCase;
     }
 }

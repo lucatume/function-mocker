@@ -95,6 +95,20 @@ By default some libraries in the `vendor` folder will be excluded from the input
 
 If the call to the `init` method is omitted then it will be called on the first call to the `setUp` method in the tests.
 
+#### Aliasing
+To reduce the tedious task of writing `FunctionMocker` each time or cover up the somewhat misleading name I personally alias the `tad\FunctionMocker\FunctionMocker` class to `Test` to improve code flavour.
+    
+    use tad\FunctionMocker\FunctionMocker as Test; 
+
+    function test_something(){
+        $user = Test::replace('User');
+        $User_find = Test::replace('User::find', $user);
+
+        $firstUser = get_first_user();
+
+        $User_find->wasCalledWithOnce(0);
+    }
+
 ### setUp and tearDown
 The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/) test case and provides two `static` methods that **must** be inserted in the test case `setUp` and `tearDown` method for the function mocker to work properly:
 
@@ -438,3 +452,60 @@ but the usage of strings makes the check less cumbersome using the comparator sy
     $function->wasCalledTimes('>=2');
 
 available comparators are `>n`, `<n`, `>=n`, `<=n`, `==n` (same as inserting a number), `!n`.
+
+## Sugar methods
+Function Mocker packs some sugar methods to make my testing life easier. The result of any of these methods can be achieved using alternative code but I've implemented those to speed things up a bit.
+
+### Replace global
+Allows replacing a global with a mock object and restore it after the test. Best used to replace/set globally shared instances of objects to mock; e.g.: 
+    
+    FunctionMocker::replaceGlobal('wpdb', 'wpdb::get_row', $rowData);
+
+    // this will access $wpdb->get_row()
+    $post = get_latest_post();
+
+    // verify
+    $this->assertEquals(...);
+
+
+is the same as writing
+    
+    // prepare
+    $mockWpdb = FunctionMocker::replace('wpdb::get_row', $rowData);
+    $prevWpdb = isset($GLOBALS['wpdb']) ? $GLOBALS['wpdb'] : null;
+    $GLOBALS['wpdb'] = $mockWpdb;
+
+    // this will access $wpdb->get_row()
+    $post = get_latest_post();
+
+    // verify
+    $this->assertEquals(...);
+
+    // restore state
+    $GLOBALS['wpdb'] = $prevWpdb;
+
+### Set global
+Allows replacing/setting a global value and restore it's state after the test.
+    
+    FunctionMocker::setGlobal('switchingToTheme', 'foo');
+    $do_action = FunctionMocker::replace('do_action');
+
+    // exercitate
+    call_switch_theme_actions();
+    
+    $do_action->wasCalledWithOnce(['before_switch_to_theme_foo', ])
+
+same as writing
+
+    $prev = isset($GLOBALS['switchingToTheme']) ? $GLOBALS['switchingToTheme'] : null;
+    $GLOBALS['switchingToTheme'] = 'foo';
+    $do_action = FunctionMocker::replace('do_action');
+    
+    // exercitate
+    call_switch_theme_actions();
+    
+    // verify 
+    $do_action->wasCalledWithOnce(['before_switch_to_theme_foo', ])
+
+    // restore state
+    $GLOBALS['switchingToTheme'] = $prev;
