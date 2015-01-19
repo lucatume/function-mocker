@@ -9,6 +9,8 @@ use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
 
 class FunctionMocker
 {
+    // allows wrapping assert methods
+    use PHPUnitFrameworkAssertWrapper;
 
     /**
      * @var \PHPUnit_Framework_TestCase
@@ -413,5 +415,13 @@ class FunctionMocker
             return;
         }
         self::$globalsBackup[$globalHandle] = isset($GLOBALS[$globalHandle]) ? $GLOBALS[$globalHandle] : null;
+    }
+
+    /**
+     * @param \PHPUnit_Framework_TestCase $testCase
+     */
+    public static function setTestCase($testCase)
+    {
+        self::$testCase = $testCase;
     }
 }
