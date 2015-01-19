@@ -5,6 +5,19 @@ namespace tad\FunctionMocker;
 
 trait PHPUnitFrameworkAssertWrapper
 {
+
+    /**
+     * Used to forward calls to utility method to the wrapped test case.
+     *
+     * @param $name
+     * @param array $args
+     * @return mixed
+     */
+    public static function __callStatic($name, array $args = null)
+    {
+        return call_user_func_array([self::$testCase, $name], $args);
+    }
+
     /**
      * Asserts that an array has a specified key.
      *
