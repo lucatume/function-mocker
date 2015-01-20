@@ -456,7 +456,34 @@ available comparators are `>n`, `<n`, `>=n`, `<=n`, `==n` (same as inserting a n
 ## Sugar methods
 Function Mocker packs some sugar methods to make my testing life easier. The result of any of these methods can be achieved using alternative code but I've implemented those to speed things up a bit.
 
-### Replace global
+### Test methods
+Function Mocker wraps a `PHPUnit_Framework_TestCase` to allow the calling of test methods normally called on `$this` to be statically called on the `FunctionMocker`
+class or any of its aliases. A test method can be writte like this
+
+    use tad\FunctionMocker\FunctionMocker as Test;
+
+    class SomeTest extends \PHPUnit_Framework_TestCase {
+
+        public function test_true() {
+            $this->assertTrue(true);
+        }
+
+        public function test_wrapped_true_work_the_same() {
+            Test::assertTrue(true);
+        }
+
+    }
+
+Being a mere wrapping the test case to be used can be set using the `setTestCase` static method in the test case `setUp` method
+    
+    public function setUp() {
+        FunctionMocker::setTestCase($this);
+    }
+
+and any method specific to the test case will be available as a static method of the `tad\FunctionMocker\FunctionMocker` class.  
+Beside methods defined by the wrapped test case any method defined by the `PHPUnit_Framework_TestCase` class is available for autocompletion to comment reading IDEs like [PhpStorm](http://www.jetbrains.com/phpstorm/) or [Sublime Text](http://www.sublimetext.com/).
+
+### Replacing a  global
 Allows replacing a global with a mock object and restore it after the test. Best used to replace/set globally shared instances of objects to mock; e.g.: 
     
     FunctionMocker::replaceGlobal('wpdb', 'wpdb::get_row', $rowData);
@@ -484,7 +511,7 @@ is the same as writing
     // restore state
     $GLOBALS['wpdb'] = $prevWpdb;
 
-### Set global
+### Setting a global
 Allows replacing/setting a global value and restore it's state after the test.
     
     FunctionMocker::setGlobal('switchingToTheme', 'foo');

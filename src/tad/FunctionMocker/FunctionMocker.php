@@ -64,10 +64,10 @@ class FunctionMocker
         \Patchwork\undoAll();
 
         // restore the globals
-        if(empty(self::$globalsBackup)){
+        if (empty(self::$globalsBackup)) {
             return;
         }
-        array_walk(self::$globalsBackup, function($value, $key){
+        array_walk(self::$globalsBackup, function ($value, $key) {
             $GLOBALS[$key] = $value;
         });
     }
@@ -369,12 +369,12 @@ class FunctionMocker
 
     /**
      * Replaces/sets a global object with an instance replacement of the class.
-     * 
+     *
      * The $GLOBALS state will be reset at the next `FunctionMocker::tearDown` call.
      *
      * @param  string $globalHandle The key the value is associated to in the $GLOBALS array.
      * @param  string $functionName A `Class::method` format string
-     * @param  mixed $returnValue  The return value or callback, see `replace` method.
+     * @param  mixed $returnValue The return value or callback, see `replace` method.
      *
      * @return mixed               The object that's been set in the $GLOBALS array.
      */
@@ -394,8 +394,8 @@ class FunctionMocker
      * Sets a global value restoring the state after the test ran.
      *
      * @param string $globalHandle The key the value will be associated to in the $GLOBALS array.
-     * @param mixed $replacement  The value that will be set in the $GLOBALS array.
-     * 
+     * @param mixed $replacement The value that will be set in the $GLOBALS array.
+     *
      * @return mixed               The object that's been set in the $GLOBALS array.
      */
     public static function setGlobal($globalHandle, $replacement = null)
@@ -409,9 +409,10 @@ class FunctionMocker
         return $replacement;
     }
 
-    protected static function backupGlobal($globalHandle){
+    protected static function backupGlobal($globalHandle)
+    {
         $shouldSave = !isset(self::$globalsBackup[$globalHandle]);
-        if(!$shouldSave){
+        if (!$shouldSave) {
             return;
         }
         self::$globalsBackup[$globalHandle] = isset($GLOBALS[$globalHandle]) ? $GLOBALS[$globalHandle] : null;

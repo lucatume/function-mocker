@@ -24,11 +24,11 @@ class FunctionMockerGlobalReplacementTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_allow_replacing_a_global_object()
     {
-        $GLOBALS['foo'] = new OneClass();
-        $fooReplacement = Test::replaceGlobal('foo', __NAMESPACE__ . '\OneClass::oneMethod', 23);
+        $GLOBALS['some'] = 200;
+        $fooReplacement = Test::replaceGlobal('some', __NAMESPACE__ . '\OneClass::oneMethod', 23);
 
-        global $foo;
-        $this->assertEquals(23, $foo->oneMethod());
+        global $some;
+        $this->assertEquals(23, $some->oneMethod());
         $fooReplacement->wasCalledOnce();
     }
 
@@ -56,6 +56,23 @@ class FunctionMockerGlobalReplacementTest extends \PHPUnit_Framework_TestCase
 
         global $foo;
         $this->assertEquals(23, $foo);
+    }
+
+    /**
+     * @test
+     * it should backup and restore a global variable value at tear down
+     */
+    public function it_should_backup_and_restore_a_global_variable_value_at_tear_down()
+    {
+        $GLOBALS['xyz'] = 200;
+        Test::setGlobal('xyz', 23);
+
+        global $xyz;
+        $this->assertEquals(23, $xyz);
+
+        Test::tearDown();
+
+        $this->assertEquals(200, $GLOBALS['xyz']);
     }
 }
 
