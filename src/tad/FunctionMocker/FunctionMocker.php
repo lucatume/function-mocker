@@ -339,7 +339,7 @@ class FunctionMocker
      *
      * @return mixed
      */
-    private static function getPHPUnitMockObject($className, $testCase, array $methods)
+    private static function getPHPUnitMockObject($className, \PHPUnit_Framework_TestCase $testCase, array $methods)
     {
         $rc = new \ReflectionClass($className);
         $type = 100 * $rc->isInterface() + 10 * $rc->isAbstract() + $rc->isTrait();
