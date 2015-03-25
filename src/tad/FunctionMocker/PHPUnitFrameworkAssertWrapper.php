@@ -5,7 +5,21 @@ namespace tad\FunctionMocker;
 
 trait PHPUnitFrameworkAssertWrapper
 {
-
+    
+    /**
+     * Returns the test case set for the wrapper.
+     *
+     * @return \PHPUnit_Framework_TestCase
+     */
+    public static function getTestCase()
+    {
+        if (empty(self::$testCase)) {
+            self::$testCase = new \PHPUnit_Framework_TestCase();
+        }
+        
+        return self::$testCase;
+    }
+    
     /**
      * Used to forward calls to utility method to the wrapped test case.
      *
@@ -15,9 +29,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function __callStatic($name, array $args = null)
     {
-        return call_user_func_array([self::$testCase, $name], $args);
+        return call_user_func_array([self::getTestCase() , $name], $args);
     }
-
+    
     /**
      * Asserts that an array has a specified key.
      *
@@ -28,9 +42,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertArrayHasKey($key, $array, $message = '')
     {
-        self::$testCase->assertArrayHasKey($key, $array, $message);
+        self::getTestCase()->assertArrayHasKey($key, $array, $message);
     }
-
+    
     /**
      * Asserts that an array has a specified subset.
      *
@@ -42,9 +56,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertArraySubset($subset, $array, $strict = false, $message = '')
     {
-        self::$testCase->assertArraySubset($subset, $array, $strict, $message);
+        self::getTestCase()->assertArraySubset($subset, $array, $strict, $message);
     }
-
+    
     /**
      * Asserts that an array does not have a specified key.
      *
@@ -55,9 +69,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertArrayNotHasKey($key, $array, $message = '')
     {
-        self::$testCase->assertArrayNotHasKey($key, $array, $message);
+        self::getTestCase()->assertArrayNotHasKey($key, $array, $message);
     }
-
+    
     /**
      * Asserts that a haystack contains a needle.
      *
@@ -71,9 +85,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertContains($needle, $haystack, $message = '', $ignoreCase = false, $checkForObjectIdentity = true, $checkForNonObjectIdentity = false)
     {
-        self::$testCase->assertContains($needle, $haystack, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
+        self::getTestCase()->assertContains($needle, $haystack, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
     }
-
+    
     /**
      * Asserts that a haystack that is stored in a static attribute of a class
      * or an attribute of an object contains a needle.
@@ -89,9 +103,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeContains($needle, $haystackAttributeName, $haystackClassOrObject, $message = '', $ignoreCase = false, $checkForObjectIdentity = true, $checkForNonObjectIdentity = false)
     {
-        self::$testCase->assertAttributeContains($needle, $haystackAttributeName, $haystackClassOrObject, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
+        self::getTestCase()->assertAttributeContains($needle, $haystackAttributeName, $haystackClassOrObject, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
     }
-
+    
     /**
      * Asserts that a haystack does not contain a needle.
      *
@@ -105,9 +119,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotContains($needle, $haystack, $message = '', $ignoreCase = false, $checkForObjectIdentity = true, $checkForNonObjectIdentity = false)
     {
-        self::$testCase->assertNotContains($needle, $haystack, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
+        self::getTestCase()->assertNotContains($needle, $haystack, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
     }
-
+    
     /**
      * Asserts that a haystack that is stored in a static attribute of a class
      * or an attribute of an object does not contain a needle.
@@ -123,9 +137,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotContains($needle, $haystackAttributeName, $haystackClassOrObject, $message = '', $ignoreCase = false, $checkForObjectIdentity = true, $checkForNonObjectIdentity = false)
     {
-        self::$testCase->assertAttributeNotContains($needle, $haystackAttributeName, $haystackClassOrObject, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
+        self::getTestCase()->assertAttributeNotContains($needle, $haystackAttributeName, $haystackClassOrObject, $message, $ignoreCase, $checkForObjectIdentity, $checkForNonObjectIdentity);
     }
-
+    
     /**
      * Asserts that a haystack contains only values of a given type.
      *
@@ -137,9 +151,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertContainsOnly($type, $haystack, $isNativeType = null, $message = '')
     {
-        self::$testCase->assertContainsOnly($type, $haystack, $isNativeType, $message);
+        self::getTestCase()->assertContainsOnly($type, $haystack, $isNativeType, $message);
     }
-
+    
     /**
      * Asserts that a haystack contains only instances of a given classname
      *
@@ -149,9 +163,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertContainsOnlyInstancesOf($classname, $haystack, $message = '')
     {
-        self::$testCase->assertContainsOnlyInstancesOf($classname, $haystack, $message);
+        self::getTestCase()->assertContainsOnlyInstancesOf($classname, $haystack, $message);
     }
-
+    
     /**
      * Asserts that a haystack that is stored in a static attribute of a class
      * or an attribute of an object contains only values of a given type.
@@ -165,9 +179,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeContainsOnly($type, $haystackAttributeName, $haystackClassOrObject, $isNativeType = null, $message = '')
     {
-        self::$testCase->assertAttributeContainsOnly($type, $haystackAttributeName, $haystackClassOrObject, $isNativeType, $message);
+        self::getTestCase()->assertAttributeContainsOnly($type, $haystackAttributeName, $haystackClassOrObject, $isNativeType, $message);
     }
-
+    
     /**
      * Asserts that a haystack does not contain only values of a given type.
      *
@@ -179,9 +193,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotContainsOnly($type, $haystack, $isNativeType = null, $message = '')
     {
-        self::$testCase->assertNotContainsOnly($type, $haystack, $isNativeType, $message);
+        self::getTestCase()->assertNotContainsOnly($type, $haystack, $isNativeType, $message);
     }
-
+    
     /**
      * Asserts that a haystack that is stored in a static attribute of a class
      * or an attribute of an object does not contain only values of a given
@@ -196,9 +210,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotContainsOnly($type, $haystackAttributeName, $haystackClassOrObject, $isNativeType = null, $message = '')
     {
-        self::$testCase->assertAttributeNotContainsOnly($type, $haystackAttributeName, $haystackClassOrObject, $isNativeType, $message);
+        self::getTestCase()->assertAttributeNotContainsOnly($type, $haystackAttributeName, $haystackClassOrObject, $isNativeType, $message);
     }
-
+    
     /**
      * Asserts the number of elements of an array, Countable or Traversable.
      *
@@ -208,9 +222,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertCount($expectedCount, $haystack, $message = '')
     {
-        self::$testCase->assertCount($expectedCount, $haystack, $message);
+        self::getTestCase()->assertCount($expectedCount, $haystack, $message);
     }
-
+    
     /**
      * Asserts the number of elements of an array, Countable or Traversable
      * that is stored in an attribute.
@@ -223,9 +237,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeCount($expectedCount, $haystackAttributeName, $haystackClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeCount($expectedCount, $haystackAttributeName, $haystackClassOrObject, $message);
+        self::getTestCase()->assertAttributeCount($expectedCount, $haystackAttributeName, $haystackClassOrObject, $message);
     }
-
+    
     /**
      * Asserts the number of elements of an array, Countable or Traversable.
      *
@@ -235,9 +249,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotCount($expectedCount, $haystack, $message = '')
     {
-        self::$testCase->assertNotCount($expectedCount, $haystack, $message);
+        self::getTestCase()->assertNotCount($expectedCount, $haystack, $message);
     }
-
+    
     /**
      * Asserts the number of elements of an array, Countable or Traversable
      * that is stored in an attribute.
@@ -250,9 +264,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotCount($expectedCount, $haystackAttributeName, $haystackClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeNotCount($expectedCount, $haystackAttributeName, $haystackClassOrObject, $message);
+        self::getTestCase()->assertAttributeNotCount($expectedCount, $haystackAttributeName, $haystackClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that two variables are equal.
      *
@@ -266,9 +280,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertEquals($expected, $actual, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that a variable is equal to an attribute of an object.
      *
@@ -283,9 +297,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeEquals($expected, $actualAttributeName, $actualClassOrObject, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertAttributeEquals($expected, $actualAttributeName, $actualClassOrObject, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertAttributeEquals($expected, $actualAttributeName, $actualClassOrObject, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that two variables are not equal.
      *
@@ -300,9 +314,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotEquals($expected, $actual, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertNotEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertNotEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that a variable is not equal to an attribute of an object.
      *
@@ -317,9 +331,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotEquals($expected, $actualAttributeName, $actualClassOrObject, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertAttributeNotEquals($expected, $actualAttributeName, $actualClassOrObject, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertAttributeNotEquals($expected, $actualAttributeName, $actualClassOrObject, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that a variable is empty.
      *
@@ -329,9 +343,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertEmpty($actual, $message = '')
     {
-        self::$testCase->assertEmpty($actual, $message);
+        self::getTestCase()->assertEmpty($actual, $message);
     }
-
+    
     /**
      * Asserts that a static attribute of a class or an attribute of an object
      * is empty.
@@ -343,9 +357,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeEmpty($haystackAttributeName, $haystackClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeEmpty($haystackAttributeName, $haystackClassOrObject, $message);
+        self::getTestCase()->assertAttributeEmpty($haystackAttributeName, $haystackClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that a variable is not empty.
      *
@@ -355,9 +369,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotEmpty($actual, $message = '')
     {
-        self::$testCase->assertNotEmpty($actual, $message);
+        self::getTestCase()->assertNotEmpty($actual, $message);
     }
-
+    
     /**
      * Asserts that a static attribute of a class or an attribute of an object
      * is not empty.
@@ -369,9 +383,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotEmpty($haystackAttributeName, $haystackClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeNotEmpty($haystackAttributeName, $haystackClassOrObject, $message);
+        self::getTestCase()->assertAttributeNotEmpty($haystackAttributeName, $haystackClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that a value is greater than another value.
      *
@@ -382,9 +396,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertGreaterThan($expected, $actual, $message = '')
     {
-        self::$testCase->assertGreaterThan($expected, $actual, $message);
+        self::getTestCase()->assertGreaterThan($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is greater than another value.
      *
@@ -396,9 +410,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeGreaterThan($expected, $actualAttributeName, $actualClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeGreaterThan($expected, $actualAttributeName, $actualClassOrObject, $message);
+        self::getTestCase()->assertAttributeGreaterThan($expected, $actualAttributeName, $actualClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that a value is greater than or equal to another value.
      *
@@ -409,9 +423,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertGreaterThanOrEqual($expected, $actual, $message = '')
     {
-        self::$testCase->assertGreaterThanOrEqual($expected, $actual, $message);
+        self::getTestCase()->assertGreaterThanOrEqual($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is greater than or equal to another value.
      *
@@ -423,9 +437,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeGreaterThanOrEqual($expected, $actualAttributeName, $actualClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeGreaterThanOrEqual($expected, $actualAttributeName, $actualClassOrObject, $message);
+        self::getTestCase()->assertAttributeGreaterThanOrEqual($expected, $actualAttributeName, $actualClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that a value is smaller than another value.
      *
@@ -436,9 +450,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertLessThan($expected, $actual, $message = '')
     {
-        self::$testCase->assertLessThan($expected, $actual, $message);
+        self::getTestCase()->assertLessThan($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is smaller than another value.
      *
@@ -450,9 +464,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeLessThan($expected, $actualAttributeName, $actualClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeLessThan($expected, $actualAttributeName, $actualClassOrObject, $message);
+        self::getTestCase()->assertAttributeLessThan($expected, $actualAttributeName, $actualClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that a value is smaller than or equal to another value.
      *
@@ -463,9 +477,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertLessThanOrEqual($expected, $actual, $message = '')
     {
-        self::$testCase->assertLessThanOrEqual($expected, $actual, $message);
+        self::getTestCase()->assertLessThanOrEqual($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is smaller than or equal to another value.
      *
@@ -477,9 +491,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeLessThanOrEqual($expected, $actualAttributeName, $actualClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeLessThanOrEqual($expected, $actualAttributeName, $actualClassOrObject, $message);
+        self::getTestCase()->assertAttributeLessThanOrEqual($expected, $actualAttributeName, $actualClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that the contents of one file is equal to the contents of another
      * file.
@@ -493,9 +507,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertFileEquals($expected, $actual, $message = '', $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertFileEquals($expected, $actual, $message, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertFileEquals($expected, $actual, $message, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that the contents of one file is not equal to the contents of
      * another file.
@@ -509,9 +523,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertFileNotEquals($expected, $actual, $message = '', $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertFileNotEquals($expected, $actual, $message, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertFileNotEquals($expected, $actual, $message, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that the contents of a string is equal
      * to the contents of a file.
@@ -525,9 +539,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringEqualsFile($expectedFile, $actualString, $message = '', $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertStringEqualsFile($expectedFile, $actualString, $message, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertStringEqualsFile($expectedFile, $actualString, $message, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that the contents of a string is not equal
      * to the contents of a file.
@@ -541,9 +555,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringNotEqualsFile($expectedFile, $actualString, $message = '', $canonicalize = false, $ignoreCase = false)
     {
-        self::$testCase->assertStringNotEqualsFile($expectedFile, $actualString, $message, $canonicalize, $ignoreCase);
+        self::getTestCase()->assertStringNotEqualsFile($expectedFile, $actualString, $message, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Asserts that a file exists.
      *
@@ -553,9 +567,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertFileExists($filename, $message = '')
     {
-        self::$testCase->assertFileExists($filename, $message);
+        self::getTestCase()->assertFileExists($filename, $message);
     }
-
+    
     /**
      * Asserts that a file does not exist.
      *
@@ -565,9 +579,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertFileNotExists($filename, $message = '')
     {
-        self::$testCase->assertFileNotExists($filename, $message);
+        self::getTestCase()->assertFileNotExists($filename, $message);
     }
-
+    
     /**
      * Asserts that a condition is true.
      *
@@ -577,9 +591,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertTrue($condition, $message = '')
     {
-        self::$testCase->assertTrue($condition, $message);
+        self::getTestCase()->assertTrue($condition, $message);
     }
-
+    
     /**
      * Asserts that a condition is not true.
      *
@@ -589,9 +603,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotTrue($condition, $message = '')
     {
-        self::$testCase->assertNotTrue($condition, $message);
+        self::getTestCase()->assertNotTrue($condition, $message);
     }
-
+    
     /**
      * Asserts that a condition is false.
      *
@@ -601,9 +615,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertFalse($condition, $message = '')
     {
-        self::$testCase->assertFalse($condition, $message);
+        self::getTestCase()->assertFalse($condition, $message);
     }
-
+    
     /**
      * Asserts that a condition is not false.
      *
@@ -613,9 +627,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertnotfalse($condition, $message = '')
     {
-        self::$testCase->assertnotfalse($condition, $message);
+        self::getTestCase()->assertnotfalse($condition, $message);
     }
-
+    
     /**
      * Asserts that a variable is not null.
      *
@@ -624,9 +638,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotNull($actual, $message = '')
     {
-        self::$testCase->assertNotNull($actual, $message);
+        self::getTestCase()->assertNotNull($actual, $message);
     }
-
+    
     /**
      * Asserts that a variable is null.
      *
@@ -635,9 +649,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNull($actual, $message = '')
     {
-        self::$testCase->assertNull($actual, $message);
+        self::getTestCase()->assertNull($actual, $message);
     }
-
+    
     /**
      * Asserts that a class has a specified attribute.
      *
@@ -648,9 +662,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertClassHasAttribute($attributeName, $className, $message = '')
     {
-        self::$testCase->assertClassHasAttribute($attributeName, $className, $message);
+        self::getTestCase()->assertClassHasAttribute($attributeName, $className, $message);
     }
-
+    
     /**
      * Asserts that a class does not have a specified attribute.
      *
@@ -661,9 +675,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertClassNotHasAttribute($attributeName, $className, $message = '')
     {
-        self::$testCase->assertClassNotHasAttribute($attributeName, $className, $message);
+        self::getTestCase()->assertClassNotHasAttribute($attributeName, $className, $message);
     }
-
+    
     /**
      * Asserts that a class has a specified static attribute.
      *
@@ -675,7 +689,7 @@ trait PHPUnitFrameworkAssertWrapper
     public static function assertClassHasStaticAttribute($attributeName, $className, $message = '')
     {
     }
-
+    
     /**
      * Asserts that a class does not have a specified static attribute.
      *
@@ -686,9 +700,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertClassNotHasStaticAttribute($attributeName, $className, $message = '')
     {
-        self::$testCase->assertClassNotHasStaticAttribute($attributeName, $className, $message);
+        self::getTestCase()->assertClassNotHasStaticAttribute($attributeName, $className, $message);
     }
-
+    
     /**
      * Asserts that an object has a specified attribute.
      *
@@ -699,9 +713,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertObjectHasAttribute($attributeName, $object, $message = '')
     {
-        self::$testCase->assertObjectHasAttribute($attributeName, $object, $message);
+        self::getTestCase()->assertObjectHasAttribute($attributeName, $object, $message);
     }
-
+    
     /**
      * Asserts that an object does not have a specified attribute.
      *
@@ -712,9 +726,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertObjectNotHasAttribute($attributeName, $object, $message = '')
     {
-        self::$testCase->assertObjectNotHasAttribute($attributeName, $object, $message);
+        self::getTestCase()->assertObjectNotHasAttribute($attributeName, $object, $message);
     }
-
+    
     /**
      * Asserts that two variables have the same type and value.
      * Used on objects, it asserts that two variables reference
@@ -726,9 +740,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertSame($expected, $actual, $message = '')
     {
-        self::$testCase->assertSame($expected, $actual, $message);
+        self::getTestCase()->assertSame($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that a variable and an attribute of an object have the same type
      * and value.
@@ -740,9 +754,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeSame($expected, $actualAttributeName, $actualClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeSame($expected, $actualAttributeName, $actualClassOrObject, $message);
+        self::getTestCase()->assertAttributeSame($expected, $actualAttributeName, $actualClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that two variables do not have the same type and value.
      * Used on objects, it asserts that two variables do not reference
@@ -754,9 +768,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotSame($expected, $actual, $message = '')
     {
-        self::$testCase->assertNotSame($expected, $actual, $message);
+        self::getTestCase()->assertNotSame($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that a variable and an attribute of an object do not have the
      * same type and value.
@@ -768,9 +782,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotSame($expected, $actualAttributeName, $actualClassOrObject, $message = '')
     {
-        self::$testCase->assertAttributeNotSame($expected, $actualAttributeName, $actualClassOrObject, $message);
+        self::getTestCase()->assertAttributeNotSame($expected, $actualAttributeName, $actualClassOrObject, $message);
     }
-
+    
     /**
      * Asserts that a variable is of a given type.
      *
@@ -781,9 +795,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertInstanceOf($expected, $actual, $message = '')
     {
-        self::$testCase->assertInstanceOf($expected, $actual, $message);
+        self::getTestCase()->assertInstanceOf($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is of a given type.
      *
@@ -795,9 +809,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeInstanceOf($expected, $attributeName, $classOrObject, $message = '')
     {
-        self::$testCase->assertAttributeInstanceOf($expected, $attributeName, $classOrObject, $message);
+        self::getTestCase()->assertAttributeInstanceOf($expected, $attributeName, $classOrObject, $message);
     }
-
+    
     /**
      * Asserts that a variable is not of a given type.
      *
@@ -808,9 +822,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotInstanceOf($expected, $actual, $message = '')
     {
-        self::$testCase->assertNotInstanceOf($expected, $actual, $message);
+        self::getTestCase()->assertNotInstanceOf($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is of a given type.
      *
@@ -822,9 +836,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotInstanceOf($expected, $attributeName, $classOrObject, $message = '')
     {
-        self::$testCase->assertAttributeNotInstanceOf($expected, $attributeName, $classOrObject, $message);
+        self::getTestCase()->assertAttributeNotInstanceOf($expected, $attributeName, $classOrObject, $message);
     }
-
+    
     /**
      * Asserts that a variable is of a given type.
      *
@@ -835,9 +849,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertInternalType($expected, $actual, $message = '')
     {
-        self::$testCase->assertInternalType($expected, $actual, $message);
+        self::getTestCase()->assertInternalType($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is of a given type.
      *
@@ -849,9 +863,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeInternalType($expected, $attributeName, $classOrObject, $message = '')
     {
-        self::$testCase->assertAttributeInternalType($expected, $attributeName, $classOrObject, $message);
+        self::getTestCase()->assertAttributeInternalType($expected, $attributeName, $classOrObject, $message);
     }
-
+    
     /**
      * Asserts that a variable is not of a given type.
      *
@@ -862,9 +876,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotInternalType($expected, $actual, $message = '')
     {
-        self::$testCase->assertNotInternalType($expected, $actual, $message);
+        self::getTestCase()->assertNotInternalType($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that an attribute is of a given type.
      *
@@ -876,9 +890,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertAttributeNotInternalType($expected, $attributeName, $classOrObject, $message = '')
     {
-        self::$testCase->assertAttributeNotInternalType($expected, $attributeName, $classOrObject, $message);
+        self::getTestCase()->assertAttributeNotInternalType($expected, $attributeName, $classOrObject, $message);
     }
-
+    
     /**
      * Asserts that a string matches a given regular expression.
      *
@@ -888,9 +902,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertRegExp($pattern, $string, $message = '')
     {
-        self::$testCase->assertRegExp($pattern, $string, $message);
+        self::getTestCase()->assertRegExp($pattern, $string, $message);
     }
-
+    
     /**
      * Asserts that a string does not match a given regular expression.
      *
@@ -901,9 +915,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotRegExp($pattern, $string, $message = '')
     {
-        self::$testCase->assertNotRegExp($pattern, $string, $message);
+        self::getTestCase()->assertNotRegExp($pattern, $string, $message);
     }
-
+    
     /**
      * Assert that the size of two arrays (or `Countable` or `Traversable` objects)
      * is the same.
@@ -914,9 +928,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertSameSize($expected, $actual, $message = '')
     {
-        self::$testCase->assertSameSize($expected, $actual, $message);
+        self::getTestCase()->assertSameSize($expected, $actual, $message);
     }
-
+    
     /**
      * Assert that the size of two arrays (or `Countable` or `Traversable` objects)
      * is not the same.
@@ -927,9 +941,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotSameSize($expected, $actual, $message = '')
     {
-        self::$testCase->assertNotSameSize($expected, $actual, $message);
+        self::getTestCase()->assertNotSameSize($expected, $actual, $message);
     }
-
+    
     /**
      * Asserts that a string matches a given format string.
      *
@@ -940,9 +954,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringMatchesFormat($format, $string, $message = '')
     {
-        self::$testCase->assertStringMatchesFormat($format, $string, $message);
+        self::getTestCase()->assertStringMatchesFormat($format, $string, $message);
     }
-
+    
     /**
      * Asserts that a string does not match a given format string.
      *
@@ -953,9 +967,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringNotMatchesFormat($format, $string, $message = '')
     {
-        self::$testCase->assertStringNotMatchesFormat($format, $string, $message);
+        self::getTestCase()->assertStringNotMatchesFormat($format, $string, $message);
     }
-
+    
     /**
      * Asserts that a string matches a given format file.
      *
@@ -966,9 +980,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringMatchesFormatFile($formatFile, $string, $message = '')
     {
-        self::$testCase->assertStringMatchesFormatFile($formatFile, $string, $message);
+        self::getTestCase()->assertStringMatchesFormatFile($formatFile, $string, $message);
     }
-
+    
     /**
      * Asserts that a string does not match a given format string.
      *
@@ -979,9 +993,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringNotMatchesFormatFile($formatFile, $string, $message = '')
     {
-        self::$testCase->assertStringNotMatchesFormatFile($formatFile, $string, $message);
+        self::getTestCase()->assertStringNotMatchesFormatFile($formatFile, $string, $message);
     }
-
+    
     /**
      * Asserts that a string starts with a given prefix.
      *
@@ -992,9 +1006,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringStartsWith($prefix, $string, $message = '')
     {
-        self::$testCase->assertStringStartsWith($prefix, $string, $message);
+        self::getTestCase()->assertStringStartsWith($prefix, $string, $message);
     }
-
+    
     /**
      * Asserts that a string starts not with a given prefix.
      *
@@ -1005,9 +1019,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringStartsNotWith($prefix, $string, $message = '')
     {
-        self::$testCase->assertStringStartsNotWith($prefix, $string, $message);
+        self::getTestCase()->assertStringStartsNotWith($prefix, $string, $message);
     }
-
+    
     /**
      * Asserts that a string ends with a given suffix.
      *
@@ -1018,9 +1032,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringEndsWith($suffix, $string, $message = '')
     {
-        self::$testCase->assertStringEndsWith($suffix, $string, $message);
+        self::getTestCase()->assertStringEndsWith($suffix, $string, $message);
     }
-
+    
     /**
      * Asserts that a string ends not with a given suffix.
      *
@@ -1031,9 +1045,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertStringEndsNotWith($suffix, $string, $message = '')
     {
-        self::$testCase->assertStringEndsNotWith($suffix, $string, $message);
+        self::getTestCase()->assertStringEndsNotWith($suffix, $string, $message);
     }
-
+    
     /**
      * Asserts that two XML files are equal.
      *
@@ -1044,9 +1058,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertXmlFileEqualsXmlFile($expectedFile, $actualFile, $message = '')
     {
-        self::$testCase->assertXmlFileEqualsXmlFile($expectedFile, $actualFile, $message);
+        self::getTestCase()->assertXmlFileEqualsXmlFile($expectedFile, $actualFile, $message);
     }
-
+    
     /**
      * Asserts that two XML files are not equal.
      *
@@ -1057,9 +1071,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertXmlFileNotEqualsXmlFile($expectedFile, $actualFile, $message = '')
     {
-        self::$testCase->assertXmlFileNotEqualsXmlFile($expectedFile, $actualFile, $message);
+        self::getTestCase()->assertXmlFileNotEqualsXmlFile($expectedFile, $actualFile, $message);
     }
-
+    
     /**
      * Asserts that two XML documents are equal.
      *
@@ -1070,9 +1084,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertXmlStringEqualsXmlFile($expectedFile, $actualXml, $message = '')
     {
-        self::$testCase->assertXmlStringEqualsXmlFile($expectedFile, $actualXml, $message);
+        self::getTestCase()->assertXmlStringEqualsXmlFile($expectedFile, $actualXml, $message);
     }
-
+    
     /**
      * Asserts that two XML documents are not equal.
      *
@@ -1083,9 +1097,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertXmlStringNotEqualsXmlFile($expectedFile, $actualXml, $message = '')
     {
-        self::$testCase->assertXmlStringNotEqualsXmlFile($expectedFile, $actualXml, $message);
+        self::getTestCase()->assertXmlStringNotEqualsXmlFile($expectedFile, $actualXml, $message);
     }
-
+    
     /**
      * Asserts that two XML documents are equal.
      *
@@ -1096,9 +1110,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertXmlStringEqualsXmlString($expectedXml, $actualXml, $message = '')
     {
-        self::$testCase->assertXmlStringEqualsXmlString($expectedXml, $actualXml, $message);
+        self::getTestCase()->assertXmlStringEqualsXmlString($expectedXml, $actualXml, $message);
     }
-
+    
     /**
      * Asserts that two XML documents are not equal.
      *
@@ -1109,9 +1123,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertXmlStringNotEqualsXmlString($expectedXml, $actualXml, $message = '')
     {
-        self::$testCase->assertXmlStringNotEqualsXmlString($expectedXml, $actualXml, $message);
+        self::getTestCase()->assertXmlStringNotEqualsXmlString($expectedXml, $actualXml, $message);
     }
-
+    
     /**
      * Asserts that a hierarchy of DOMElements matches.
      *
@@ -1124,9 +1138,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertEqualXMLStructure(DOMElement $expectedElement, DOMElement $actualElement, $checkAttributes = false, $message = '')
     {
-        self::$testCase->assertEqualXMLStructure($expectedElement, $actualElement, $checkAttributes, $message);
+        self::getTestCase()->assertEqualXMLStructure($expectedElement, $actualElement, $checkAttributes, $message);
     }
-
+    
     /**
      * Assert the presence, absence, or count of elements in a document matching
      * the CSS $selector, regardless of the contents of those elements.
@@ -1154,9 +1168,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertSelectCount($selector, $count, $actual, $message = '', $isHtml = true)
     {
-        self::$testCase->assertSelectCount($selector, $count, $actual, $message, $isHtml);
+        self::getTestCase()->assertSelectCount($selector, $count, $actual, $message, $isHtml);
     }
-
+    
     /**
      * assertSelectRegExp("#binder .name", "/Mike|Derek/", true, $xml); // any?
      * assertSelectRegExp("#binder .name", "/Mike|Derek/", 3, $xml);    // 3?
@@ -1174,9 +1188,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertSelectRegExp($selector, $pattern, $count, $actual, $message = '', $isHtml = true)
     {
-        self::$testCase->assertSelectRegExp($selector, $pattern, $count, $actual, $message, $isHtml);
+        self::getTestCase()->assertSelectRegExp($selector, $pattern, $count, $actual, $message, $isHtml);
     }
-
+    
     /**
      * assertSelectEquals("#binder .name", "Chuck", true,  $xml);  // any?
      * assertSelectEquals("#binder .name", "Chuck", false, $xml);  // none?
@@ -1194,9 +1208,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertSelectEquals($selector, $content, $count, $actual, $message = '', $isHtml = true)
     {
-        self::$testCase->assertSelectEquals($selector, $content, $count, $actual, $message, $isHtml);
+        self::getTestCase()->assertSelectEquals($selector, $content, $count, $actual, $message, $isHtml);
     }
-
+    
     /**
      * Evaluate an HTML or XML string and assert its structure and/or contents.
      *
@@ -1337,9 +1351,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertTag($matcher, $actual, $message = '', $isHtml = true)
     {
-        self::$testCase->assertTag($matcher, $actual, $message, $isHtml);
+        self::getTestCase()->assertTag($matcher, $actual, $message, $isHtml);
     }
-
+    
     /**
      * This assertion is the exact opposite of assertTag().
      *
@@ -1357,9 +1371,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertNotTag($matcher, $actual, $message = '', $isHtml = true)
     {
-        self::$testCase->assertNotTag($matcher, $actual, $message, $isHtml);
+        self::getTestCase()->assertNotTag($matcher, $actual, $message, $isHtml);
     }
-
+    
     /**
      * Evaluates a PHPUnit_Framework_Constraint matcher object.
      *
@@ -1370,9 +1384,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertThat($value, PHPUnit_Framework_Constraint $constraint, $message = '')
     {
-        self::$testCase->assertThat($value, $constraint, $message);
+        self::getTestCase()->assertThat($value, $constraint, $message);
     }
-
+    
     /**
      * Asserts that a string is a valid JSON string.
      *
@@ -1382,9 +1396,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJson($actualJson, $message = '')
     {
-        self::$testCase->assertJson($actualJson, $message);
+        self::getTestCase()->assertJson($actualJson, $message);
     }
-
+    
     /**
      * Asserts that two given JSON encoded objects or arrays are equal.
      *
@@ -1394,9 +1408,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJsonStringEqualsJsonString($expectedJson, $actualJson, $message = '')
     {
-        self::$testCase->assertJsonStringEqualsJsonString($expectedJson, $actualJson, $message);
+        self::getTestCase()->assertJsonStringEqualsJsonString($expectedJson, $actualJson, $message);
     }
-
+    
     /**
      * Asserts that two given JSON encoded objects or arrays are not equal.
      *
@@ -1406,9 +1420,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJsonStringNotEqualsJsonString($expectedJson, $actualJson, $message = '')
     {
-        self::$testCase->assertJsonStringNotEqualsJsonString($expectedJson, $actualJson, $message);
+        self::getTestCase()->assertJsonStringNotEqualsJsonString($expectedJson, $actualJson, $message);
     }
-
+    
     /**
      * Asserts that the generated JSON encoded object and the content of the given file are equal.
      *
@@ -1418,9 +1432,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJsonStringEqualsJsonFile($expectedFile, $actualJson, $message = '')
     {
-        self::$testCase->assertJsonStringEqualsJsonFile($expectedFile, $actualJson, $message);
+        self::getTestCase()->assertJsonStringEqualsJsonFile($expectedFile, $actualJson, $message);
     }
-
+    
     /**
      * Asserts that the generated JSON encoded object and the content of the given file are not equal.
      *
@@ -1430,9 +1444,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJsonStringNotEqualsJsonFile($expectedFile, $actualJson, $message = '')
     {
-        self::$testCase->assertJsonStringNotEqualsJsonFile($expectedFile, $actualJson, $message);
+        self::getTestCase()->assertJsonStringNotEqualsJsonFile($expectedFile, $actualJson, $message);
     }
-
+    
     /**
      * Asserts that two JSON files are not equal.
      *
@@ -1442,9 +1456,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJsonFileNotEqualsJsonFile($expectedFile, $actualFile, $message = '')
     {
-        self::$testCase->assertJsonFileNotEqualsJsonFile($expectedFile, $actualFile, $message);
+        self::getTestCase()->assertJsonFileNotEqualsJsonFile($expectedFile, $actualFile, $message);
     }
-
+    
     /**
      * Asserts that two JSON files are equal.
      *
@@ -1454,9 +1468,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function assertJsonFileEqualsJsonFile($expectedFile, $actualFile, $message = '')
     {
-        self::$testCase->assertJsonFileEqualsJsonFile($expectedFile, $actualFile, $message);
+        self::getTestCase()->assertJsonFileEqualsJsonFile($expectedFile, $actualFile, $message);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_And matcher object.
      *
@@ -1465,9 +1479,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function logicalAnd()
     {
-        return self::$testCase->logicalAnd();
+        return self::getTestCase()->logicalAnd();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Or matcher object.
      *
@@ -1476,9 +1490,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function logicalOr()
     {
-        return self::$testCase->logicalOr();
+        return self::getTestCase()->logicalOr();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Not matcher object.
      *
@@ -1488,9 +1502,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function logicalNot(PHPUnit_Framework_Constraint $constraint)
     {
-        return self::$testCase->logicalNot($constraint);
+        return self::getTestCase()->logicalNot($constraint);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Xor matcher object.
      *
@@ -1499,9 +1513,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function logicalXor()
     {
-        return self::$testCase->logicalXor();
+        return self::getTestCase()->logicalXor();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsAnything matcher object.
      *
@@ -1510,9 +1524,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function anything()
     {
-        return self::$testCase->anything();
+        return self::getTestCase()->anything();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsTrue matcher object.
      *
@@ -1521,9 +1535,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isTrue()
     {
-        return self::$testCase->isTrue();
+        return self::getTestCase()->isTrue();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Callback matcher object.
      *
@@ -1532,9 +1546,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function callback($callback)
     {
-        return self::$testCase->callback($callback);
+        return self::getTestCase()->callback($callback);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsFalse matcher object.
      *
@@ -1543,9 +1557,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isFalse()
     {
-        return self::$testCase->isFalse();
+        return self::getTestCase()->isFalse();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsJson matcher object.
      *
@@ -1554,9 +1568,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isJson()
     {
-        return self::$testCase->isJson();
+        return self::getTestCase()->isJson();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsNull matcher object.
      *
@@ -1565,9 +1579,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isNull()
     {
-        return self::$testCase->isNull();
+        return self::getTestCase()->isNull();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Attribute matcher object.
      *
@@ -1578,9 +1592,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function attribute(PHPUnit_Framework_Constraint $constraint, $attributeName)
     {
-        return self::$testCase->attribute($constraint, $attributeName);
+        return self::getTestCase()->attribute($constraint, $attributeName);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_TraversableContains matcher
      * object.
@@ -1593,9 +1607,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function contains($value, $checkForObjectIdentity = true, $checkForNonObjectIdentity = false)
     {
-        return self::$testCase->contains($value, $checkForObjectIdentity, $checkForNonObjectIdentity);
+        return self::getTestCase()->contains($value, $checkForObjectIdentity, $checkForNonObjectIdentity);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_TraversableContainsOnly matcher
      * object.
@@ -1606,9 +1620,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function containsOnly($type)
     {
-        return self::$testCase->containsOnly($type);
+        return self::getTestCase()->containsOnly($type);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_TraversableContainsOnly matcher
      * object.
@@ -1618,9 +1632,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function containsOnlyInstancesOf($classname)
     {
-        return self::$testCase->containsOnlyInstancesOf($classname);
+        return self::getTestCase()->containsOnlyInstancesOf($classname);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_ArrayHasKey matcher object.
      *
@@ -1630,9 +1644,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function arrayHasKey($key)
     {
-        return self::$testCase->arrayHasKey($key);
+        return self::getTestCase()->arrayHasKey($key);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsEqual matcher object.
      *
@@ -1646,9 +1660,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function equalTo($value, $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
-        return self::$testCase->equalTo($value, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        return self::getTestCase()->equalTo($value, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsEqual matcher object
      * that is wrapped in a PHPUnit_Framework_Constraint_Attribute matcher
@@ -1665,9 +1679,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function attributeEqualTo($attributeName, $value, $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false)
     {
-        return self::$testCase->attributeEqualTo($attributeName, $value, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        return self::getTestCase()->attributeEqualTo($attributeName, $value, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsEmpty matcher object.
      *
@@ -1676,9 +1690,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isEmpty()
     {
-        return self::$testCase->isEmpty();
+        return self::getTestCase()->isEmpty();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_FileExists matcher object.
      *
@@ -1687,9 +1701,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function fileExists()
     {
-        return self::$testCase->fileExists();
+        return self::getTestCase()->fileExists();
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_GreaterThan matcher object.
      *
@@ -1699,9 +1713,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function greaterThan($value)
     {
-        return self::$testCase->greaterThan($value);
+        return self::getTestCase()->greaterThan($value);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Or matcher object that wraps
      * a PHPUnit_Framework_Constraint_IsEqual and a
@@ -1713,9 +1727,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function greaterThanOrEqual($value)
     {
-        return self::$testCase->greaterThanOrEqual($value);
+        return self::getTestCase()->greaterThanOrEqual($value);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_ClassHasAttribute matcher object.
      *
@@ -1725,9 +1739,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function classHasAttribute($attributeName)
     {
-        return self::$testCase->classHasAttribute($attributeName);
+        return self::getTestCase()->classHasAttribute($attributeName);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_ClassHasStaticAttribute matcher
      * object.
@@ -1738,9 +1752,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function classHasStaticAttribute($attributeName)
     {
-        return self::$testCase->classHasStaticAttribute($attributeName);
+        return self::getTestCase()->classHasStaticAttribute($attributeName);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_ObjectHasAttribute matcher object.
      *
@@ -1750,9 +1764,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function objectHasAttribute($attributeName)
     {
-        self::$testCase->objectHasAttribute($attributeName);
+        self::getTestCase()->objectHasAttribute($attributeName);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsIdentical matcher object.
      *
@@ -1762,9 +1776,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function identicalTo($value)
     {
-        return self::$testCase->identicalTo($value);
+        return self::getTestCase()->identicalTo($value);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsInstanceOf matcher object.
      *
@@ -1774,9 +1788,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isInstanceOf($className)
     {
-        return self::$testCase->isInstanceOf($className);
+        return self::getTestCase()->isInstanceOf($className);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_IsType matcher object.
      *
@@ -1786,9 +1800,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function isType($type)
     {
-        return self::$testCase->isType($type);
+        return self::getTestCase()->isType($type);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_LessThan matcher object.
      *
@@ -1798,9 +1812,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function lessThan($value)
     {
-        return self::$testCase->lessThan($value);
+        return self::getTestCase()->lessThan($value);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Or matcher object that wraps
      * a PHPUnit_Framework_Constraint_IsEqual and a
@@ -1812,9 +1826,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function lessThanOrEqual($value)
     {
-        return self::$testCase->lessThanOrEqual($value);
+        return self::getTestCase()->lessThanOrEqual($value);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_PCREMatch matcher object.
      *
@@ -1824,9 +1838,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function matchesRegularExpression($pattern)
     {
-        return new self::$testCase->matchesRegularExpression($pattern);
+        return self::getTestCase()->matchesRegularExpression($pattern);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_StringMatches matcher object.
      *
@@ -1836,9 +1850,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function matches($string)
     {
-        return self::$testCase->matches($string);
+        return self::getTestCase()->matches($string);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_StringStartsWith matcher object.
      *
@@ -1848,9 +1862,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function stringStartsWith($prefix)
     {
-        return self::$testCase->stringStartsWith($prefix);
+        return self::getTestCase()->stringStartsWith($prefix);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_StringContains matcher object.
      *
@@ -1861,9 +1875,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function stringContains($string, $case = true)
     {
-        return self::$testCase->stringContains($string, $case);
+        return self::getTestCase()->stringContains($string, $case);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_StringEndsWith matcher object.
      *
@@ -1873,9 +1887,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function stringEndsWith($suffix)
     {
-        return new self::$testCase->stringEndsWith($suffix);
+        return self::getTestCase()->stringEndsWith($suffix);
     }
-
+    
     /**
      * Returns a PHPUnit_Framework_Constraint_Count matcher object.
      *
@@ -1884,9 +1898,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function countOf($count)
     {
-        return new self::$testCase->countOf($count);
+        return self::getTestCase()->countOf($count);
     }
-
+    
     /**
      * Fails a test with the given message.
      *
@@ -1895,9 +1909,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function fail($message = '')
     {
-        return new self::$testCase->fail($message);
+        return self::getTestCase()->fail($message);
     }
-
+    
     /**
      * Returns the value of an attribute of a class or an object.
      * This also works for attributes that are declared protected or private.
@@ -1909,9 +1923,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function readAttribute($classOrObject, $attributeName)
     {
-        self::$testCase->readAttribute($classOrObject, $attributeName);
+        self::getTestCase()->readAttribute($classOrObject, $attributeName);
     }
-
+    
     /**
      * Returns the value of a static attribute.
      * This also works for attributes that are declared protected or private.
@@ -1924,9 +1938,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function getStaticAttribute($className, $attributeName)
     {
-        return self::$testCase->getStaticAttribute($className, $attributeName);
+        return self::getTestCase()->getStaticAttribute($className, $attributeName);
     }
-
+    
     /**
      * Returns the value of an object's attribute.
      * This also works for attributes that are declared protected or private.
@@ -1939,9 +1953,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function getObjectAttribute($object, $attributeName)
     {
-        return self::$testCase->getObjectAttribute($object, $attributeName);
+        return self::getTestCase()->getObjectAttribute($object, $attributeName);
     }
-
+    
     /**
      * Mark the test as incomplete.
      *
@@ -1951,9 +1965,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function markTestIncomplete($message = '')
     {
-        self::$testCase->markTestIncomplete($message);
+        self::getTestCase()->markTestIncomplete($message);
     }
-
+    
     /**
      * Mark the test as skipped.
      *
@@ -1963,9 +1977,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function markTestSkipped($message = '')
     {
-        self::$testCase->markTestSkipped($message);
+        self::getTestCase()->markTestSkipped($message);
     }
-
+    
     /**
      * Return the current assertion count.
      *
@@ -1974,9 +1988,9 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function getCount()
     {
-        return self::$testCase->getCount();
+        return self::getTestCase()->getCount();
     }
-
+    
     /**
      * Reset the assertion counter.
      *
@@ -1984,6 +1998,6 @@ trait PHPUnitFrameworkAssertWrapper
      */
     public static function resetCount()
     {
-        self::$testCase->resetCount();
+        self::getTestCase()->resetCount();
     }
 }
