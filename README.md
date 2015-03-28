@@ -5,57 +5,64 @@
 ## Show me the code
 This can be written in a [PHPUnit](http://phpunit.de/) test suite
 
-    use tad\FunctionMocker\FunctionMocker;
+    use tad\FunctionMocker\FunctionMocker as Test;
 
     class SomeClassTest extends \PHPUnit_Framework_TestCase {
         
         public function setUp(){
-            FunctionMocker::setUp();
+            Test::setUp();
         }
 
         public function tearDown(){
-            FunctionMocker::tearDown();
+            Test::tearDown();
         }
 
         public function testSomeMethodCallsSomeFunction(){
             // Setup
             // please note: it can replace not defined functions too!
-            $functionMock = FunctionMocker::replace('some_function');
+            $someFunction = Test::replace('some_function');
 
             // Exercise
-            some_function();
+            some_function(23);
 
             // Assert
-            $functionMock->wasCalledTimes(1);
+            $someFunction->wasCalledOnce();
+            
+            // check primitive call args
+            $someFunction->wasCalledWithOnce(23);
+            
+            // check primitive type
+            $someFunction->wasCalledWithOnce(Test::isType('int'));
         }
 
         public function testSomeMethodCallsSomeStaticMethod(){
             // Setup
-            $staticMethod = FunctionMocker::replace('Post::get_post_title', 'Post title');
+            $get_post_title = Test::replace('Post::get_post_title', 'Post title');
 
             // Exercise
             $this->assertEquals('Post title', Post::get_post_title());
 
             // Assert
-            $staticMethod->wasCalledTimes(1);
+            $get_post_title->wasCalledOnce();
         }
 
         public function testSomeMethodCallsSomeInstanceMethod(){
             // Setup
-            $replacement = FunctionMocker::replace('Dependency::methodOne');
-            FunctionMocker::replace('Dependency::methodTwo');
+            $replacement = Test::replace('Dependency::methodOne');
+            Test::replace('Dependency::methodTwo');
 
             // Exercise
             $caller = function(Dependency $dependency){
-                $dependency->methodOne();
+                $dependency->methodOne('foo', 23);
                 $dependency->methodTwo();
             };
 
             $caller($replacement);
 
             // Assert
-            $replacement->wasCalledTimes(1, 'methodOne');
-            $replacement->wasCalledTimes(1, 'methodTwo');
+            $replacement->wasCalledOnce('methodOne');
+            $replacement->wasCalledWithOnce([Test::isType('string'), Test::isType('int')]'methodOne');
+            $replacement->wasCalledOnce('methodTwo');
         }
     }
 
@@ -434,9 +441,9 @@ Beside the methods defined as part of a [PHPUnit](http://phpunit.de/) mock objec
 * `wasCalledTimes(int $times [, string $methodName])` - will assert a PHPUnit assertion if the function or static method was called `$times` times; the `$times` parameter can come using the times syntax below.
 * `wasCalledOnce([string $methodName])` - will assert a PHPUnit assertion if the function or static method was called once.
 * `wasNotCalled([string $methodName])` - will assert a PHPUnit assertion if the function or static method was not called.
-* `wasCalledWithTimes(array $args, int $times[, string $methodName])` - will assert a PHPUnit assertion if the function or static method was called with `$args` arguments `$times` times; the `$times` parameter can come using the times syntax below.
-* `wasCalledWithOnce(array $args[, string $methodName])` - will assert a PHPUnit assertion if the function or static method was called with `$args` arguments once.
-* `wasNotCalledWith(array $args[, string $methodName])` - will assert a PHPUnit assertion if the function or static method was not called with `$args` arguments.
+* `wasCalledWithTimes(array $args, int $times[, string $methodName])` - will assert a PHPUnit assertion if the function or static method was called with `$args` arguments `$times` times; the `$times` parameter can come using the times syntax below; the `$args` parameter can be any combination of primitive values and PHPUnit constraints like `[23, Test::isInstanceOf('SomeClass')]`.
+* `wasCalledWithOnce(array $args[, string $methodName])` - will assert a PHPUnit assertion if the function or static method was called with `$args` arguments once; the `$args` parameter can be any combination of primitive values and PHPUnit constraints like `[23, Test::isInstanceOf('SomeClass')]`.
+* `wasNotCalledWith(array $args[, string $methodName])` - will assert a PHPUnit assertion if the function or static method was not called with `$args` arguments; the `$args` parameter can be any combination of primitive values and PHPUnit constraints like `[23, Test::isInstanceOf('SomeClass')]`.
 
 >The method name is needed to verify calls on replaced instance methods!
 
