@@ -26,37 +26,6 @@ class SpyCallLogger implements LoggerInterface
     }
 
     /**
-     * @param $arg
-     * @param $callArg
-     * @return bool
-     */
-    private function compareArg($arg, $callArg)
-    {
-        return is_a($arg, '\PHPUnit_Framework_Constraint') ? $arg->evaluate($callArg, '', true) : $arg === $callArg;
-    }
-
-    /**
-     * @param $args
-     * @param $callArgs
-     * @return bool
-     */
-    private function compareArgs(array $args, array $callArgs)
-    {
-        if (count($args) > count($callArgs)) {
-            return false;
-        }
-        for ($i = 0; $i < count($args); $i++) {
-            $arg = $args[$i];
-            $callArg = $callArgs[$i];
-            if (!$this->compareArg($arg, $callArg)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * @param array $args
      * @param $calls
      * @return array
@@ -69,5 +38,37 @@ class SpyCallLogger implements LoggerInterface
             return $this->compareArgs($args, $callArgs);
         });
         return $calls;
+    }
+
+    /**
+     * @param $args
+     * @param $callArgs
+     * @return bool
+     */
+    private function compareArgs(array $args, array $callArgs)
+    {
+        if (count($args) > count($callArgs)) {
+            return false;
+        }
+        $args_count = count($args);
+        for ($i = 0; $i < $args_count; $i++) {
+            $arg = $args[$i];
+            $callArg = $callArgs[$i];
+            if (!$this->compareArg($arg, $callArg)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $arg
+     * @param $callArg
+     * @return bool
+     */
+    private function compareArg($arg, $callArg)
+    {
+        return is_a($arg, '\PHPUnit_Framework_Constraint') ? $arg->evaluate($callArg, '', true) : $arg === $callArg;
     }
 }
