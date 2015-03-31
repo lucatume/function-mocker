@@ -18,11 +18,6 @@ class FunctionMocker
      */
     protected static $testCase;
 
-    /**
-     * @var array
-     */
-    protected static $replacedClassInstances = array();
-
     /** @var  array */
     protected static $defaultWhitelist = array(
         'vendor/antecedent'
@@ -50,7 +45,6 @@ class FunctionMocker
         if (!self::$didInit) {
             self::init();
         }
-        self::$replacedClassInstances = array();
     }
 
     public static function init(array $options = null)
