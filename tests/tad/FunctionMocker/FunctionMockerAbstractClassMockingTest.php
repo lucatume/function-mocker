@@ -23,7 +23,7 @@
 		 * it should allow mocking an abstract class concrete instance method
 		 */
 		public function it_should_allow_mocking_an_abstract_class_concrete_instance_method() {
-			$mock = Test::replace( $this->ns . '\SomeClass::methodOne', 23 );
+			$mock = Test::replace( $this->ns . '\SomeClass->methodOne', 23 );
 
 			$this->assertEquals( 23, $mock->methodOne() );
 		}

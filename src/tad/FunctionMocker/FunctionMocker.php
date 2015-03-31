@@ -149,35 +149,20 @@ class FunctionMocker
         $methodName = $request->getMethodName();
 
         if ($request->isInstanceMethod()) {
-            return self::get_instance_replacement($returnValue, $request, $methodName);
+            return self::get_instance_replacement($methodName, $request, $returnValue);
         }
 
         // function or static method
         return self::get_function_or_static_method_replacement($functionName, $returnValue, $request, $methodName);
     }
 
-    /**
-     * @param $returnValue
-     * @param $request
-     * @param $methodName
-     * @return mixed
-     */
-    private static function get_instance_replacement($returnValue, $request, $methodName)
+    public static function get_instance_replacement($methodName, ReplacementRequest $request, $returnValue)
     {
         $testCase = self::getTestCase();
         $className = $request->getClassName();
 
-        if (!array_key_exists($className, self::$replacedClassInstances)) {
-            self::$replacedClassInstances[$className] = array();
-            self::$replacedClassInstances[$className]['replacedMethods'] = array();
-        }
-        self::$replacedClassInstances[$className]['replacedMethods'][$methodName] = $returnValue;
-
-        $classReplacedMethods = self::$replacedClassInstances[$className]['replacedMethods'];
-        $methods = array_map(function ($methodName) {
-            return $methodName;
-        }, array_keys($classReplacedMethods));
-        $methods[] = '__construct';
+        $methodName = $request->getMethodName();
+        $methods = ['__construct', $methodName];
 
         $mockObject = self::getPHPUnitMockObject($className, $testCase, $methods);
 
@@ -188,44 +173,22 @@ class FunctionMocker
          */
         $invokedRecorder = $testCase->$times();
 
-        array_walk($classReplacedMethods, function (ReturnValue $returnValue, $methodName, \PHPUnit_Framework_MockObject_MockObject &$mockObject) use ($invokedRecorder) {
-            if ($returnValue->isCallable()) {
-                // callback
-                $mockObject->expects($invokedRecorder)->method($methodName)
-                    ->willReturnCallback($returnValue->getValue());
-            } else if ($returnValue->isSelf()) {
-                // ->
-                $mockObject->expects($invokedRecorder)->method($methodName)->willReturn($mockObject);
-            } else {
-                // value
-                $mockObject->expects($invokedRecorder)->method($methodName)
-                    ->willReturn($returnValue->getValue());
-            }
-        }, $mockObject);
-
-        if (empty(self::$replacedClassInstances[$className]['instance'])) {
-            $mockWrapper = new MockWrapper();
-            $mockWrapper->setOriginalClassName($className);
-            $wrapperInstance = $mockWrapper->wrap($mockObject, $invokedRecorder, $request);
-            self::$replacedClassInstances[$className]['instance'] = $wrapperInstance;
+        if ($returnValue->isCallable()) {
+            // callback
+            $mockObject->expects($invokedRecorder)->method($methodName)
+                ->willReturnCallback($returnValue->getValue());
+        } else if ($returnValue->isSelf()) {
+            // ->
+            $mockObject->expects($invokedRecorder)->method($methodName)->willReturn($mockObject);
         } else {
-            $wrapperInstance = self::$replacedClassInstances[$className]['instance'];
-            /** @noinspection PhpUndefinedMethodInspection */
-            $prevInvokedRecorder = $wrapperInstance->__get_functionMocker_invokedRecorder();
-            // set the new invokedRecorder on the wrapper instance
-            /** @noinspection PhpUndefinedMethodInspection */
-            $wrapperInstance->__set_functionMocker_invokedRecorder($invokedRecorder);
-            // set the new invoked recorder on the callHandler
-            $callHandler = $wrapperInstance->__get_functionMocker_CallHandler();
-            $callHandler->setInvokedRecorder($invokedRecorder);
-            // sync the prev and the actual invokedRecorder
-            $invocations = $prevInvokedRecorder->getInvocations();
-            array_map(function (\PHPUnit_Framework_MockObject_Invocation $invocation) use (&$invokedRecorder) {
-                $invokedRecorder->invoked($invocation);
-            }, $invocations);
-            // set the mock object to the new one
-            $wrapperInstance->__set_functionMocker_originalMockObject($mockObject);
+            // value
+            $mockObject->expects($invokedRecorder)->method($methodName)
+                ->willReturn($returnValue->getValue());
         }
+
+        $mockWrapper = new MockWrapper();
+        $mockWrapper->setOriginalClassName($className);
+        $wrapperInstance = $mockWrapper->wrap($mockObject, $invokedRecorder, $request);
 
         return $wrapperInstance;
     }
