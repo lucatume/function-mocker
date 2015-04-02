@@ -48,8 +48,10 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
 
         public function testSomeMethodCallsSomeInstanceMethod(){
             // Setup
-            $replacement = Test::replace('Dependency::methodOne');
-            Test::replace('Dependency::methodTwo');
+            $mockDependency = Test::replace('Dependency')
+                ->method('methodOne')
+                ->method('methodTwo')
+                ->get();
 
             // Exercise
             $caller = function(Dependency $dependency){
@@ -57,12 +59,12 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
                 $dependency->methodTwo();
             };
 
-            $caller($replacement);
+            $caller($mockDependency);
 
             // Assert
-            $replacement->wasCalledOnce('methodOne');
-            $replacement->wasCalledWithOnce([Test::isType('string'), Test::isType('int')]'methodOne');
-            $replacement->wasCalledOnce('methodTwo');
+            $mockDependency->wasCalledOnce('methodOne');
+            $mockDependency->wasCalledWithOnce([Test::isType('string'), Test::isType('int')], 'methodOne');
+            $mockDependency->wasCalledOnce('methodTwo');
         }
     }
 
@@ -116,12 +118,12 @@ To reduce the tedious task of writing `FunctionMocker` each time or cover up the
         $User_find->wasCalledWithOnce(0);
     }
 
-### setUp and tearDown
+### setUp and tearDown methods  
 The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/) test case and provides two `static` methods that **must** be inserted in the test case `setUp` and `tearDown` method for the function mocker to work properly:
 
     class MyTest extends \PHPUnit_Framework_TestCase {
         public function setUp(){
-            // first
+            // before any other set up method
             FunctionMocker::setUp();
             ...
         }
@@ -129,7 +131,7 @@ The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/
         public function tearDown(){
             ...
 
-            // last
+            // after any other tear down method
             FunctionMocker::tearDown();
         }
     }
@@ -306,7 +308,32 @@ The `FunctionMocker::replace` method will set up the PHPUnit mock object using t
 
     $dep->expects($this->any())->method('go')->willReturn(23);
 
-Replacing different methods from the same class in the same test and in subsequent calls will return the same object with updated invocation expectations
+An alternative to this instance method replacement exists if the need arises to replace more than one instance method in a test:
+
+    use tad\FunctionMocker\FunctionMocker;
+
+    class SomeClassTest extends \PHPUnit_Framework_TestCase{
+        
+        public function dependencyTest(){
+
+            $func = function($one, $two){
+                    return $one + $two;
+                };
+
+            $mock = FunctionMocker::replace('Dependency')
+                ->method('methodOne') // replace with null returning methods
+                ->method('methodTwo', 23) // replace the method and return a value
+                ->method('methodThree', $func)
+                ->get();
+
+            $this->assertNull($mock->methodOne());
+            $this->assertEquals(23, $mock->methodTwo());
+            $this->assertEquals(4, $mock->methodThree(1,3));
+
+            }
+        }
+
+Not specifying any method to replace will return a mock object wher just the `__construct` method has been replaced.
 
 #### Mocking chaining methods
 Since version `0.2.13` it's possible mocking instance methods meant to be chained. Given the following dependency class
@@ -421,18 +448,19 @@ The object returned by the `FunctionMocker::replace` method called on an instanc
     }
 
 #### Batch replacing instance methods
-It's possible to batch replace instance method **of the same classs** using the same syntax used for batch function and static method replacement; differently from batch replacement of functions and static methods the value returned from the `FunctionMocker::replace` function can be used to spy. Given the `SomeClass` above:
+It's possible to batch replace instances using the same syntax used for batch function and static method replacement.  
+Given the `SomeClass` above:
 
         public function testBatchInstanceMethodReplacement(){
             $methods = ['SomeClass::methodOne', 'SomeClass::methodTwo'];
             // replace both class instance methods to return 23
-            $replacement = FunctionMocker::replace($methods, 23);
+            $replacements = FunctionMocker::replace($methods, 23);
 
-            $replacement->methodOne();
-            $replacement->methodTwo();
+            $replacement[0]->methodOne();
+            $replacement[1]->methodTwo();
 
-            $replacement->wasCalledOnce('methodOne');
-            $replacement->wasCalledOnce('methodTwo');
+            $replacement[0]->wasCalledOnce('methodOne');
+            $replacement[1]->wasCalledOnce('methodTwo');
         }
 
 ## Methods
