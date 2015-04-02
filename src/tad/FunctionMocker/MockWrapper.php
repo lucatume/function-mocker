@@ -46,7 +46,6 @@
 		 * @param ReplacementRequest                                    $request
 		 *
 		 * @throws \Exception
-		 * @internal param $extenderClassName
 		 *
 		 * @return mixed
 		 */
