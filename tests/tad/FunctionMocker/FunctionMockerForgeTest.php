@@ -22,7 +22,7 @@ namespace tests\tad\FunctionMocker {
 
         /**
          * @test
-         * it should allow calling the forge method on a namespaced
+         * it should allow calling the getMock method on a namespaced
          */
         public function it_should_allow_calling_the_forge_method_on_a_namespaced_class()
         {
@@ -31,7 +31,7 @@ namespace tests\tad\FunctionMocker {
 
         /**
          * @test
-         * it should allow calling the forge method on a global class
+         * it should allow calling the getMock method on a global class
          */
         public function it_should_allow_calling_the_forge_method_on_a_global_class()
         {
