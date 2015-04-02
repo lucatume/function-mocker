@@ -113,12 +113,7 @@ class FunctionMocker {
 				$replacements[] = self::_replace( $_functionName, $returnValue );
 			}, $functionName );
 
-			$return = self::arrayUnique( $replacements );
-			if ( ! is_array( $return ) ) {
-				return $return;
-			}
-
-			$indexedReplacements = self::getIndexedReplacements( $return );
+			$indexedReplacements = self::getIndexedReplacements( $replacements );
 
 			return $indexedReplacements;
 		}
@@ -138,11 +133,13 @@ class FunctionMocker {
 		$returnValue = ReturnValue::from( $returnValue );
 		$methodName  = $request->getMethodName();
 
+		if ( $request->isClass() ) {
+			return self::get_instance_replacement_chain_head( $functionName );
+		}
 		if ( $request->isInstanceMethod() ) {
 			return self::get_instance_replacement( $request, $returnValue );
 		}
 
-		// function or static method
 		return self::get_function_or_static_method_replacement( $functionName, $returnValue, $request, $methodName );
 	}
 
@@ -346,5 +343,15 @@ class FunctionMocker {
 
 	public static function forge( $class ) {
 		return new Step( $class );
+	}
+
+	private static function get_instance_replacement_chain_head( $className ) {
+		$step = new Step();
+		$step->setClass( $className );
+		$forger = new InstanceForger();
+		$forger->setTestCase( self::getTestCase() );
+		$step->setInstanceForger( $forger );
+
+		return $step;
 	}
 }
