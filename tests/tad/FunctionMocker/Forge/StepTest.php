@@ -147,6 +147,37 @@ class StepTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @test
+	 * it should allow replacing self returning methods
+	 */
+	public function it_should_allow_replacing_self_returning_methods() {
+		$sut = new Step( $this->class );
+		$sut->setClass( $this->class );
+		$this->set_instance_forger_on( $sut );
+
+		$mock = $sut->method( 'methodOne', '->' )
+		            ->get();
+
+		$this->assertInstanceOf( $this->class, $mock->methodOne() );
+	}
+
+	/**
+	 * @test
+	 * it should allow replace chain and value returning methods
+	 */
+	public function it_should_allow_replace_chain_and_value_returning_methods() {
+		$sut = new Step( $this->class );
+		$sut->setClass( $this->class );
+		$this->set_instance_forger_on( $sut );
+
+		$mock = $sut->method( 'methodOne', '->' )
+		            ->method( 'methodTwo', 23 )
+		            ->get();
+
+		$this->assertEquals( 23, $mock->methodOne()->methodTwo() );
+	}
+
+	/**
 	 * @param $sut
 	 */
 	private function set_instance_forger_on( $sut ) {
