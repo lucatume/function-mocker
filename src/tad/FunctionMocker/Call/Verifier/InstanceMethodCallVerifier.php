@@ -33,12 +33,8 @@ class InstanceMethodCallVerifier extends AbstractVerifier
      */
     private function realWasCalledTimes($times, $funcArgs)
     {
-        $methodName = !empty($funcArgs[1]) ? $funcArgs[1] : false;
-        $methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-        $callTimes = $this->getCallTimesWithArgs($methodName);
-
-        $this->matchCallTimes($times, $callTimes, $methodName);
+        $callTimes = $this->getCallTimesWithArgs($this->request->getMethodName());
+        $this->matchCallTimes($times, $callTimes, $this->request->getMethodName());
     }
 
     /**
@@ -127,24 +123,25 @@ class InstanceMethodCallVerifier extends AbstractVerifier
      */
     private function realWasCalledWithTimes(array $args, $times, $funcArgs)
     {
-        $methodName = !empty($funcArgs[2]) ? $funcArgs[2] : false;
-        $methodName = $methodName ? $methodName : $this->request->getMethodName();
-
-        $callTimes = $this->getCallTimesWithArgs($methodName, $args);
-        $functionName = $this->request->getMethodName();
-
-        $this->matchCallWithTimes($args, $times, $functionName, $callTimes);
+        $callTimes = $this->getCallTimesWithArgs($this->request->getMethodName(), $args);
+        $this->matchCallWithTimes($args, $times, $this->request->getMethodName(), $callTimes);
     }
 
     public function wasCalledOnce()
     {
         $funcArgs = func_get_args();
+        if ($this instanceof InstanceMethodCallVerifier) {
+            $this->request->methodName = $funcArgs[0];
+        }
         $this->realWasCalledTimes(1, $funcArgs);
     }
 
     public function wasCalledWithOnce(array $args)
     {
         $funcArgs = func_get_args();
+        if ($this instanceof InstanceMethodCallVerifier) {
+            $this->request->methodName = $funcArgs[1];
+        }
         $this->realWasCalledWithTimes($args, 1, $funcArgs);
     }
 

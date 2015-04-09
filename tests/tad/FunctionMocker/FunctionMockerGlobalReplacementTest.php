@@ -29,7 +29,7 @@ class FunctionMockerGlobalReplacementTest extends \PHPUnit_Framework_TestCase
 
         global $some;
         $this->assertEquals(23, $some->oneMethod());
-        $fooReplacement->wasCalledOnce();
+        $fooReplacement->wasCalledOnce('oneMethod');
     }
 
     /**
@@ -42,9 +42,8 @@ class FunctionMockerGlobalReplacementTest extends \PHPUnit_Framework_TestCase
 
         global $foo;
         $this->assertEquals(23, $foo->oneMethod());
-        $fooReplacement->wasCalledOnce();
+        $fooReplacement->wasCalledOnce('oneMethod');
     }
-
     /**
      * @test
      * it should allow replacing a set global variable with a simple value
