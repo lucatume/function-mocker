@@ -53,7 +53,7 @@ class ReplacementRequest {
 	 * @return string
 	 */
 	private static function getType( $mockRequest ) {
-		if ( class_exists( $mockRequest ) ) {
+		if ( class_exists( $mockRequest ) || interface_exists( $mockRequest ) || trait_exists( $mockRequest ) ) {
 			return 'class';
 		}
 		if ( preg_match( "/^[\\w\\\\_]*(::|->)[\\w\\d_]+/um", $mockRequest ) ) {
@@ -61,18 +61,6 @@ class ReplacementRequest {
 		}
 
 		return 'function';
-	}
-
-	/**
-	 * @param $requestString
-	 */
-	private function ensure_matching_symbol( $requestString ) {
-		$m = [ ];
-		preg_match( '/(::|->)/', $requestString, $m );
-		$symbol = $m[1];
-		if ( $symbol === '->' && ! $this->isInstanceMethod() ) {
-			throw new \InvalidArgumentException( 'Request was for a static method but the \'->\' symbol was used; keep it clear.' );
-		}
 	}
 
 	/**
@@ -127,16 +115,28 @@ class ReplacementRequest {
 		return $instance;
 	}
 
+	/**
+	 * @param $requestString
+	 */
+	private function ensure_matching_symbol( $requestString ) {
+		$m = [ ];
+		preg_match( '/(::|->)/', $requestString, $m );
+		$symbol = $m[1];
+		if ( $symbol === '->' && ! $this->isInstanceMethod() ) {
+			throw new \InvalidArgumentException( 'Request was for a static method but the \'->\' symbol was used; keep it clear.' );
+		}
+	}
+
+	public function isInstanceMethod() {
+		return $this->isMethod && $this->isInstanceMethod;
+	}
+
 	public function isFunction() {
 		return $this->isFunction;
 	}
 
 	public function isStaticMethod() {
 		return $this->isMethod && $this->isStaticMethod;
-	}
-
-	public function isInstanceMethod() {
-		return $this->isMethod && $this->isInstanceMethod;
 	}
 
 	public function isMethod() {
