@@ -66,7 +66,6 @@ class MethodCode
      */
     protected function getMethodCode($methodName)
     {
-
         $method = is_a($methodName, '\ReflectionMethod') ? $methodName : new \ReflectionMethod($this->targetClass, $methodName);
 
         $declaringClass = $method->getDeclaringClass();
@@ -75,8 +74,32 @@ class MethodCode
         $startLine = $method->getStartLine();
         $endLine = $method->getEndLine();
 
-        $lines = explode("\n", $contents);
-        $lines = array_map(function ($line) {
+        $classAliases = [];
+        $lines = explode(PHP_EOL, $contents);
+        foreach ($lines as $line) {
+            $frags = explode(' ', $line);
+            if (!empty($frags) && $frags[0] == 'use') {
+                $fullClassName = $frags[1];
+                // use Acme\Class as Alias
+                if (count($frags) > 2) {
+                    $alias = $frags[3];
+                } else {
+                    if (strpos($frags[1], '\\')) {
+                        $classNameFrags = explode('\\', $frags[1]);
+                        $alias = array_pop($classNameFrags);
+                    } else {
+                        $alias = $frags[1];
+                    }
+                }
+                $alias = trim($alias, ';');
+                $classAliases[$alias] = trim($fullClassName, ';');
+            }
+        }
+
+        $lines = array_map(function ($line) use ($classAliases) {
+            foreach ($classAliases as $classAlias => $fullClassName) {
+                $line = str_replace($classAlias, $fullClassName, $line);
+            }
             return trim($line);
         }, $lines);
 
