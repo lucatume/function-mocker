@@ -91,7 +91,9 @@
 				}
 			}
 
-			$wrapperInstance = new $extendClassName;
+			$reflectionClass = new \ReflectionClass($extendClassName);
+			$wrapperInstance = $reflectionClass->newInstanceWithoutConstructor();
+
 			/** @noinspection PhpUndefinedMethodInspection */
 			$wrapperInstance->__set_functionMocker_originalMockObject( $object );
 			$callHandler = new $extenderClassName;
