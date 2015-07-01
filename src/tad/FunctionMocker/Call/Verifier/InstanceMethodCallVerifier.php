@@ -33,8 +33,9 @@ class InstanceMethodCallVerifier extends AbstractVerifier
      */
     private function realWasCalledTimes($times, $funcArgs)
     {
-        $callTimes = $this->getCallTimesWithArgs($this->request->getMethodName());
-        $this->matchCallTimes($times, $callTimes, $this->request->getMethodName());
+        $methodName = $this->request->getMethodName() ?: $funcArgs[0];
+        $callTimes = $this->getCallTimesWithArgs($methodName);
+        $this->matchCallTimes($times, $callTimes, $methodName);
     }
 
     /**
