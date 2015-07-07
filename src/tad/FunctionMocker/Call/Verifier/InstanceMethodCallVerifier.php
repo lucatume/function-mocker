@@ -8,38 +8,38 @@ use tad\FunctionMocker\ReturnValue;
 
 class InstanceMethodCallVerifier extends AbstractVerifier
 {
-
+    
     protected $returnValue;
     protected $callLogger;
-
+    
     public static function from(ReturnValue $returnValue, LoggerInterface $callLogger)
     {
         $instance = new self;
         $instance->returnValue = $returnValue;
         $instance->callLogger = $callLogger;
-
+        
         return $instance;
     }
-
+    
     public function wasNotCalled()
     {
-        $funcArgs = func_get_args();
-        $this->realWasCalledTimes(0, $funcArgs);
+        if ($this instanceof InstanceMethodCallVerifier) {
+            $this->request->methodName = func_get_arg(0);
+        }
+        $this->realWasCalledTimes(0);
     }
-
+    
     /**
      * @param $times
-     * @param $funcArgs
      */
-    private function realWasCalledTimes($times, $funcArgs)
+    private function realWasCalledTimes($times)
     {
-        $methodName = $this->request->getMethodName() ?: $funcArgs[0];
-        $callTimes = $this->getCallTimesWithArgs($methodName);
-        $this->matchCallTimes($times, $callTimes, $methodName);
+        $callTimes = $this->getCallTimesWithArgs($this->request->methodName);
+        $this->matchCallTimes($times, $callTimes, $this->request->methodName);
     }
-
+    
     /**
-     * @param array $args
+     * @param array  $args
      *
      * @param string $methodName
      *
@@ -49,17 +49,20 @@ class InstanceMethodCallVerifier extends AbstractVerifier
     {
         $invocations = $this->invokedRecorder->getInvocations();
         $callTimes = 0;
-        array_map(function (\PHPUnit_Framework_MockObject_Invocation_Object $invocation) use (&$callTimes, $args, $methodName) {
+        array_map(function (\PHPUnit_Framework_MockObject_Invocation_Object $invocation) use (&$callTimes, $args, $methodName)
+        {
             if (is_array($args)) {
-                $callTimes += $this->compareName($invocation, $methodName) && $this->compareArgs($invocation, $args);
-            } else {
-                $callTimes += $this->compareName($invocation, $methodName);
+                $callTimes+= $this->compareName($invocation, $methodName) && $this->compareArgs($invocation, $args);
+            } 
+            else {
+                $callTimes+= $this->compareName($invocation, $methodName);
             }
-        }, $invocations);
-
+        }
+        , $invocations);
+        
         return $callTimes;
     }
-
+    
     /**
      * @param \PHPUnit_Framework_MockObject_Invocation_Object $invocation
      * @param                                                 $methodName
@@ -70,7 +73,7 @@ class InstanceMethodCallVerifier extends AbstractVerifier
     {
         return $invocation->methodName === $methodName;
     }
-
+    
     /**
      * @param \PHPUnit_Framework_MockObject_Invocation_Object $invocation
      * @param                                                 $args
@@ -91,10 +94,10 @@ class InstanceMethodCallVerifier extends AbstractVerifier
                 return false;
             }
         }
-
+        
         return true;
     }
-
+    
     /**
      * @param $expected
      * @param $arg
@@ -105,47 +108,46 @@ class InstanceMethodCallVerifier extends AbstractVerifier
     {
         if ($arg instanceof \PHPUnit_Framework_Constraint) {
             return $arg->evaluate($expected, '', true);
-        } else {
+        } 
+        else {
             return $arg === $expected;
         }
-
     }
-
+    
     public function wasNotCalledWith(array $args)
     {
-        $funcArgs = func_get_args();
-        $this->realWasCalledWithTimes($args, 0, $funcArgs);
+        if ($this instanceof InstanceMethodCallVerifier) {
+            $this->request->methodName = func_get_arg(1);
+        }
+        $this->realWasCalledWithTimes($args, 0);
     }
-
+    
     /**
      * @param array $args
      * @param       $times
-     * @param       $funcArgs
      */
-    private function realWasCalledWithTimes(array $args, $times, $funcArgs)
+    private function realWasCalledWithTimes(array $args, $times)
     {
-        $callTimes = $this->getCallTimesWithArgs($this->request->getMethodName(), $args);
-        $this->matchCallWithTimes($args, $times, $this->request->getMethodName(), $callTimes);
+        $callTimes = $this->getCallTimesWithArgs($this->request->methodName, $args);
+        $this->matchCallWithTimes($args, $times, $this->request->methodName, $callTimes);
     }
-
+    
     public function wasCalledOnce()
     {
-        $funcArgs = func_get_args();
         if ($this instanceof InstanceMethodCallVerifier) {
-            $this->request->methodName = $funcArgs[0];
+            $this->request->methodName = func_get_arg(0);
         }
-        $this->realWasCalledTimes(1, $funcArgs);
+        $this->realWasCalledTimes(1);
     }
-
+    
     public function wasCalledWithOnce(array $args)
     {
-        $funcArgs = func_get_args();
         if ($this instanceof InstanceMethodCallVerifier) {
-            $this->request->methodName = $funcArgs[1];
+            $this->request->methodName = func_get_arg(1);
         }
-        $this->realWasCalledWithTimes($args, 1, $funcArgs);
+        $this->realWasCalledWithTimes($args, 1);
     }
-
+    
     /**
      * Checks if the function or method was called the specified number
      * of times.
@@ -156,22 +158,26 @@ class InstanceMethodCallVerifier extends AbstractVerifier
      */
     public function wasCalledTimes($times)
     {
-        $funcArgs = func_get_args();
-        $this->realWasCalledTimes($times, $funcArgs);
+        if ($this instanceof InstanceMethodCallVerifier) {
+            $this->request->methodName = func_get_arg(1);
+        }
+        $this->realWasCalledTimes($times);
     }
-
+    
     /**
      * Checks if the function or method was called with the specified
      * arguments a number of times.
      *
      * @param  array $args
-     * @param  int $times
+     * @param  int   $times
      *
      * @return void
      */
     public function wasCalledWithTimes(array $args, $times)
     {
-        $funcArgs = func_get_args();
-        $this->realWasCalledWithTimes($args, $times, $funcArgs);
+        if ($this instanceof InstanceMethodCallVerifier) {
+            $this->request->methodName = func_get_arg(2);
+        }
+        $this->realWasCalledWithTimes($args, $times);
     }
 }
