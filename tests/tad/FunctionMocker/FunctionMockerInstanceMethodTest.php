@@ -444,6 +444,19 @@
 
             $this->assertInstanceOf('tad\FunctionMocker\Forge\Step', $sut);
         }
+
+        /**
+         * @test
+         * it should allow setting the expectation on an instance method calling it
+         */
+        public function it_should_allow_setting_the_expectation_on_an_instance_method_calling_it()
+        {
+            $this->setExpectedException('\\PHPUnit_Framework_AssertionFailedError');
+
+            $sut = FunctionMocker::replace($this->testClass);
+
+            $sut->methodOne()->wasCalledOnce();
+        }
     }
 
 

@@ -143,23 +143,22 @@ class FunctionMocker {
 		return self::get_function_or_static_method_replacement( $functionName, $returnValue, $request, $methodName );
 	}
 
-	/**
-	 * @param ReplacementRequest $request
-	 * @param $returnValue
-	 *
-	 * @return mixed
-	 */
-	public static function get_instance_replacement( ReplacementRequest $request, $returnValue ) {
+	private static function get_instance_replacement_chain_head($className)
+	{
+		$step = new Step();
+		$step->setClass($className);
 		$forger = new InstanceForger();
 		$forger->setTestCase( self::getTestCase() );
+		$step->setInstanceForger($forger);
 
-		return $forger->getMock( $request, $returnValue );
+		return $step;
 	}
 
 	/**
 	 * @return SpoofTestCase
 	 */
-	protected static function getTestCase() {
+	public static function getTestCase()
+	{
 		if ( ! self::$testCase ) {
 			self::$testCase = new SpoofTestCase();
 		}
@@ -175,6 +174,19 @@ class FunctionMocker {
 		self::$testCase = $testCase;
 	}
 
+	/**
+	 * @param ReplacementRequest $request
+	 * @param $returnValue
+	 *
+	 * @return mixed
+	 */
+	public static function get_instance_replacement(ReplacementRequest $request, $returnValue)
+	{
+		$forger = new InstanceForger();
+		$forger->setTestCase(self::getTestCase());
+
+		return $forger->getMock($request, $returnValue);
+	}
 
 	/**
 	 * @param $functionName
@@ -185,11 +197,12 @@ class FunctionMocker {
 	 * @return Call\Verifier\InstanceMethodCallVerifier|static
 	 * @throws \Exception
 	 */
-	private static function get_function_or_static_method_replacement( $functionName, $returnValue, $request, $methodName ) {
-		$checker    = Checker::fromName( $functionName );
-		$callLogger = CallLoggerFactory::make( $functionName );
-		$verifier   = CallVerifierFactory::make( $request, $checker, $returnValue, $callLogger );
-		self::replace_with_patchwork( $functionName, $returnValue, $request, $methodName, $callLogger );
+	private static function get_function_or_static_method_replacement($functionName, $returnValue, $request, $methodName)
+	{
+		$checker = Checker::fromName($functionName);
+		$callLogger = CallLoggerFactory::make($functionName);
+		$verifier = CallVerifierFactory::make($request, $checker, $returnValue, $callLogger);
+		self::replace_with_patchwork($functionName, $returnValue, $request, $methodName, $callLogger);
 
 		return $verifier;
 	}
@@ -201,14 +214,15 @@ class FunctionMocker {
 	 * @param $methodName
 	 * @param $callLogger
 	 */
-	private static function replace_with_patchwork( $functionName, $returnValue, $request, $methodName, $callLogger ) {
+	private static function replace_with_patchwork($functionName, $returnValue, $request, $methodName, $callLogger)
+	{
 		$functionOrMethodName = $request->isMethod() ? $methodName : $functionName;
 
-		$replacementFunction = self::getReplacementFunction( $functionOrMethodName, $returnValue, $callLogger );
+		$replacementFunction = self::getReplacementFunction($functionOrMethodName, $returnValue, $callLogger);
 
-		if ( function_exists( '\Patchwork\replace' ) ) {
+		if (function_exists('\Patchwork\replace')) {
 
-			\Patchwork\replace( $functionName, $replacementFunction );
+			\Patchwork\replace($functionName, $replacementFunction);
 		}
 	}
 
@@ -219,18 +233,19 @@ class FunctionMocker {
 	 *
 	 * @return callable
 	 */
-	protected static function getReplacementFunction( $functionName, $returnValue, $invocation ) {
-		$replacementFunction = function () use ( $functionName, $returnValue, $invocation ) {
+	protected static function getReplacementFunction($functionName, $returnValue, $invocation)
+	{
+		$replacementFunction = function () use ($functionName, $returnValue, $invocation) {
 			$trace = debug_backtrace();
-			$args  = array_filter( $trace, function ( $stackLog ) use ( $functionName ) {
-				$check = isset( $stackLog['args'] ) && is_array( $stackLog['args'] ) && $stackLog['function'] === $functionName;
+			$args = array_filter($trace, function ($stackLog) use ($functionName) {
+				$check = isset($stackLog['args']) && is_array($stackLog['args']) && $stackLog['function'] === $functionName;
 
 				return $check ? true : false;
-			} );
-			$args  = array_values( $args );
-			$args  = isset( $args[0] ) ? $args[0]['args'] : array();
+			});
+			$args = array_values($args);
+			$args = isset($args[0]) ? $args[0]['args'] : array();
 			/** @noinspection PhpUndefinedMethodInspection */
-			$invocation->called( $args );
+			$invocation->called($args);
 
 			/** @noinspection PhpUndefinedMethodInspection */
 
@@ -238,27 +253,10 @@ class FunctionMocker {
 
 			/** @noinspection PhpUndefinedMethodInspection */
 
-			return $returnValue->isCallable() ? $returnValue->call( $args ) : $returnValue->getValue();
+			return $returnValue->isCallable() ? $returnValue->call($args) : $returnValue->getValue();
 		};
 
 		return $replacementFunction;
-	}
-
-	/**
-	 * @param $elements
-	 *
-	 * @return array|mixed
-	 */
-	private static function arrayUnique( $elements ) {
-		$uniqueReplacements = array();
-		array_map( function ( $replacement ) use ( &$uniqueReplacements ) {
-			if ( ! in_array( $replacement, $uniqueReplacements ) ) {
-				$uniqueReplacements[] = $replacement;
-			}
-		}, $elements );
-		$uniqueReplacements = array_values( $uniqueReplacements );
-
-		return count( $uniqueReplacements ) === 1 ? $uniqueReplacements[0] : $uniqueReplacements;
 	}
 
 	/**
@@ -343,15 +341,5 @@ class FunctionMocker {
 
 	public static function forge( $class ) {
 		return new Step( $class );
-	}
-
-	private static function get_instance_replacement_chain_head( $className ) {
-		$step = new Step();
-		$step->setClass( $className );
-		$forger = new InstanceForger();
-		$forger->setTestCase( self::getTestCase() );
-		$step->setInstanceForger( $forger );
-
-		return $step;
 	}
 }

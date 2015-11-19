@@ -14,7 +14,7 @@ trait PHPUnitFrameworkAssertWrapper
     public static function getTestCase()
     {
         if (empty(self::$testCase)) {
-            self::$testCase = new \PHPUnit_Framework_TestCase();
+            self::$testCase = new SpoofTestCase();
         }
         
         return self::$testCase;
