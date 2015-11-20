@@ -5,7 +5,7 @@
 ## Show me the code
 This can be written in a [PHPUnit](http://phpunit.de/) test suite
 
-    use tad\FunctionMocker\FunctionMocker as Test;
+use tad\FunctionMocker\FunctionMocker as Test;
 
     class SomeClassTest extends \PHPUnit_Framework_TestCase {
         
@@ -50,8 +50,7 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
             // Setup
             $mockDependency = Test::replace('Dependency')
                 ->method('methodOne')
-                ->method('methodTwo')
-                ->get();
+                ->method('methodTwo');
 
             // Exercise
             $caller = function(Dependency $dependency){
@@ -59,19 +58,19 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
                 $dependency->methodTwo();
             };
 
-            $caller($mockDependency);
+            $caller($mockDependency->get());
 
             // Assert
-            $mockDependency->wasCalledOnce('methodOne');
-            $mockDependency->wasCalledWithOnce([Test::isType('string'), Test::isType('int')], 'methodOne');
-            $mockDependency->wasCalledOnce('methodTwo');
+            $mockDependency->verify->methodOne()->wasCalledOnce();
+            $mockDependency->verify->methodOne('foo', 23)->wasCalledOnce();
+            $mockDependency->verify->methodTwo()->wasCalledOnce();
         }
     }
 
 ## Installation
 Either zip and move it to the appropriate folder or use [Composer](https://getcomposer.org/)
 
-    composer require lucatume/function-mocker:~0.1
+    composer require lucatume/function-mocker:~1.0
 
 ## Usage
 In a perfect world you should never need to mock static methods and functions, should use [TDD](http://en.wikipedia.org/wiki/Test-driven_development) to write better object-oriented code and use it as a design tool.  
@@ -409,7 +408,7 @@ the interface above can be replaced in a test like this
 See PHPUnit docs for a more detailed approach.
 
 #### Spying instance methods
-The object returned by the `FunctionMocker::replace` method called on an instance method will allow for the methods specified in the "Methods" section to be used to check for calls made to the replaced method with the additional `methodName` parameter specified:
+The object returned by the `FunctionMocker::replace` method called on an instance method will allow for the methods specified in the "Methods" section to be used to check for calls made to the replaced method:
 
     // file SomeClass.php
 
@@ -446,6 +445,33 @@ The object returned by the `FunctionMocker::replace` method called on an instanc
             $replacement->wasCalledOnce('methodTwo');
         }
     }
+
+An alternative and more fluid API allows rewriting the assertions above in a way that's more similar to the one used by [prophecy](https://github.com/phpspec/prophecy "phpspec/prophecy · GitHub"):
+
+    // file SomeClassTest.php   
+    
+    use tad\FunctionMocker\FunctionMocker;
+
+    class SomeClassTest extends PHPUnit_Framework_TestCase {
+    
+        /**
+         * @test
+         */
+        public function returns_the_same_replacement_object(){
+            // replace both class instance methods to return 23
+            $mock = FunctionMocker::replace('SomeClass)
+                ->methodOne()
+                ->methodTwo();
+            $replacement = $mock->get(); // think of $mock->reveal()
+
+            $replacement->methodOne();
+            $replacement->methodTwo();
+
+            $mock->verify()->methodOne()->wasCalledOnce();
+            $mock->verify()->methodTwo()->wasCalledOnce();
+        }
+    }
+
 
 #### Batch replacing instance methods
 It's possible to batch replace instances using the same syntax used for batch function and static method replacement.  
