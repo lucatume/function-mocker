@@ -4,7 +4,8 @@ namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker;
 
-class FunctionMockerAliasedClassesTest extends \PHPUnit_Framework_TestCase {
+class AliasedClassesTest extends \PHPUnit_Framework_TestCase
+{
 
 	public function setUp() {
 		FunctionMocker::setUp();

@@ -9,7 +9,8 @@
 namespace tad\FunctionMocker;
 
 
-class FunctionMockerTestWrappingTest extends \PHPUnit_Framework_TestCase {
+class TestWrappingTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @test
      * it should allow wrapping the test case and call its methods

@@ -4,7 +4,7 @@ namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker as Sut;
 
-class FunctionMockerStaticMethodConstraintsCheckTest extends \PHPUnit_Framework_TestCase
+class StaticMethodConstraintsCheckTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {

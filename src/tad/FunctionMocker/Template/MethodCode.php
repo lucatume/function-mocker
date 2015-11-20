@@ -2,7 +2,7 @@
 
     namespace tad\FunctionMocker\Template;
 
-    class MethodCode
+    class MethodCode implements MethodCodeInterface
     {
 
         /**
@@ -151,8 +151,19 @@
                 return '$' . $parameter->name;
             }, $method->getParameters());
             $args = implode(', ', $args);
-            $body = "return \$this->__functionMocker_originalMockObject->$methodName($args);";
+            $body = $this->getCallBody($methodName, $args);
 
             return $this->getMethodCodeForWithBody($methodName, $body);
+        }
+
+        /**
+         * @param $methodName
+         * @param $args
+         * @return string
+         */
+        protected function getCallBody($methodName, $args)
+        {
+            $body = "return \$this->__functionMocker_originalMockObject->$methodName($args);";
+            return $body;
         }
     }

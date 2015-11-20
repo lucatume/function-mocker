@@ -3,9 +3,17 @@
 namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker as Test;
-use tad\FunctionMocker\FunctionMocker;
 
-class FunctionMockerInstanceMockingTest extends \PHPUnit_Framework_TestCase {
+interface SomeI
+{
+
+	public function methodOne();
+
+	public function methodWithArgs($string, $int);
+}
+
+class InstanceMockingTest extends \PHPUnit_Framework_TestCase
+{
 
 	protected $ns;
 
@@ -93,12 +101,4 @@ class FunctionMockerInstanceMockingTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertNull( $mock->methodOne() );
 	}
-}
-
-
-interface SomeI {
-
-	public function methodOne();
-
-	public function methodWithArgs( $string, $int );
 }

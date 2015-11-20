@@ -6,7 +6,8 @@
 	use tad\FunctionMocker\MockCallLogger;
 	use tad\FunctionMocker\TestCase;
 
-	class FunctionMockerFunctionTest extends \PHPUnit_Framework_TestCase {
+	class FunctionReplacementTest extends \PHPUnit_Framework_TestCase
+	{
 
 		public function setUp() {
 			FunctionMocker::setUp();

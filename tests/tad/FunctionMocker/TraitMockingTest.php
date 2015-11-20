@@ -5,7 +5,32 @@
 
 	use tad\FunctionMocker\FunctionMocker as Test;
 
-	class FunctionMockerTraitMockingTest extends \PHPUnit_Framework_TestCase {
+	trait TestTrait
+	{
+
+		public static function methodThree()
+		{
+
+		}
+
+		public static function methodFour($one, $two)
+		{
+
+		}
+
+		public function methodOne()
+		{
+
+		}
+
+		public function methodTwo($one, $two)
+		{
+
+		}
+	}
+
+	class TraitMockingTest extends \PHPUnit_Framework_TestCase
+	{
 
 		/**
 		 * @var string
@@ -55,24 +80,4 @@
 			$this->assertEquals( 23, $mock->methodTwo( 11, 12 ) );
 		}
 
-	}
-
-
-	trait TestTrait {
-
-		public function methodOne() {
-
-		}
-
-		public function methodTwo( $one, $two ) {
-
-		}
-
-		public static function methodThree() {
-
-		}
-
-		public static function methodFour( $one, $two ) {
-
-		}
 	}

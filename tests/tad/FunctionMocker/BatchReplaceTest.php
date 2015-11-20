@@ -5,7 +5,7 @@ namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker;
 
-class FunctionMockerBatchReplaceTest extends \PHPUnit_Framework_TestCase
+class BatchReplaceTest extends \PHPUnit_Framework_TestCase
 {
 
     public function setUp()

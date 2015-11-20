@@ -5,7 +5,7 @@ namespace tests\tad\FunctionMocker {
 
     use tad\FunctionMocker\FunctionMocker as Sut;
 
-    class FunctionMockerForgeTest extends \PHPUnit_Framework_TestCase
+    class ForgeTest extends \PHPUnit_Framework_TestCase
     {
         protected $class;
 
