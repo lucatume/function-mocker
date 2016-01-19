@@ -348,6 +348,19 @@
             $verifier = $sut->verify();
             $verifier->methodThree('foo', 'bar')->wasCalledTimes(3);
         }
+
+        /**
+         * @test
+         * it should return the same verifier instance on each call
+         */
+        public function it_should_return_the_same_verifier_instance_on_each_call()
+        {
+            $sut = new Step($this->class);
+            $sut->setClass($this->class);
+            $this->set_instance_forger_on($sut);
+
+            $this->assertSame($sut->verify(), $sut->verify());
+        }
     }
 
 
