@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "69cb2986d7860c548958443351390864",
-    "content-hash": "2a38798473f2f2f8c021ad0b6642869d",
+    "hash": "f7632832063eb4ae490f7e803a521a6c",
+    "content-hash": "44f893aa49ddbf194516cff2723f9edb",
     "packages": [
         {
             "name": "antecedent/patchwork",
@@ -50,16 +50,16 @@
         },
         {
             "name": "lucatume/args",
-            "version": "0.1.10",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/args.git",
-                "reference": "0be8ba515ad238eb0bec6ddd1602da51c6c7171b"
+                "reference": "85146071bd2b3328af6b5da1de516c33a93a82df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/args/zipball/0be8ba515ad238eb0bec6ddd1602da51c6c7171b",
-                "reference": "0be8ba515ad238eb0bec6ddd1602da51c6c7171b",
+                "url": "https://api.github.com/repos/lucatume/args/zipball/85146071bd2b3328af6b5da1de516c33a93a82df",
+                "reference": "85146071bd2b3328af6b5da1de516c33a93a82df",
                 "shasum": ""
             },
             "require": {
@@ -86,7 +86,7 @@
                 }
             ],
             "description": "A PHP 5.2 compatible arguments handling library.",
-            "time": "2015-04-20 19:02:17"
+            "time": "2015-09-13 08:57:22"
         },
         {
             "name": "xrstf/composer-php52",
