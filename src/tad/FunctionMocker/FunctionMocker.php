@@ -2,6 +2,7 @@
 
     namespace tad\FunctionMocker;
 
+    use Patchwork\Config\State;
     use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
     use tad\FunctionMocker\Call\Logger\LoggerInterface;
     use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
@@ -69,7 +70,7 @@
             $blacklist = array_diff($blacklist, $whitelist);
 
             array_map(function ($path) {
-                \Patchwork\blacklist($path);
+                State::$blacklist[] = $path;
             }, $blacklist);
 
             self::$didInit = true;
@@ -230,7 +231,7 @@
 
             if (function_exists('\Patchwork\replace')) {
 
-                \Patchwork\replace($functionName, $replacementFunction);
+                \Patchwork\redefine($functionName, $replacementFunction);
             }
         }
 
