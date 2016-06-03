@@ -83,7 +83,7 @@
          */
         public static function tearDown()
         {
-            \Patchwork\undoAll();
+            \Patchwork\restoreAll();
 
             // restore the globals
             if (empty(self::$globalsBackup)) {
@@ -294,7 +294,7 @@
          */
         public static function callOriginal(array $args = null)
         {
-            return \Patchwork\callOriginal($args);
+            return \Patchwork\relay($args);
         }
 
         /**

@@ -71,6 +71,11 @@ class InstanceForger
         return $mockObject;
     }
 
+    /**
+     * @param \PHPUnit_Framework_MockObject_MockObject $mockObject
+     * @param $methodName
+     * @param ReturnValue|null $returnValue
+     */
     public function setMockObjectExpectation(&$mockObject, $methodName, ReturnValue $returnValue = null)
     {
         if ($returnValue->isCallable()) {

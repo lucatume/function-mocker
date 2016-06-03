@@ -20,7 +20,7 @@
 			$instance->functionName = $functionName;
 			$isMethod = preg_match( "/^[\\w\\d_\\\\]+::[\\w\\d_]+$/", $functionName );
 			if ( ! $isMethod && ! function_exists( $functionName ) ) {
-				$namespace = self::hasnamespace( $functionName ) ? 'namespace ' . self::getnamespacefrom( $functionName ) . ";" : '';
+				$namespace = self::hasNamespace($functionName) ? 'namespace ' . self::getNamespaceFrom($functionName) . ";" : '';
 				$functionName = self::hasNamespace( $functionName ) ? self::getFunctionNameFrom( $functionName ) : $functionName;
 				$code = sprintf( '%sfunction %s(){return null;}', $namespace, $functionName );
 				$ok = eval( $code );
