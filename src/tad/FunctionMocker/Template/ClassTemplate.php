@@ -1,13 +1,13 @@
 <?php
 
-	namespace tad\FunctionMocker\Template;
+namespace tad\FunctionMocker\Template;
 
-	class ClassTemplate implements ClassTemplateInterface
-	{
+class ClassTemplate implements ClassTemplateInterface
+{
 
-		public function getExtendedMockTemplate()
-		{
-			return <<< CODESET
+    public function getExtendedMockTemplate()
+    {
+        return <<< CODESET
 class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName%% {
 
 	public \$__functionMocker_callHandler;
@@ -39,11 +39,11 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 	%%originalMethods%%
 }
 CODESET;
-		}
+    }
 
-		public function getExtendedMethodTemplate($methodName)
-		{
-			return <<< CODESET
+    public function getExtendedMethodTemplate($methodName)
+    {
+        return <<< CODESET
 	public function %%call%%{
 		call_user_func_array(array(\$this->__functionMocker_callHandler, '%%methodName%%'), func_get_args());
 		return \$this;
@@ -51,5 +51,5 @@ CODESET;
 
 CODESET;
 
-		}
-	}
+    }
+}

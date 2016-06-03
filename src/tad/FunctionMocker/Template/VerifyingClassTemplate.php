@@ -1,13 +1,13 @@
 <?php
 
-    namespace tad\FunctionMocker\Template;
+namespace tad\FunctionMocker\Template;
 
 
-    class VerifyingClassTemplate extends ClassTemplate
+class VerifyingClassTemplate extends ClassTemplate
+{
+    public function getExtendedMockTemplate()
     {
-        public function getExtendedMockTemplate()
-        {
-            return <<< CODESET
+        return <<< CODESET
 class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName%% {
 
 	public \$__functionMocker_callHandler;
@@ -41,31 +41,31 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 	%%originalMethods%%
 }
 CODESET;
-        }
+    }
 
-        public function getExtendedMethodTemplate($methodName)
-        {
-            $map = [
-                'wasCalledTimes'     => 'wasCalledTimesTemplate',
-                'wasCalledWithTimes' => 'wasCalledWithTimesTemplate',
-                'wasNotCalled'       => 'wasNotCalledTemplate',
-                'wasCalledOnce'      => 'wasCalledOnceTemplate',
-            ];
-            if (array_key_exists($methodName, $map)) {
-                return $this->{$map[$methodName]}();
-            }
-            return <<< CODESET
+    public function getExtendedMethodTemplate($methodName)
+    {
+        $map = [
+            'wasCalledTimes' => 'wasCalledTimesTemplate',
+            'wasCalledWithTimes' => 'wasCalledWithTimesTemplate',
+            'wasNotCalled' => 'wasNotCalledTemplate',
+            'wasCalledOnce' => 'wasCalledOnceTemplate',
+        ];
+        if (array_key_exists($methodName, $map)) {
+            return $this->{$map[$methodName]}();
+        }
+        return <<< CODESET
 	public function %%call%%{
 	    \$args = [func_get_args(),\$this->__functionMocker_methodName];
 		call_user_func_array(array(\$this->__functionMocker_callHandler, '%%methodName%%'), \$args);
 	}
 
 CODESET;
-        }
+    }
 
-        protected function wasCalledTimesTemplate()
-        {
-            return <<< CODESET
+    protected function wasCalledTimesTemplate()
+    {
+        return <<< CODESET
 		public function wasCalledTimes(\$times){
 		if(empty(\$this->__functionMocker_methodArgs)){
 		    \$args = [
@@ -84,11 +84,11 @@ CODESET;
         call_user_func_array(array(\$this->__functionMocker_callHandler, \$call), \$args);
     }
 CODESET;
-        }
+    }
 
-        protected function wasCalledWithTimesTemplate()
-        {
-            return <<< CODESET
+    protected function wasCalledWithTimesTemplate()
+    {
+        return <<< CODESET
         public function wasCalledWithTimes(array \$args = array(), \$times){
         \$args = [
             \$args,
@@ -99,11 +99,11 @@ CODESET;
     }
 CODESET;
 
-        }
+    }
 
-        protected function wasNotCalledTemplate()
-        {
-            return <<< CODESET
+    protected function wasNotCalledTemplate()
+    {
+        return <<< CODESET
         public function wasNotCalled(){
         if(empty(\$this->__functionMocker_methodArgs)){
             \$args = [
@@ -121,11 +121,11 @@ CODESET;
     }
 CODESET;
 
-        }
+    }
 
-        protected function wasNotCalledWithTemplate()
-        {
-            return <<< CODESET
+    protected function wasNotCalledWithTemplate()
+    {
+        return <<< CODESET
         public function wasNotCalledWith(array \$args = array()){
         \$args = [
             \$args,
@@ -136,11 +136,11 @@ CODESET;
 
 CODESET;
 
-        }
+    }
 
-        protected function wasCalledWithOnceTemplate()
-        {
-            return <<< CODESET
+    protected function wasCalledWithOnceTemplate()
+    {
+        return <<< CODESET
         public function wasCalledWithOnce(array \$args = array()){
         \$args = [
             \$args,
@@ -149,11 +149,11 @@ CODESET;
         call_user_func_array(array(\$this->__functionMocker_callHandler, 'wasCalledWithOnce'), \$args);
     }
 CODESET;
-        }
+    }
 
-        protected function wasCalledOnceTemplate()
-        {
-            return <<< CODESET
+    protected function wasCalledOnceTemplate()
+    {
+        return <<< CODESET
         public function wasCalledOnce(){
         if(empty(\$this->__functionMocker_methodArgs)){
             \$args = [
@@ -171,5 +171,5 @@ CODESET;
     }
 CODESET;
 
-        }
     }
+}

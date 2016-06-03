@@ -1,8 +1,9 @@
 <?php
-	namespace tad\FunctionMocker\Call\Logger;
+namespace tad\FunctionMocker\Call\Logger;
 
 
-	interface LoggerInterface {
+interface LoggerInterface
+{
 
-		public function called( array $args = null );
-	}
+    public function called(array $args = null);
+}

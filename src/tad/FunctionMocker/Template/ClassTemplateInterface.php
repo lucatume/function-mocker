@@ -1,10 +1,10 @@
 <?php
 
-    namespace tad\FunctionMocker\Template;
+namespace tad\FunctionMocker\Template;
 
-    interface ClassTemplateInterface
-    {
-        public function getExtendedMockTemplate();
+interface ClassTemplateInterface
+{
+    public function getExtendedMockTemplate();
 
-        public function getExtendedMethodTemplate($methodName);
-    }
+    public function getExtendedMethodTemplate($methodName);
+}

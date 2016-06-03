@@ -1,26 +1,30 @@
 <?php
 
-	namespace tad\FunctionMocker\MatchingStrategy;
+namespace tad\FunctionMocker\MatchingStrategy;
 
 
-	Abstract class AbstractMatchingStrategy implements MatchingStrategyInterface {
+Abstract class AbstractMatchingStrategy implements MatchingStrategyInterface
+{
 
-		protected $times;
+    protected $times;
 
-		public static function on( $times ) {
-			\Arg::_( $times, 'Times' )->is_int();
+    public static function on($times)
+    {
+        \Arg::_($times, 'Times')->is_int();
 
-			$instance        = new static();
-			$instance->times = $times;
+        $instance = new static();
+        $instance->times = $times;
 
-			return $instance;
-		}
+        return $instance;
+    }
 
-		public function matches( $times ) {
-			throw new \RuntimeException('Method is not defined');
-		}
+    public function matches($times)
+    {
+        throw new \RuntimeException('Method is not defined');
+    }
 
-		public function __toString(){
-			throw new \RuntimeException('Method is not defined');
-		}
-	}
+    public function __toString()
+    {
+        throw new \RuntimeException('Method is not defined');
+    }
+}

@@ -3,6 +3,7 @@
 namespace tad\FunctionMocker\Forge;
 
 
-interface StepInterface {
+interface StepInterface
+{
 
 }

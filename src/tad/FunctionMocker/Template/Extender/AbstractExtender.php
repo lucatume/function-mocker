@@ -1,25 +1,28 @@
 <?php
 
-	namespace tad\FunctionMocker\Template\Extender;
+namespace tad\FunctionMocker\Template\Extender;
 
 
-	abstract class AbstractExtender implements ExtenderInterface {
+abstract class AbstractExtender implements ExtenderInterface
+{
 
-		/**
-		 * @var string
-		 */
-		protected $extenderClassName;
+    /**
+     * @var string
+     */
+    protected $extenderClassName;
 
-		/**
-		 * @var string
-		 */
-		protected $extenderInterfaceName;
+    /**
+     * @var string
+     */
+    protected $extenderInterfaceName;
 
-		public function getExtenderClassName() {
-			return $this->extenderClassName;
-		}
+    public function getExtenderClassName()
+    {
+        return $this->extenderClassName;
+    }
 
-		public function getExtenderInterfaceName() {
-			return $this->extenderInterfaceName;
-		}
-	}
+    public function getExtenderInterfaceName()
+    {
+        return $this->extenderInterfaceName;
+    }
+}

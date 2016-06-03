@@ -1,14 +1,14 @@
 <?php
 
-    namespace tad\FunctionMocker\Template;
+namespace tad\FunctionMocker\Template;
 
-    interface MethodCodeInterface
-    {
-        public function setTargetClass($targetClass);
+interface MethodCodeInterface
+{
+    public function setTargetClass($targetClass);
 
-        public function getTemplateFrom($methodName);
+    public function getTemplateFrom($methodName);
 
-        public function getAllMockCallings();
+    public function getAllMockCallings();
 
-        public function getMockCallingFrom($methodName);
-    }
+    public function getMockCallingFrom($methodName);
+}

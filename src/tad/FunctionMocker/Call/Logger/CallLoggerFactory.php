@@ -1,20 +1,22 @@
 <?php
 
-	namespace tad\FunctionMocker\Call\Logger;
+namespace tad\FunctionMocker\Call\Logger;
 
 
-	class CallLoggerFactory {
+class CallLoggerFactory
+{
 
-		/**
-		 * @param string $functionName
-		 *
-		 * @return LoggerInterface
-		 */
-		public static function make( $functionName ) {
-			\Arg::_( $functionName, 'Function name' )->is_string();
+    /**
+     * @param string $functionName
+     *
+     * @return LoggerInterface
+     */
+    public static function make($functionName)
+    {
+        \Arg::_($functionName, 'Function name')->is_string();
 
-			$invocation = new SpyCallLogger();
+        $invocation = new SpyCallLogger();
 
-			return $invocation;
-		}
-	}
+        return $invocation;
+    }
+}

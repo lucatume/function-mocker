@@ -1,8 +1,9 @@
 <?php
 
-	namespace tad\FunctionMocker;
+namespace tad\FunctionMocker;
 
 
-	class SpoofTestCase extends \PHPUnit_Framework_TestCase {
+class SpoofTestCase extends \PHPUnit_Framework_TestCase
+{
 
-	}
+}

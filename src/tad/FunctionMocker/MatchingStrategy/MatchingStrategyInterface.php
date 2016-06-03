@@ -9,8 +9,10 @@
 namespace tad\FunctionMocker\MatchingStrategy;
 
 
-interface MatchingStrategyInterface {
+interface MatchingStrategyInterface
+{
 
-	public static function on( $times );
-	public function matches($times);
+    public static function on($times);
+
+    public function matches($times);
 }

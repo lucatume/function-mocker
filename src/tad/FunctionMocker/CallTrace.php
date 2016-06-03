@@ -1,19 +1,22 @@
 <?php
 
-	namespace tad\FunctionMocker;
+namespace tad\FunctionMocker;
 
-	class CallTrace {
+class CallTrace
+{
 
-		protected $args;
+    protected $args;
 
-		public static function fromArguments( array $args = null ) {
-			$instance = new self;
-			$instance->args = $args ? $args : array();
+    public static function fromArguments(array $args = null)
+    {
+        $instance = new self;
+        $instance->args = $args ? $args : array();
 
-			return $instance;
-		}
+        return $instance;
+    }
 
-		public function getArguments() {
-			return $this->args;
-		}
-	}
+    public function getArguments()
+    {
+        return $this->args;
+    }
+}
