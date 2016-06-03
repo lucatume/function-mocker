@@ -359,7 +359,10 @@
             $sut->setClass($this->class);
             $this->set_instance_forger_on($sut);
 
-            $this->assertSame($sut->verify(), $sut->verify());
+            $verifyOne = $sut->verify();
+            $verifyTwo = $sut->verify();
+            
+            $this->assertSame($verifyOne, $verifyTwo);
         }
     }
 

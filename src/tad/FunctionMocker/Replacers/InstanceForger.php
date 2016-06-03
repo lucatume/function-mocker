@@ -18,6 +18,12 @@ class InstanceForger
      * @var \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder
      */
     protected $invokedRecorder;
+
+    /**
+     * @var array
+     */
+    protected $wrappedMockObjectsCache = [];
+
     /**
      * @var \PHPUnit_Framework_TestCase
      */
@@ -91,10 +97,22 @@ class InstanceForger
      */
     public function getWrappedMockObject($mockObject, $className, ReplacementRequest $request, $verifying = false)
     {
+        $hash = spl_object_hash($mockObject);
+
+        $wrapperInstance = null;
+
+        if ($verifying && isset($this->wrappedMockObjectsCache[$hash])) {
+            return $this->wrappedMockObjectsCache[$hash];
+        }
+
         $classTemplate = $verifying ? new VerifyingClassTemplate() : new ClassTemplate();
         $methodCode = $verifying ? new LoggingMethodCode() : new MethodCode();
         $mockWrapper = new MockWrapper($className, $classTemplate, $methodCode);
         $wrapperInstance = $mockWrapper->wrap($mockObject, $this->invokedRecorder, $request);
+
+        if ($verifying) {
+            $this->wrappedMockObjectsCache[$hash] = $wrapperInstance;
+        }
 
         return $wrapperInstance;
     }
