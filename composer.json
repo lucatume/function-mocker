@@ -10,7 +10,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "antecedent/patchwork": "~1.4",
+        "antecedent/patchwork": "~2.0",
         "lucatume/args": "~1.0"
     },
     "require-dev": {
