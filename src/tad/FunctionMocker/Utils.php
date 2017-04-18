@@ -26,9 +26,9 @@ class Utils
         return trim(trim($path), '/');
     }
 
-    public static function getPatchworkFilePath()
+    public static function includePatchwork()
     {
-        return Utils::getVendorDir('antecedent/patchwork/Patchwork.php');
+       require_once Utils::getVendorDir('antecedent/patchwork/Patchwork.php');
     }
 
     public static function findParentContainingFrom($children, $cwd)

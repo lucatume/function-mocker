@@ -58,7 +58,7 @@ class FunctionMocker
         }
 
         /** @noinspection PhpIncludeInspection */
-        require_once Utils::getPatchworkFilePath();
+        Utils::includePatchwork();
 
         $_whitelist = is_array($options['include']) ? array_merge(self::$defaultWhitelist, $options['include']) : self::$defaultWhitelist;
         $_blacklist = is_array($options['exclude']) ? array_merge(self::$defaultBlacklist, $options['exclude']) : self::$defaultBlacklist;
