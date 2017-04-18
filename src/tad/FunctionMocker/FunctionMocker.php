@@ -73,6 +73,9 @@ class FunctionMocker
             State::$blacklist[] = $path;
         }, $blacklist);
 
+        if (empty(\Patchwork\Config\getCachePath())) {
+            \Patchwork\Config\setCachePath('cache', dirname(dirname(dirname(dirname(__FILE__)))));
+        }
         self::$didInit = true;
     }
 
