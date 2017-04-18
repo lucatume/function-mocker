@@ -63,9 +63,9 @@ class FunctionMocker
         $_whitelist = is_array($options['include']) ? array_merge(self::$defaultWhitelist, $options['include']) : self::$defaultWhitelist;
         $_blacklist = is_array($options['exclude']) ? array_merge(self::$defaultBlacklist, $options['exclude']) : self::$defaultBlacklist;
 
-        $rootDir = Utils::findParentContainingFrom('vendor', dirname(__FILE__));
-        $whitelist = Utils::filterPathListFrom($_whitelist, $rootDir);
-        $blacklist = Utils::filterPathListFrom($_blacklist, $rootDir);
+        $vendorDir = Utils::getVendorDir();
+        $whitelist = Utils::filterPathListFrom($_whitelist, $vendorDir);
+        $blacklist = Utils::filterPathListFrom($_blacklist, $vendorDir);
 
         $blacklist = array_diff($blacklist, $whitelist);
 

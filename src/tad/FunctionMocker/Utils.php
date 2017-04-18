@@ -28,8 +28,7 @@ class Utils
 
     public static function getPatchworkFilePath()
     {
-        $rootDir = Utils::findParentContainingFrom('vendor', dirname(__FILE__));
-        return $rootDir . "/vendor/antecedent/patchwork/Patchwork.php";
+        return Utils::getVendorDir('antecedent/patchwork/Patchwork.php');
     }
 
     public static function findParentContainingFrom($children, $cwd)
@@ -45,6 +44,23 @@ class Utils
         }
 
         return $dir;
+    }
+
+    /**
+     * Gets the absolute path to the `vendor` dir optionally appending a path.
+     *
+     * @param string $path The relative path with no leading slash.
+     *
+     * @return string The absolute path to the file.
+     */
+    public static function getVendorDir($path = '')
+    {
+        $ref = new \ReflectionClass('Composer\Autoload\ClassLoader');
+        $file = $ref->getFileName();
+
+        $vendorDir = dirname(dirname($file));
+
+        return empty($path) ? $vendorDir : $vendorDir . DIRECTORY_SEPARATOR . $path;
     }
 }
 
