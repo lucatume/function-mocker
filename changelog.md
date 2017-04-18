@@ -5,9 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased][unreleased]
 ### Added 
 - fallback caching path to the `init` method to avoid no caching in place at all
+- support for internal function replacement (issue #3)
 
 ### Fixed
 - hard-coded `vendor` path (issue #2)
+
+### Removed
+- support to replace non-defined functions
 
 ## [1.1.0] - 2016-06-03
 ### Added

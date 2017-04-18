@@ -87,35 +87,13 @@ To make Fucntion Mocker behave in its wrapping power (a power granted by [patchw
 
     FunctionMocker::init();
 
-#### Including and excluding files from the wrapping
-By default some libraries in the `vendor` folder will be excluded from the input wrapping and everything else will be included. If files in any of the `vendor` sub-folders need (or need not) to be wrapped for testing purposes, or a folder that's not in the `vendor` folder needs to be excluded, then an array of options can be passed to the `init` method like
+#### Initialization parameters
+Function mocker will take care of initializing Patchwork with some sensible defaults but those initialization parameters can be customized:
 
-    <?php
-        // This is global bootstrap for autoloading
-        use tad\FunctionMocker\FunctionMocker;
-
-        require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
-
-        FunctionMocker::init([
-            'include' => ['vendor/package', 'vendor/another'],
-            'exclude' => ['libs/folder', 'src/another-folder']
-        ]);
-
-If the call to the `init` method is omitted then it will be called on the first call to the `setUp` method in the tests.
-
-#### Aliasing
-To reduce the tedious task of writing `FunctionMocker` each time or cover up the somewhat misleading name I personally alias the `tad\FunctionMocker\FunctionMocker` class to `Test` to improve code flavour.
-    
-    use tad\FunctionMocker\FunctionMocker as Test; 
-
-    function test_something(){
-        $user = Test::replace('User');
-        $User_find = Test::replace('User::find', $user);
-
-        $firstUser = get_first_user();
-
-        $User_find->wasCalledWithOnce(0);
-    }
+ * `whitelist` - array or string, def. empty; a list of absolute paths that should be included in the patching.
+ * `blacklist` - array or string, def. empty; a list of absolute paths that should be excluded from the patching; the Patchwork library itself and the Function Mocker library are always excluded.
+ * `cache-path` - string, def. `cache` folder; the absolute path to the folder where Pathcwork should cache the wrapped files.
+ * `redefinable-internals`   array, def. empty; a list of internal PHP functions that are available for replacement; any *internal* function (defined by the PHP Standard Library) that needs to be replaced in the tests should be listed here.
 
 ### setUp and tearDown methods  
 The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/) test case and provides two `static` methods that **must** be inserted in the test case `setUp` and `tearDown` method for the function mocker to work properly:
@@ -138,7 +116,7 @@ The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/
 ### Functions
 
 #### Replacing functions
-The library will allow for replacement of functions both defined and undefined at test run time using the `FunctionMocker::replace` method like:
+The library will allow for replacement of **defined** functions at test run time using the `FunctionMocker::replace` method like:
 
     FunctionMocker::replace('myFunction', $returnValue);
 
