@@ -2,6 +2,8 @@
 
 namespace tad\FunctionMocker;
 
+use const Patchwork\CallRerouting\INTERNAL_REDEFINITION_NAMESPACE;
+
 class Checker
 {
 
@@ -11,20 +13,17 @@ class Checker
 
 	public static function fromName($functionName)
 	{
-		if (!self::$systemFunctions) {
-			self::$systemFunctions = get_defined_functions()['internal'];
-		}
-		$condition = !in_array($functionName, self::$systemFunctions);
-		\Arg::_($functionName)->assert($condition, 'Function must not be an internal one.');
-
 		$instance = new self;
 		$instance->isEvalCreated = false;
 		$instance->functionName = $functionName;
 		$isMethod = preg_match("/^[\\w\\d_\\\\]+::[\\w\\d_]+$/", $functionName);
 		if (!$isMethod && !function_exists($functionName)) {
-			$namespace = self::hasNamespace($functionName) ? 'namespace ' . self::getNamespaceFrom($functionName) . ";" : '';
+            $functionNamespace = self::hasNamespace($functionName) ?
+                self::getNamespaceFrom($functionName)
+                : '';
+            $namespace = $functionNamespace ? "namespace {$functionNamespace};" : '' ;
 			$functionName = self::hasNamespace($functionName) ? self::getFunctionNameFrom($functionName) : $functionName;
-			$code = sprintf('%sfunction %s(){return null;}', $namespace, $functionName);
+			$code = sprintf('%s function %s(){return null;}', $namespace, $functionName);
 			$ok = eval($code);
 			if ($ok === false) {
 				throw new \Exception("Could not eval code $code for function $functionName");

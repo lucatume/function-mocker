@@ -2,6 +2,8 @@
 
 namespace tad\FunctionMocker;
 
+use function Patchwork\Config\merge;
+use function Patchwork\Config\setRedefinableInternals;
 use Patchwork\Config\State;
 use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 use tad\FunctionMocker\Call\Logger\LoggerInterface;
@@ -20,22 +22,13 @@ class FunctionMocker
      */
     protected static $testCase;
 
-    /** @var  array */
-    protected static $defaultWhitelist = array(
-        'vendor/antecedent'
-    );
-
-    protected static $defaultBlacklist = array(
-        'vendor/codeception',
-        'vendor/phpunit',
-        'vendor/phpspec'
-    );
     /**
      * Stores the previous values of each global replaced.
      *
      * @var array
      */
     protected static $globalsBackup = [];
+
     /** @var  bool */
     private static $didInit = false;
 
@@ -51,31 +44,50 @@ class FunctionMocker
         }
     }
 
+    /**
+     * Inits the mocking engine including the Patchwork library.
+     *
+     * @param array|null $options An array of options to init the Patchwork library.
+     *      ['include'|'whitelist']     array|string A list of absolute paths that should be included in the patching.
+     *      ['exclude'|'blacklist']     array|string A list of absolute paths that should be excluded in the patching.
+     *      ['cache-path']              string The absolute path to the folder where Pathcwork should cache the wrapped files.
+     *      ['redefinable-internals']   array A list of internal PHP functions that are available for replacement.
+     *
+     * @see \Patchwork\configure()
+     *
+     */
     public static function init(array $options = null)
     {
         if (self::$didInit) {
             return;
         }
 
+        $packageRoot = dirname(dirname(dirname(dirname(__FILE__))));
+
+        $jsonFileLocation = $packageRoot . '/patchwork.json';
+
+        $translatedFields = ['include' => 'whitelist', 'exclude' => 'blacklist'];
+        foreach ($translatedFields as $from => $to) {
+            if (!empty($options[$from]) && empty($options[$to])) {
+                $options[$to] = $options[$from];
+            }
+            unset($options[$from]);
+        }
+        // but always exclude function-mocker and Patchwork themselves
+        $defaultExcluded = [$packageRoot, Utils::getVendorDir('antecedent/patchwork')];
+        $options['blacklist'] = !empty($options['blacklist']) ?
+            array_merge((array)$options['blacklist'], $defaultExcluded) :
+            $defaultExcluded;
+
+        if (empty($options['cache-path'])) {
+            $options['cache-path'] = 'cache';
+        }
+
+        file_put_contents($jsonFileLocation, json_encode($options));
+
         /** @noinspection PhpIncludeInspection */
         Utils::includePatchwork();
 
-        $_whitelist = is_array($options['include']) ? array_merge(self::$defaultWhitelist, $options['include']) : self::$defaultWhitelist;
-        $_blacklist = is_array($options['exclude']) ? array_merge(self::$defaultBlacklist, $options['exclude']) : self::$defaultBlacklist;
-
-        $vendorDir = Utils::getVendorDir();
-        $whitelist = Utils::filterPathListFrom($_whitelist, $vendorDir);
-        $blacklist = Utils::filterPathListFrom($_blacklist, $vendorDir);
-
-        $blacklist = array_diff($blacklist, $whitelist);
-
-        array_map(function ($path) {
-            State::$blacklist[] = $path;
-        }, $blacklist);
-
-        if (empty(\Patchwork\Config\getCachePath())) {
-            \Patchwork\Config\setCachePath('cache', dirname(dirname(dirname(dirname(__FILE__)))));
-        }
         self::$didInit = true;
     }
 
@@ -88,10 +100,10 @@ class FunctionMocker
     {
         \Patchwork\restoreAll();
 
-        // restore the globals
         if (empty(self::$globalsBackup)) {
             return;
         }
+
         array_walk(self::$globalsBackup, function ($value, $key) {
             $GLOBALS[$key] = $value;
         });
