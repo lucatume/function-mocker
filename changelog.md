@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+
+## [1.2.0]
 ### Added 
 - fallback caching path to the `init` method to avoid no caching in place at all
 - support for internal function replacement (issue #3)
@@ -24,5 +26,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.1.0...HEAD
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/lucatume/function-mocker/compare/1.1.0...v1.2.0
 [1.1.0]: https://github.com/lucatume/function-mocker/compare/1.0.5...v1.1.0
