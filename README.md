@@ -1,6 +1,8 @@
-#Function Mocker
+# Function Mocker
 
 *A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker.*
+
+[![Build Status](https://travis-ci.org/lucatume/function-mocker.svg?branch=master)](https://travis-ci.org/lucatume/function-mocker)
 
 ## Show me the code
 This can be written in a [PHPUnit](http://phpunit.de/) test suite
