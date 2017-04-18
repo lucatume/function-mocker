@@ -10,3 +10,4 @@ vendor/
 # composer.lock
 
 .gitignore
+patchwork.json
