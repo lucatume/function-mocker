@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.2.1]
 ### Added
-- explicit requirement of version `5.0` of `phpunit/phpunit`
+- require `phpunit/phpunit` version `5.4`
 
 ## [1.2.0]
 ### Added 
