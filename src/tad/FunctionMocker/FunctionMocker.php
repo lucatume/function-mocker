@@ -260,14 +260,8 @@ class FunctionMocker
     protected static function getReplacementFunction($functionName, $returnValue, $invocation)
     {
         $replacementFunction = function () use ($functionName, $returnValue, $invocation) {
-            $trace = debug_backtrace();
-            $args = array_filter($trace, function ($stackLog) use ($functionName) {
-                $check = isset($stackLog['args']) && is_array($stackLog['args']) && $stackLog['function'] === $functionName;
+            $args = func_get_args();
 
-                return $check ? true : false;
-            });
-            $args = array_values($args);
-            $args = isset($args[0]) ? $args[0]['args'] : array();
             /** @noinspection PhpUndefinedMethodInspection */
             $invocation->called($args);
 
