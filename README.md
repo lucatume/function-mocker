@@ -8,65 +8,49 @@
 This can be written in a [PHPUnit](http://phpunit.de/) test suite
     
 ```php
-use tad\FunctionMocker\FunctionMocker as Test;
+<?php
 
-class SomeClassTest extends \PHPUnit_Framework_TestCase {
-    
-    public function setUp(){
-        Test::setUp();
+// FunctionMocker needs the functions to be defined to replace them
+function get_option($option)
+{
+    // no-op
+}
+
+function update_option($option, $value)
+{
+    // no-op
+}
+
+// The class under test
+class Logger
+{
+    public function log($type, $message)
+    {
+        $option = get_option('log');
+        $option[] = sprintf('[%s] %s - %s', date(DATE_ATOM, time()), $type, $message);
+        update_option('log', sprintf('[%s] %s - %s', date(DATE_ATOM, time()), $type, $message));
     }
+}
 
-    public function tearDown(){
-        Test::tearDown();
-    }
+class InternaFunctionReplacementTest extends \PHPUnit\Framework\TestCase
+{
+    /**
+     * It should log the correct message
+     * @test
+     */
+    public function log_the_correct_message()
+    {
+        $mockTime = time();
+        \tad\FunctionMocker\FunctionMocker::replace('time', $mockTime);
+        \tad\FunctionMocker\FunctionMocker::replace('get_option', []);
+        $update_option = \tad\FunctionMocker\FunctionMocker::replace('update_option');
 
-    public function testSomeMethodCallsSomeFunction(){
-        // Setup
-        // please note: it can replace not defined functions too!
-        $someFunction = Test::replace('some_function');
+        $logger = new Logger();
 
-        // Exercise
-        some_function(23);
+        $logger->log('error', 'There was an error');
 
-        // Assert
-        $someFunction->wasCalledOnce();
-        
-        // check primitive call args
-        $someFunction->wasCalledWithOnce(23);
-        
-        // check primitive type
-        $someFunction->wasCalledWithOnce(Test::isType('int'));
-    }
-
-    public function testSomeMethodCallsSomeStaticMethod(){
-        // Setup
-        $get_post_title = Test::replace('Post::get_post_title', 'Post title');
-
-        // Exercise
-        $this->assertEquals('Post title', Post::get_post_title());
-
-        // Assert
-        $get_post_title->wasCalledOnce();
-    }
-
-    public function testSomeMethodCallsSomeInstanceMethod(){
-        // Setup
-        $mockDependency = Test::replace('Dependency')
-            ->method('methodOne')
-            ->method('methodTwo');
-
-        // Exercise
-        $caller = function(Dependency $dependency){
-            $dependency->methodOne('foo', 23);
-            $dependency->methodTwo();
-        };
-
-        $caller($mockDependency->get());
-
-        // Assert
-        $mockDependency->verify->methodOne()->wasCalledOnce();
-        $mockDependency->verify->methodOne('foo', 23)->wasCalledOnce();
-        $mockDependency->verify->methodTwo()->wasCalledOnce();
+        $expected = sprintf('[%s] error - There was an error', date(DATE_ATOM, $mockTime));
+        $update_option->wasCalledWithOnce(['log', $expected]);
     }
 }
 ```
