@@ -25,7 +25,7 @@ class InstanceForger
     protected $wrappedMockObjectsCache = [];
 
     /**
-     * @var \PHPUnit_Framework_TestCase
+     * @var \PHPUnit_Framework_TestCase|\PHPUnit\Framework\TestCase
      */
     private $testCase;
 

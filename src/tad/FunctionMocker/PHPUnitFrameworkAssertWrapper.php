@@ -6,42 +6,6 @@ namespace tad\FunctionMocker;
 use ArrayAccess;
 use Countable;
 use DOMElement;
-use PHPUnit_Framework_AssertionFailedError;
-use PHPUnit_Framework_Constraint;
-use PHPUnit_Framework_Constraint_And;
-use PHPUnit_Framework_Constraint_ArrayHasKey;
-use PHPUnit_Framework_Constraint_Attribute;
-use PHPUnit_Framework_Constraint_Callback;
-use PHPUnit_Framework_Constraint_ClassHasAttribute;
-use PHPUnit_Framework_Constraint_ClassHasStaticAttribute;
-use PHPUnit_Framework_Constraint_Count;
-use PHPUnit_Framework_Constraint_FileExists;
-use PHPUnit_Framework_Constraint_GreaterThan;
-use PHPUnit_Framework_Constraint_IsAnything;
-use PHPUnit_Framework_Constraint_IsEmpty;
-use PHPUnit_Framework_Constraint_IsEqual;
-use PHPUnit_Framework_Constraint_IsFalse;
-use PHPUnit_Framework_Constraint_IsIdentical;
-use PHPUnit_Framework_Constraint_IsInstanceOf;
-use PHPUnit_Framework_Constraint_IsJson;
-use PHPUnit_Framework_Constraint_IsNull;
-use PHPUnit_Framework_Constraint_IsTrue;
-use PHPUnit_Framework_Constraint_IsType;
-use PHPUnit_Framework_Constraint_LessThan;
-use PHPUnit_Framework_Constraint_Not;
-use PHPUnit_Framework_Constraint_ObjectHasAttribute;
-use PHPUnit_Framework_Constraint_Or;
-use PHPUnit_Framework_Constraint_PCREMatch;
-use PHPUnit_Framework_Constraint_StringContains;
-use PHPUnit_Framework_Constraint_StringEndsWith;
-use PHPUnit_Framework_Constraint_StringMatches;
-use PHPUnit_Framework_Constraint_StringStartsWith;
-use PHPUnit_Framework_Constraint_TraversableContains;
-use PHPUnit_Framework_Constraint_TraversableContainsOnly;
-use PHPUnit_Framework_Constraint_Xor;
-use PHPUnit_Framework_Exception;
-use PHPUnit_Framework_IncompleteTestError;
-use PHPUnit_Framework_SkippedTestError;
 use Traversable;
 
 trait PHPUnitFrameworkAssertWrapper
@@ -50,7 +14,7 @@ trait PHPUnitFrameworkAssertWrapper
     /**
      * Returns the test case set for the wrapper.
      *
-     * @return \PHPUnit_Framework_TestCase
+     * @return \PHPUnit_Framework_TestCase|\PHPunit\Framework\TestCase
      */
     public static function getTestCase()
     {
@@ -380,7 +344,8 @@ trait PHPUnitFrameworkAssertWrapper
      *
      * @param  mixed $actual
      * @param  string $message
-     * @throws PHPUnit_Framework_AssertionFailedError
+     * @throws PHPUnit_Framework_AssertionFailedError|\PHPUnit\Framework\AssertionFailedError
+     *
      */
     public static function assertEmpty($actual, $message = '')
     {
@@ -1419,11 +1384,11 @@ trait PHPUnitFrameworkAssertWrapper
      * Evaluates a PHPUnit_Framework_Constraint matcher object.
      *
      * @param mixed $value
-     * @param PHPUnit_Framework_Constraint $constraint
+     * @param PHPUnit_Framework_Constraint|\PHPUnit\Framework\Constraint\Constraint $constraint
      * @param string $message
      * @since  Method available since Release 3.0.0
      */
-    public static function assertThat($value, PHPUnit_Framework_Constraint $constraint, $message = '')
+    public static function assertThat($value, $constraint, $message = '')
     {
         self::getTestCase()->assertThat($value, $constraint, $message);
     }
@@ -1537,11 +1502,11 @@ trait PHPUnitFrameworkAssertWrapper
     /**
      * Returns a PHPUnit_Framework_Constraint_Not matcher object.
      *
-     * @param  PHPUnit_Framework_Constraint $constraint
-     * @return PHPUnit_Framework_Constraint_Not
+     * @param  PHPUnit_Framework_Constraint|\PHPUnit\Framework\Constraint\Constraint $constraint
+     * @return PHPUnit_Framework_Constraint_Not|\PHPUnit\Framework\Constraint\Not
      * @since  Method available since Release 3.0.0
      */
-    public static function logicalNot(PHPUnit_Framework_Constraint $constraint)
+    public static function logicalNot($constraint)
     {
         return self::getTestCase()->logicalNot($constraint);
     }
@@ -1628,10 +1593,10 @@ trait PHPUnitFrameworkAssertWrapper
      *
      * @param  PHPUnit_Framework_Constraint $constraint
      * @param  string $attributeName
-     * @return PHPUnit_Framework_Constraint_Attribute
+     * @return \PHPUnit_Framework_Constraint_Attribute|\PHPUnit\Framework\Constraint\Attribute
      * @since  Method available since Release 3.1.0
      */
-    public static function attribute(PHPUnit_Framework_Constraint $constraint, $attributeName)
+    public static function attribute($constraint, $attributeName)
     {
         return self::getTestCase()->attribute($constraint, $attributeName);
     }

@@ -39,6 +39,12 @@ class MockWrapper
         return $this->wrappedObject;
     }
 
+    /**
+     * @param \PHPUnit_Framework_MockObject_MockObject|MockObject $mockObject
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder
+     * @param ReplacementRequest $request
+     * @return mixed
+     */
     public function wrap(\PHPUnit_Framework_MockObject_MockObject $mockObject, \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder, ReplacementRequest $request)
     {
 

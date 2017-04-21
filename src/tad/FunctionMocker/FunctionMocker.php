@@ -18,7 +18,7 @@ class FunctionMocker
     use PHPUnitFrameworkAssertWrapper;
 
     /**
-     * @var \PHPUnit_Framework_TestCase
+     * @var \PHPUnit_Framework_TestCase|\PHPunit\Framework\TestCase
      */
     protected static $testCase;
 
