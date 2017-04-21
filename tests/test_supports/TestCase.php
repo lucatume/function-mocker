@@ -1,15 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luca
- * Date: 21/04/17
- * Time: 11:25
- */
 
 namespace tad\FunctionMocker\Tests;
 
-
-class TestCase extends \PHPUnit\Framework\TestCase
-{
-
+if (class_exists('\\PHPUnit_Framework_TestCase')) {
+    class TestCase extends \PHPUnit_Framework_TestCase
+    {
+        protected function expectFailure()
+        {
+            $this->expectException(\PHPUnit_Framework_AssertionFailedError::class);
+        }
+    }
+} else {
+    class TestCase extends \PHPUnit\Framework\TestCase
+    {
+        protected function expectFailure()
+        {
+            $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
+        }
+    }
 }
