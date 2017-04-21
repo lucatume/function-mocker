@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.3.0]
 ### Added
-- support for p[PhpUnit](https://phpunit.de/ "PHPUnit  The PHP Testing Framework")  version `6.0`
+- support for p[PhpUnit](https://phpunit.de/ "PHPUnit  The PHP Testing Framework")  version `6.0` (issue #4)
 
 ## [1.2.2]
 ### Fixed
