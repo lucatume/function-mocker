@@ -5,11 +5,10 @@ php:
   - '7.1'
   - nightly
 
-install:
-  - composer install
-
 script:
   # test with PHPUnit ~5.7
+  - rm vendor composer.lock
+  - composer require --dev phpunit/phpunit:~5.7
   - phpunit
   # test with PHPUnit ~6.0
   - rm -rf vendor composer.lock
