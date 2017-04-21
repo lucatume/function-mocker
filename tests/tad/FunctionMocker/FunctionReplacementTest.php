@@ -4,9 +4,8 @@ namespace tad\FunctionMocker\Tests;
 
 use tad\FunctionMocker\FunctionMocker;
 use tad\FunctionMocker\MockCallLogger;
-use tad\FunctionMocker\TestCase;
 
-class FunctionReplacementTest extends \PHPUnit\Framework\TestCase
+class FunctionReplacementTest extends TestCase
 {
 
     public function setUp()
@@ -112,7 +111,7 @@ class FunctionReplacementTest extends \PHPUnit\Framework\TestCase
         $spy->wasCalledWithTimes(array(11), 1);
         $spy->wasNotCalledWith(array(10));
 
-        $this->expectException('\\PHPUnit\\Framework\\AssertionFailedError');
+        $this->expectFailure();
         $spy->wasCalledTimes(0);
     }
 
@@ -139,7 +138,7 @@ class FunctionReplacementTest extends \PHPUnit\Framework\TestCase
 
         FunctionMocker::replace($f, 2324);
 
-        $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
+        $this->expectFailure();
 
         $this->assertEquals(2324, $f());
     }
@@ -154,7 +153,7 @@ class FunctionReplacementTest extends \PHPUnit\Framework\TestCase
 
         FunctionMocker::replace($f, 2324);
 
-        $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
+        $this->expectFailure();
 
         $this->assertEquals(2324, $f());
     }

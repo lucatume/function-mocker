@@ -4,7 +4,7 @@ namespace tad\FunctionMocker\Tests;
 
 use tad\FunctionMocker\FunctionMocker as Sut;
 
-class FunctionArgsConstraintsCheckTest extends \PHPUnit\Framework\TestCase
+class FunctionArgsConstraintsCheckTest extends TestCase
 {
 
     public function setUp()
@@ -36,7 +36,7 @@ class FunctionArgsConstraintsCheckTest extends \PHPUnit\Framework\TestCase
     public function it_should_allow_verifying_the_type_of_args_a_function_is_called_with($callArg, $expectedArg, $shouldPass)
     {
         if (!$shouldPass) {
-            $this->expectException('\\PHPUnit\\Framework\\AssertionFailedError');
+            $this->expectFailure();
         }
         $func = Sut::replace(__NAMESPACE__ . '\alpha');
 
@@ -68,7 +68,7 @@ class FunctionArgsConstraintsCheckTest extends \PHPUnit\Framework\TestCase
     public function it_should_allow_verifying_multiple_arguments($callArgs, $expectedArgs, $shouldPass)
     {
         if (!$shouldPass) {
-            $this->expectException('\\PHPUnit\\Framework\\AssertionFailedError');
+            $this->expectFailure();
         }
         $func = Sut::replace(__NAMESPACE__ . '\beta');
 
