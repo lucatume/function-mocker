@@ -4,7 +4,7 @@ namespace tests\tad;
 
 use tad\FunctionMocker\ReplacementRequest;
 
-class ReplacementRequestTest extends \PHPUnit_Framework_TestCase
+class ReplacementRequestTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -13,7 +13,7 @@ class ReplacementRequestTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_throw_if_request_is_not_a_string()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         ReplacementRequest::on(23);
     }
 
@@ -80,7 +80,7 @@ class ReplacementRequestTest extends \PHPUnit_Framework_TestCase
      */
     public function it_should_throw_if_trying_to_make_static_method_requests_using_the_arrow_symbol()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $sut = ReplacementRequest::on(__NAMESPACE__ . '\RequestClassOne->methodOne');
     }
 

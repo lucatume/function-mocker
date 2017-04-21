@@ -4,7 +4,7 @@ namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker as Sut;
 
-class StaticMethodConstraintsCheckTest extends \PHPUnit_Framework_TestCase
+class StaticMethodConstraintsCheckTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
@@ -42,7 +42,7 @@ class StaticMethodConstraintsCheckTest extends \PHPUnit_Framework_TestCase
     public function it_should_allow_verifying_method_call_expectations_on_static_methods_using_primitives($in, $exp, $shouldPass)
     {
         if (!$shouldPass) {
-            $this->setExpectedException('\PHPUnit_Framework_AssertionFailedError');
+            $this->expectException('\\PHPUnit\\Framework\\AssertionFailedError');
         }
 
         $sut = Sut::replace(__NAMESPACE__ . '\ConstraintClass::methodOne');
@@ -77,7 +77,7 @@ class StaticMethodConstraintsCheckTest extends \PHPUnit_Framework_TestCase
     public function it_should_allow_to_check_method_call_args_using_php_unit_constraints($in, $exp, $shouldPass)
     {
         if (!$shouldPass) {
-            $this->setExpectedException('\PHPUnit_Framework_AssertionFailedError');
+            $this->expectException('\\PHPUnit\\Framework\\AssertionFailedError');
         }
 
         $sut = Sut::replace(__NAMESPACE__ . '\ConstraintClass::methodOne');

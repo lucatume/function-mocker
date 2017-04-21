@@ -12,6 +12,8 @@ class InstanceMethodCallVerifier extends AbstractVerifier
     protected $returnValue;
     protected $callLogger;
 
+    public $constraintClass;
+
     public static function from(ReturnValue $returnValue, LoggerInterface $callLogger)
     {
         $instance = new self;
@@ -104,7 +106,7 @@ class InstanceMethodCallVerifier extends AbstractVerifier
      */
     private function compare($expected, $arg)
     {
-        if ($arg instanceof \PHPUnit_Framework_Constraint) {
+        if ($arg instanceof $this->constraintClass) {
             return $arg->evaluate($expected, '', true);
         } else {
             return $arg === $expected;

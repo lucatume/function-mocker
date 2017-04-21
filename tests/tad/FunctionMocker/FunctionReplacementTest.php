@@ -6,7 +6,7 @@ use tad\FunctionMocker\FunctionMocker;
 use tad\FunctionMocker\MockCallLogger;
 use tad\FunctionMocker\TestCase;
 
-class FunctionReplacementTest extends \PHPUnit_Framework_TestCase
+class FunctionReplacementTest extends \PHPUnit\Framework\TestCase
 {
 
     public function setUp()
@@ -112,7 +112,7 @@ class FunctionReplacementTest extends \PHPUnit_Framework_TestCase
         $spy->wasCalledWithTimes(array(11), 1);
         $spy->wasNotCalledWith(array(10));
 
-        $this->setExpectedException('\PHPUnit_Framework_AssertionFailedError');
+        $this->expectException('\\PHPUnit\\Framework\\AssertionFailedError');
         $spy->wasCalledTimes(0);
     }
 
@@ -139,7 +139,7 @@ class FunctionReplacementTest extends \PHPUnit_Framework_TestCase
 
         FunctionMocker::replace($f, 2324);
 
-        $this->expectException(\PHPUnit_Framework_AssertionFailedError::class);
+        $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
 
         $this->assertEquals(2324, $f());
     }
@@ -154,7 +154,7 @@ class FunctionReplacementTest extends \PHPUnit_Framework_TestCase
 
         FunctionMocker::replace($f, 2324);
 
-        $this->expectException(\PHPUnit_Framework_AssertionFailedError::class);
+        $this->expectException(\PHPUnit\Framework\AssertionFailedError::class);
 
         $this->assertEquals(2324, $f());
     }

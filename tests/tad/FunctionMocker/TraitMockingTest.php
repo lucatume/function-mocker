@@ -29,7 +29,7 @@
 		}
 	}
 
-	class TraitMockingTest extends \PHPUnit_Framework_TestCase
+	class TraitMockingTest extends \PHPUnit\Framework\TestCase
 	{
 
 		/**

@@ -5,7 +5,7 @@ namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker as Test;
 
-class AssertionWrappingTest extends \PHPUnit_Framework_TestCase
+class AssertionWrappingTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
@@ -54,7 +54,7 @@ class AssertionWrappingTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class MockTestCase extends \PHPUnit_Framework_TestCase {
+class MockTestCase extends \PHPUnit\Framework\TestCase {
     public function utilityMethod($one, $two){
         return $one + $two;
     }

@@ -4,7 +4,7 @@
     use tad\FunctionMocker\Forge\Step;
     use tad\FunctionMocker\Replacers\InstanceForger;
 
-    class StepTest extends \PHPUnit_Framework_TestCase
+    class StepTest extends \PHPUnit\Framework\TestCase
     {
         protected $class;
 
@@ -19,7 +19,7 @@
          */
         public function it_should_throw_if_passing_a_non_string_arg()
         {
-            $this->setExpectedException('\Exception');
+            $this->expectException('\Exception');
             Step::instance(23);
         }
 
@@ -29,7 +29,7 @@
          */
         public function it_should_throw_if_the_class_name_is_a_non_existing_class()
         {
-            $this->setExpectedException('\Exception');
+            $this->expectException('\Exception');
             Step::instance('SomeUnrealClass');
         }
 

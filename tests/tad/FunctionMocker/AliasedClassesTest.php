@@ -4,7 +4,7 @@ namespace tests\tad\FunctionMocker;
 
 use tad\FunctionMocker\FunctionMocker;
 
-class AliasedClassesTest extends \PHPUnit_Framework_TestCase
+class AliasedClassesTest extends \PHPUnit\Framework\TestCase
 {
 
 	public function setUp() {
@@ -24,6 +24,8 @@ class AliasedClassesTest extends \PHPUnit_Framework_TestCase
 
 		// should not throw
 		FunctionMocker::replace( $class );
+
+        $this->assertTrue(true);
 	}
 
 	/**
@@ -34,5 +36,7 @@ class AliasedClassesTest extends \PHPUnit_Framework_TestCase
 		$class = 'Another\Acme\Class3';
 
 		FunctionMocker::replace( $class )->method( 'testMethod' )->get();
+
+		$this->assertTrue(true);
 	}
 }

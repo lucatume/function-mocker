@@ -10,6 +10,18 @@ class SpyCallLogger implements LoggerInterface
 
     protected $calls = array();
 
+    /**
+     * @var string The constraint class to use depending on the available PHPUnit version.
+     */
+    public $constraintClass;
+
+    public function __construct()
+    {
+        $this->constraintClass = class_exists('\PHPUnit_Framework_Constraint') ?
+            '\PHPUnit_Framework_Constraint'
+            : '\\PHPUnit\\Framework\\Constraint\\Constraint';
+    }
+
     public function called(array $args = null)
     {
         $this->calls[] = CallTrace::fromArguments($args);
@@ -69,6 +81,6 @@ class SpyCallLogger implements LoggerInterface
      */
     private function compareArg($arg, $callArg)
     {
-        return is_a($arg, '\PHPUnit_Framework_Constraint') ? $arg->evaluate($callArg, '', true) : $arg === $callArg;
+        return is_a($arg, $this->constraintClass) ? $arg->evaluate($callArg, '', true) : $arg === $callArg;
     }
 }

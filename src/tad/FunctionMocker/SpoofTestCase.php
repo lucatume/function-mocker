@@ -3,7 +3,15 @@
 namespace tad\FunctionMocker;
 
 
-class SpoofTestCase extends \PHPUnit_Framework_TestCase
-{
+if (class_exists('PHPUnit_Framework_TestCase')) {
+    // PHPUnit < 6.0 support
+    class SpoofTestCase extends \PHPUnit_Framework_TestCase
+    {
 
+    }
+} else {
+    class SpoofTestCase extends \PHPunit\Framework\TestCase
+    {
+
+    }
 }

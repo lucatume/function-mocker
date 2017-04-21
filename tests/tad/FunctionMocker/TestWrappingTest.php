@@ -9,7 +9,7 @@
 namespace tad\FunctionMocker;
 
 
-class TestWrappingTest extends \PHPUnit_Framework_TestCase
+class TestWrappingTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

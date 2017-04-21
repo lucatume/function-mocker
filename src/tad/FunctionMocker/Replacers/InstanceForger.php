@@ -123,9 +123,9 @@ class InstanceForger
     }
 
     /**
-     * @param \PHPUnit_Framework_TestCase $testCase
+     * @param \PHPUnit_Framework_TestCase|\PHPUnit\Framework\TestCase $testCase
      */
-    public function setTestCase(\PHPUnit_Framework_TestCase $testCase)
+    public function setTestCase($testCase)
     {
         $this->testCase = $testCase;
         $this->invokedRecorder = $this->testCase->any();

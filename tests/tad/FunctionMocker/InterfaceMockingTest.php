@@ -12,7 +12,7 @@ interface SomeI
 	public function methodWithArgs($string, $int);
 }
 
-class InstanceMockingTest extends \PHPUnit_Framework_TestCase
+class InstanceMockingTest extends \PHPUnit\Framework\TestCase
 {
 
 	protected $ns;

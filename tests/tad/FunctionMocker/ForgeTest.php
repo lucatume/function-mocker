@@ -5,7 +5,7 @@ namespace tests\tad\FunctionMocker {
 
     use tad\FunctionMocker\FunctionMocker as Sut;
 
-    class ForgeTest extends \PHPUnit_Framework_TestCase
+    class ForgeTest extends \PHPUnit\Framework\TestCase
     {
         protected $class;
 
@@ -27,6 +27,8 @@ namespace tests\tad\FunctionMocker {
         public function it_should_allow_calling_the_forge_method_on_a_namespaced_class()
         {
             Sut::forge($this->class);
+
+            $this->assertTrue(true);
         }
 
         /**
@@ -36,6 +38,8 @@ namespace tests\tad\FunctionMocker {
         public function it_should_allow_calling_the_forge_method_on_a_global_class()
         {
             Sut::forge('GlobalClass');
+
+            $this->assertTrue(true);
         }
 
 

@@ -4,7 +4,7 @@
 
 	use tad\FunctionMocker\FunctionMocker as Test;
 
-	class AbstractClassMockingTest extends \PHPUnit_Framework_TestCase
+	class AbstractClassMockingTest extends \PHPUnit\Framework\TestCase
 	{
 
 		protected $ns;
