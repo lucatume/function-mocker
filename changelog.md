@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
 
+## [1.3.0]
+### Added
+- support for p[PhpUnit](https://phpunit.de/ "PHPUnit  The PHP Testing Framework")  version `6.0`
+
 ## [1.2.2]
 ### Fixed
 - argument setting for closure return values
@@ -34,7 +38,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.2.2...HEAD
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.0...HEAD
+[1.3.0]: https://github.com/lucatume/function-mocker/compare/1.2.2...v1.3.0
 [1.2.2]: https://github.com/lucatume/function-mocker/compare/1.2.1...v1.2.2
 [1.2.1]: https://github.com/lucatume/function-mocker/compare/1.2.0...v1.2.1
 [1.2.0]: https://github.com/lucatume/function-mocker/compare/1.1.0...v1.2.0
