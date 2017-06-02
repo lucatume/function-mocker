@@ -2,18 +2,16 @@
 
 namespace tad\FunctionMocker;
 
-use function Patchwork\Config\merge;
-use function Patchwork\Config\setRedefinableInternals;
-use Patchwork\Config\State;
 use tad\FunctionMocker\Call\Logger\CallLoggerFactory;
 use tad\FunctionMocker\Call\Logger\LoggerInterface;
 use tad\FunctionMocker\Call\Verifier\CallVerifierFactory;
 use tad\FunctionMocker\Call\Verifier\FunctionCallVerifier;
 use tad\FunctionMocker\Forge\Step;
 use tad\FunctionMocker\Replacers\InstanceForger;
+use function Patchwork\redefine;
 
-class FunctionMocker
-{
+class FunctionMocker {
+
     // allows wrapping assert methods
     use PHPUnitFrameworkAssertWrapper;
 
@@ -37,9 +35,8 @@ class FunctionMocker
      *
      * @return void
      */
-    public static function setUp()
-    {
-        if (!self::$didInit) {
+    public static function setUp() {
+        if ( ! self::$didInit) {
             self::init();
         }
     }
@@ -48,16 +45,15 @@ class FunctionMocker
      * Inits the mocking engine including the Patchwork library.
      *
      * @param array|null $options An array of options to init the Patchwork library.
-     *      ['include'|'whitelist']     array|string A list of absolute paths that should be included in the patching.
-     *      ['exclude'|'blacklist']     array|string A list of absolute paths that should be excluded in the patching.
-     *      ['cache-path']              string The absolute path to the folder where Pathcwork should cache the wrapped files.
-     *      ['redefinable-internals']   array A list of internal PHP functions that are available for replacement.
+     *                            ['include'|'whitelist']     array|string A list of absolute paths that should be included in the patching.
+     *                            ['exclude'|'blacklist']     array|string A list of absolute paths that should be excluded in the patching.
+     *                            ['cache-path']              string The absolute path to the folder where Pathcwork should cache the wrapped files.
+     *                            ['redefinable-internals']   array A list of internal PHP functions that are available for replacement.
      *
      * @see \Patchwork\configure()
      *
      */
-    public static function init(array $options = null)
-    {
+    public static function init(array $options = null) {
         if (self::$didInit) {
             return;
         }
@@ -68,16 +64,21 @@ class FunctionMocker
 
         $translatedFields = ['include' => 'whitelist', 'exclude' => 'blacklist'];
         foreach ($translatedFields as $from => $to) {
-            if (!empty($options[$from]) && empty($options[$to])) {
+            if ( ! empty($options[$from]) && empty($options[$to])) {
                 $options[$to] = $options[$from];
             }
             unset($options[$from]);
         }
         // but always exclude function-mocker and Patchwork themselves
         $defaultExcluded = [$packageRoot, Utils::getVendorDir('antecedent/patchwork')];
-        $options['blacklist'] = !empty($options['blacklist']) ?
-            array_merge((array)$options['blacklist'], $defaultExcluded) :
-            $defaultExcluded;
+        $defaultIncluded = [$packageRoot . '/src/utils.php'];
+        $options['blacklist'] = ! empty($options['blacklist'])
+            ? array_merge((array)$options['blacklist'], $defaultExcluded)
+            : $defaultExcluded;
+
+        $options['whitelist'] = ! empty($options['whitelist'])
+            ? array_merge((array)$options['whitelist'], $defaultIncluded)
+            : $defaultIncluded;
 
         if (empty($options['cache-path'])) {
             $options['cache-path'] = 'cache';
@@ -96,8 +97,7 @@ class FunctionMocker
      *
      * @return void
      */
-    public static function tearDown()
-    {
+    public static function tearDown() {
         \Patchwork\restoreAll();
 
         if (empty(self::$globalsBackup)) {
@@ -126,11 +126,10 @@ class FunctionMocker
      *
      * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
      */
-    public static function replace($functionName, $returnValue = null)
-    {
+    public static function replace($functionName, $returnValue = null) {
         \Arg::_($functionName, 'Function name')->is_string()->_or()->is_array();
         if (is_array($functionName)) {
-            $replacements = array();
+            $replacements = [];
             array_map(function ($_functionName) use ($returnValue, &$replacements) {
                 $replacements[] = self::_replace($_functionName, $returnValue);
             }, $functionName);
@@ -147,11 +146,10 @@ class FunctionMocker
      * @param $functionName
      * @param $returnValue
      *
-     * @return mixed|null|Call\Verifier\InstanceMethodCallVerifier|static
+     * @return mixed|null|Call\Verifier\InstanceMethodCallVerifier|static|Step
      * @throws \Exception
      */
-    private static function _replace($functionName, $returnValue)
-    {
+    private static function _replace($functionName, $returnValue) {
         $request = ReplacementRequest::on($functionName);
         $returnValue = ReturnValue::from($returnValue);
         $methodName = $request->getMethodName();
@@ -166,8 +164,12 @@ class FunctionMocker
         return self::get_function_or_static_method_replacement($functionName, $returnValue, $request, $methodName);
     }
 
-    private static function get_instance_replacement_chain_head($className)
-    {
+    /**
+     * @param $className
+     *
+     * @return \tad\FunctionMocker\Forge\Step
+     */
+    private static function get_instance_replacement_chain_head($className) {
         $step = new Step();
         $step->setClass($className);
         $forger = new InstanceForger();
@@ -180,9 +182,8 @@ class FunctionMocker
     /**
      * @return SpoofTestCase
      */
-    public static function getTestCase()
-    {
-        if (!self::$testCase) {
+    public static function getTestCase() {
+        if ( ! self::$testCase) {
             self::$testCase = new SpoofTestCase();
         }
         $testCase = self::$testCase;
@@ -193,19 +194,17 @@ class FunctionMocker
     /**
      * @param \PHPUnit_Framework_TestCase $testCase
      */
-    public static function setTestCase($testCase)
-    {
+    public static function setTestCase($testCase) {
         self::$testCase = $testCase;
     }
 
     /**
      * @param ReplacementRequest $request
-     * @param $returnValue
+     * @param                    $returnValue
      *
      * @return mixed
      */
-    public static function get_instance_replacement(ReplacementRequest $request, $returnValue)
-    {
+    public static function get_instance_replacement(ReplacementRequest $request, $returnValue) {
         $forger = new InstanceForger();
         $forger->setTestCase(self::getTestCase());
 
@@ -221,8 +220,7 @@ class FunctionMocker
      * @return Call\Verifier\InstanceMethodCallVerifier|static
      * @throws \Exception
      */
-    private static function get_function_or_static_method_replacement($functionName, $returnValue, $request, $methodName)
-    {
+    private static function get_function_or_static_method_replacement($functionName, $returnValue, $request, $methodName) {
         $checker = Checker::fromName($functionName);
         $callLogger = CallLoggerFactory::make($functionName);
         $verifier = CallVerifierFactory::make($request, $checker, $returnValue, $callLogger);
@@ -238,16 +236,10 @@ class FunctionMocker
      * @param $methodName
      * @param $callLogger
      */
-    private static function replace_with_patchwork($functionName, ReturnValue $returnValue, ReplacementRequest $request, $methodName, LoggerInterface $callLogger)
-    {
+    private static function replace_with_patchwork($functionName, ReturnValue $returnValue, ReplacementRequest $request, $methodName, LoggerInterface $callLogger) {
         $functionOrMethodName = $request->isMethod() ? $methodName : $functionName;
-
         $replacementFunction = self::getReplacementFunction($functionOrMethodName, $returnValue, $callLogger);
-
-        if (function_exists('\Patchwork\replace')) {
-
-            \Patchwork\redefine($functionName, $replacementFunction);
-        }
+        redefine($functionName, $replacementFunction);
     }
 
     /**
@@ -257,8 +249,7 @@ class FunctionMocker
      *
      * @return callable
      */
-    protected static function getReplacementFunction($functionName, $returnValue, $invocation)
-    {
+    protected static function getReplacementFunction($functionName, $returnValue, $invocation) {
         $replacementFunction = function () use ($functionName, $returnValue, $invocation) {
             $args = func_get_args();
 
@@ -277,9 +268,8 @@ class FunctionMocker
      *
      * @return array
      */
-    private static function getIndexedReplacements($return)
-    {
-        $indexedReplacements = array();
+    private static function getIndexedReplacements($return) {
+        $indexedReplacements = [];
         if ($return[0] instanceof FunctionCallVerifier) {
             array_map(function (FunctionCallVerifier $replacement) use (&$indexedReplacements) {
                 $fullFunctionName = $replacement->__getFunctionName();
@@ -301,8 +291,7 @@ class FunctionMocker
      *
      * @return mixed
      */
-    public static function callOriginal(array $args = null)
-    {
+    public static function callOriginal(array $args = null) {
         return \Patchwork\relay($args);
     }
 
@@ -313,12 +302,11 @@ class FunctionMocker
      *
      * @param  string $globalHandle The key the value is associated to in the $GLOBALS array.
      * @param  string $functionName A `Class::method` format string
-     * @param  mixed $returnValue The return value or callback, see `replace` method.
+     * @param  mixed  $returnValue  The return value or callback, see `replace` method.
      *
      * @return mixed               The object that's been set in the $GLOBALS array.
      */
-    public static function replaceGlobal($globalHandle, $functionName, $returnValue = null)
-    {
+    public static function replaceGlobal($globalHandle, $functionName, $returnValue = null) {
         \Arg::_($globalHandle, 'Global var key')->is_string();
 
         self::backupGlobal($globalHandle);
@@ -329,10 +317,9 @@ class FunctionMocker
         return $replacement;
     }
 
-    protected static function backupGlobal($globalHandle)
-    {
-        $shouldSave = !isset(self::$globalsBackup[$globalHandle]);
-        if (!$shouldSave) {
+    protected static function backupGlobal($globalHandle) {
+        $shouldSave = ! isset(self::$globalsBackup[$globalHandle]);
+        if ( ! $shouldSave) {
             return;
         }
         self::$globalsBackup[$globalHandle] = isset($GLOBALS[$globalHandle]) ? $GLOBALS[$globalHandle] : null;
@@ -342,12 +329,11 @@ class FunctionMocker
      * Sets a global value restoring the state after the test ran.
      *
      * @param string $globalHandle The key the value will be associated to in the $GLOBALS array.
-     * @param mixed $replacement The value that will be set in the $GLOBALS array.
+     * @param mixed  $replacement  The value that will be set in the $GLOBALS array.
      *
      * @return mixed               The object that's been set in the $GLOBALS array.
      */
-    public static function setGlobal($globalHandle, $replacement = null)
-    {
+    public static function setGlobal($globalHandle, $replacement = null) {
         \Arg::_($globalHandle, 'Global var key')->is_string();
 
         self::backupGlobal($globalHandle);
@@ -357,8 +343,7 @@ class FunctionMocker
         return $replacement;
     }
 
-    public static function forge($class)
-    {
+    public static function forge($class) {
         return new Step($class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace tad\FunctionMocker\Tests;
 
+use function Patchwork\redefine;
 use tad\FunctionMocker\FunctionMocker;
 use tad\FunctionMocker\MockCallLogger;
 
@@ -129,32 +130,30 @@ class FunctionReplacementTest extends TestCase
     }
 
     /**
-     * It should not allow replacing a non defined non namespaced function
+     * It should allow replacing a non defined non namespaced function
      * @test
      */
-    public function not_allow_replacing_a_non_defined_non_namespaced_function()
+    public function allow_replacing_a_non_defined_non_namespaced_function()
     {
         $f = 'func' . uniqid(rand(1, 9999));
 
         FunctionMocker::replace($f, 2324);
 
-        $this->expectFailure();
-
-        $this->assertEquals(2324, $f());
+        $this->assertTrue(function_exists($f));
+        $this->assertEquals(2324,$f());
     }
 
     /**
-     * It should not allow replacing a non defined namespaced function
+     * It should allow replacing a non defined namespaced function
      * @test
      */
-    public function not_allow_replacing_a_non_defined_namespaced_function()
+    public function allow_replacing_a_non_defined_namespaced_function()
     {
         $f = 'Some\Name\Space\func' . uniqid(rand(1, 9999));
 
         FunctionMocker::replace($f, 2324);
 
-        $this->expectFailure();
-
+        $this->assertTrue(function_exists($f));
         $this->assertEquals(2324, $f());
     }
 }

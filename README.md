@@ -108,7 +108,7 @@ class MyTest extends \PHPUnit_Framework_TestCase {
 ### Functions
 
 #### Replacing functions
-The library will allow for replacement of **defined** functions at test run time using the `FunctionMocker::replace` method like:
+The library will allow for replacement of **defined and undefined** functions at test run time using the `FunctionMocker::replace` method like:
 
 ```php
 FunctionMocker::replace('myFunction', $returnValue);
