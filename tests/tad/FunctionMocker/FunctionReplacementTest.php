@@ -137,10 +137,11 @@ class FunctionReplacementTest extends TestCase
     {
         $f = 'func' . uniqid(rand(1, 9999));
 
-        FunctionMocker::replace($f, 2324);
+        $spy = FunctionMocker::replace($f, 2324);
 
         $this->assertTrue(function_exists($f));
         $this->assertEquals(2324,$f());
+        $spy->wasCalledOnce();
     }
 
     /**
@@ -151,9 +152,10 @@ class FunctionReplacementTest extends TestCase
     {
         $f = 'Some\Name\Space\func' . uniqid(rand(1, 9999));
 
-        FunctionMocker::replace($f, 2324);
+        $spy = FunctionMocker::replace($f, 2324);
 
         $this->assertTrue(function_exists($f));
         $this->assertEquals(2324, $f());
+        $spy->wasCalledOnce();
     }
 }
