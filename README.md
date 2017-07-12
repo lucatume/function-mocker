@@ -77,6 +77,23 @@ require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
 FunctionMocker::init();
 ```
 
+The `init` method will accept a configuration array supporting the following arguments:
+
+* `include` or `whitelist` - array|string; a list of **absolute** paths that should be included in the patching.
+* `exclude` or `blacklist` - array|string; a list of **absolute** paths that should be excluded in the patching.
+* `cache-path` - string; the **absolute** path to the folder where Pathchwork should cache the wrapped files.
+* `redefinable-internals` - array; a list of internal PHP functions that are available for replacement; if an internal function (a function defined by PHP) is not listed here then it will never be replaced in the tests.
+
+
+```php
+\tad\FunctionMocker\FunctionMocker::init([
+    'whitelist' => [dirname(__DIR__) . '/src',dirname(__DIR__) . '/vendor'],
+    'blacklist' => [dirname(__DIR__) . '/included', dirname(__FILE__) . 'patchwork-cache'],
+    'cache-path' => dirname(__DIR__) . 'patchwork-cache' 
+    'redefinable-internals' => ['time', 'filter_var']
+]);
+```
+
 #### Initialization parameters
 Function mocker will take care of initializing Patchwork with some sensible defaults but those initialization parameters can be customized:
 

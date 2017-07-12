@@ -47,7 +47,7 @@ class FunctionMocker {
      * @param array|null $options An array of options to init the Patchwork library.
      *                            ['include'|'whitelist']     array|string A list of absolute paths that should be included in the patching.
      *                            ['exclude'|'blacklist']     array|string A list of absolute paths that should be excluded in the patching.
-     *                            ['cache-path']              string The absolute path to the folder where Pathcwork should cache the wrapped files.
+     *                            ['cache-path']              string The absolute path to the folder where Patchwork should cache the wrapped files.
      *                            ['redefinable-internals']   array A list of internal PHP functions that are available for replacement.
      *
      * @see \Patchwork\configure()
