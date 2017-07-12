@@ -94,7 +94,7 @@ The `init` method will accept a configuration array supporting the following arg
 ]);
 ```
 
-**Note**: the library will ignore **patchwork.json** files even if no configuration is provided to the `FunctionMocker::init` method.
+**Note**: the library will ignore `patchwork.json` files even if no configuration is provided to the `FunctionMocker::init` method.
 
 #### Initialization parameters
 Function mocker will take care of initializing Patchwork with some sensible defaults but those initialization parameters can be customized:
