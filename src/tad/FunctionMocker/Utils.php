@@ -5,8 +5,12 @@ namespace tad\FunctionMocker;
 
 class Utils
 {
+	/**
+	 * @var string
+	 */
+	protected static $vendorDir;
 
-    public static function filterPathListFrom(array $list, $rootDir)
+	public static function filterPathListFrom(array $list, $rootDir)
     {
         \Arg::_($rootDir, 'Root dir')->assert(is_dir($rootDir), 'Root dir must be an existing dir');
 
@@ -28,7 +32,10 @@ class Utils
 
     public static function includePatchwork()
     {
-       require_once Utils::getVendorDir('antecedent/patchwork/Patchwork.php');
+		if (function_exists('Patchwork\replace')) {
+			return;
+		}
+		require_once Utils::getVendorDir('antecedent/patchwork/Patchwork.php');
     }
 
     public static function findParentContainingFrom($children, $cwd)
@@ -55,12 +62,18 @@ class Utils
      */
     public static function getVendorDir($path = '')
     {
-        $ref = new \ReflectionClass('Composer\Autoload\ClassLoader');
-        $file = $ref->getFileName();
+		$root = __DIR__;
+		while (self::$vendorDir === null) {
+			foreach (scandir($root, SCANDIR_SORT_ASCENDING) as $dir) {
+				if (is_dir(implode(DIRECTORY_SEPARATOR, [$dir, 'antecedent', 'patchwork']))) {
+					self::$vendorDir = $root . '/' . $dir;
+					break;
+				}
+			}
+			$root = dirname($root);
+		}
 
-        $vendorDir = dirname(dirname($file));
-
-        return empty($path) ? $vendorDir : $vendorDir . DIRECTORY_SEPARATOR . $path;
+		return empty($path) ? self::$vendorDir : self::$vendorDir . '/'.$path;
     }
 }
 
