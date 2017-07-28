@@ -1,8 +1,11 @@
 # Change Log
-All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+
+## [1.3.4]
+### Fixed
+- really fixed the issue with locating the `vendor` folder that would generate PHP notices (thanks @sciamannikoo)
 
 ## [1.3.3]
 ### Fixed
@@ -51,12 +54,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.3...HEAD
-[1.3.3]: https://github.com/lucatume/function-mocker/compare/1.3.2...v1.3.3
-[1.3.2]: https://github.com/lucatume/function-mocker/compare/1.3.1...v1.3.2
-[1.3.1]: https://github.com/lucatume/function-mocker/compare/1.3.0...v1.3.1
-[1.3.0]: https://github.com/lucatume/function-mocker/compare/1.2.2...v1.3.0
-[1.2.2]: https://github.com/lucatume/function-mocker/compare/1.2.1...v1.2.2
-[1.2.1]: https://github.com/lucatume/function-mocker/compare/1.2.0...v1.2.1
-[1.2.0]: https://github.com/lucatume/function-mocker/compare/1.1.0...v1.2.0
-[1.1.0]: https://github.com/lucatume/function-mocker/compare/1.0.5...v1.1.0
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.4...HEAD
+[1.3.4]: https://github.com/lucatume/function-mocker/compare/1.3.3...1.3.4
+[1.3.3]: https://github.com/lucatume/function-mocker/compare/1.3.2...1.3.3
+[1.3.2]: https://github.com/lucatume/function-mocker/compare/1.3.1...1.3.2
+[1.3.1]: https://github.com/lucatume/function-mocker/compare/1.3.0...1..3.1
+[1.3.0]: https://github.com/lucatume/function-mocker/compare/1.2.2...1.3.0
+[1.2.2]: https://github.com/lucatume/function-mocker/compare/1.2.1...1.2.2
+[1.2.1]: https://github.com/lucatume/function-mocker/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/lucatume/function-mocker/compare/1.1.0...1.2.0
+[1.1.0]: https://github.com/lucatume/function-mocker/compare/1.0.5...1.1.0
