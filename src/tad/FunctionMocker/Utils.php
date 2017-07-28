@@ -62,18 +62,18 @@ class Utils
      */
     public static function getVendorDir($path = '')
     {
-		$root = __DIR__;
-		while (self::$vendorDir === null) {
-			foreach (scandir($root, SCANDIR_SORT_ASCENDING) as $dir) {
-				if (is_dir(implode(DIRECTORY_SEPARATOR, [$dir, 'antecedent', 'patchwork']))) {
-					self::$vendorDir = $root . '/' . $dir;
-					break;
-				}
-			}
-			$root = dirname($root);
-		}
+        $root = __DIR__;
+        while (self::$vendorDir === null) {
+            foreach (scandir($root, SCANDIR_SORT_ASCENDING) as $dir) {
+                if (is_dir($root . '/' . implode(DIRECTORY_SEPARATOR, [$dir, 'antecedent', 'patchwork']))) {
+                    self::$vendorDir = realpath($root . '/' . $dir);
+                    break;
+                }
+            }
+            $root = dirname($root);
+        }
 
-		return empty($path) ? self::$vendorDir : self::$vendorDir . '/'.$path;
+        return empty($path) ? self::$vendorDir : self::$vendorDir . '/'.$path;
     }
 }
 
