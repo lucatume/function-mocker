@@ -3,9 +3,10 @@
 namespace tests\tad\FunctionMocker;
 
 
+use PHPUnit\Framework\TestCase;
 use tad\FunctionMocker\FunctionMocker;
 
-class PatchworkConfigurationTest extends \PHPUnit_Framework_TestCase {
+class PatchworkConfigurationTest extends TestCase {
 
 	protected $toRemove = [];
 
