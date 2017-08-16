@@ -58,33 +58,9 @@ class FunctionMocker {
             return;
         }
 
-        $packageRoot = dirname(dirname(dirname(dirname(__FILE__))));
+		$packageRoot = dirname(dirname(dirname(__DIR__)));
 
-        $jsonFileLocation = $packageRoot . '/patchwork.json';
-
-        $translatedFields = ['include' => 'whitelist', 'exclude' => 'blacklist'];
-        foreach ($translatedFields as $from => $to) {
-            if ( ! empty($options[$from]) && empty($options[$to])) {
-                $options[$to] = $options[$from];
-            }
-            unset($options[$from]);
-        }
-        // but always exclude function-mocker and Patchwork themselves
-        $defaultExcluded = [$packageRoot, Utils::getVendorDir('antecedent/patchwork')];
-        $defaultIncluded = [$packageRoot . '/src/utils.php'];
-        $options['blacklist'] = ! empty($options['blacklist'])
-            ? array_merge((array)$options['blacklist'], $defaultExcluded)
-            : $defaultExcluded;
-
-        $options['whitelist'] = ! empty($options['whitelist'])
-            ? array_merge((array)$options['whitelist'], $defaultIncluded)
-            : $defaultIncluded;
-
-        if (empty($options['cache-path'])) {
-            $options['cache-path'] = 'cache';
-        }
-
-        file_put_contents($jsonFileLocation, json_encode($options));
+		self::writePatchworkConfig($options, $packageRoot);
 
         /** @noinspection PhpIncludeInspection */
         Utils::includePatchwork();
@@ -346,4 +322,86 @@ class FunctionMocker {
     public static function forge($class) {
         return new Step($class);
     }
+
+	/**
+	 * Writes Patchwork configuration to file if needed.
+	 *j
+	 * @param array   $options           An array of options as those supported by Patchwork configuration.
+	 * @param  string $destinationFolder The absolute path to the folder that will contain the cache folder and the Patchwork
+	 *                                   configuration file.
+	 *
+	 * @return bool Whether the configuration file was written or not.
+	 *
+	 * @throws \RuntimeException If the Patchwork configuration file or the checksum file could not be written.
+	 */
+	public static function writePatchworkConfig(array $options, $destinationFolder) {
+		$options = self::getPatchworkConfiguration($options, $destinationFolder);
+
+		$configFileContents = json_encode($options);
+		$configChecksum   = md5($configFileContents);
+		$configFilePath   = $destinationFolder . '/patchwork.json';
+		$checksumFilePath = "{$destinationFolder}/pw-cs-{$configChecksum}.yml";
+
+		if (file_exists($configFilePath) && file_exists($checksumFilePath)) {
+			return false;
+		}
+
+		if (false === file_put_contents($configFilePath, $configFileContents)) {
+			throw new \RuntimeException("Could not write Patchwork library configuration file to {$configFilePath}");
+		}
+
+		foreach (glob($destinationFolder. '/pw-cs-*.yml') as $file) {
+			unlink($file);
+		}
+
+		$date                 = date('Y-m-d H:i:s');
+		$checksumFileContents = <<< YAML
+generator: FunctionMocker
+date: $date
+checksum: $configChecksum
+for: $configFilePath
+YAML;
+
+		if (false === file_put_contents($checksumFilePath, $checksumFileContents)) {
+			throw new \RuntimeException("Could not write Patchwork library configuration checksum file to {$checksumFilePath}");
+		}
+
+		return true;
+	}
+
+	/**
+	 * Return the Patchwork configuration that should be written to file.
+	 *
+	 * @param array   $options           An array of options as those supported by Patchwork configuration.
+	 * @param  string $destinationFolder The absolute path to the folder that will contain the cache folder and the Patchwork
+	 *                                   configuration file.
+	 *
+	 * @return array
+	 */
+	public static function getPatchworkConfiguration(array $options, $destinationFolder) {
+		$translatedFields = ['include' => 'whitelist', 'exclude' => 'blacklist'];
+
+		foreach ($translatedFields as $from => $to) {
+			if (!empty($options[$from]) && empty($options[$to])) {
+				$options[$to] = $options[$from];
+			}
+			unset($options[$from]);
+		}
+
+		// but always exclude function-mocker and Patchwork themselves
+		$defaultExcluded      = [$destinationFolder, Utils::getVendorDir('antecedent/patchwork')];
+		$defaultIncluded      = [$destinationFolder . '/src/utils.php'];
+		$options['blacklist'] = !empty($options['blacklist'])
+			? array_merge((array) $options['blacklist'], $defaultExcluded)
+			: $defaultExcluded;
+
+		$options['whitelist'] = !empty($options['whitelist'])
+			? array_merge((array) $options['whitelist'], $defaultIncluded)
+			: $defaultIncluded;
+
+		if (empty($options['cache-path'])) {
+			$options['cache-path'] = $destinationFolder . '/cache';
+		}
+		return $options;
+	}
 }
