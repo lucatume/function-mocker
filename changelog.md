@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.3.5]
+### Fixed
+- Patchwork library configuration creation to address caching issues
+
 ## [1.3.4]
 ### Fixed
 - really fixed the issue with locating the `vendor` folder that would generate PHP notices (thanks @sciamannikoo)
@@ -54,7 +58,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.4...HEAD
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.5...HEAD
+[1.3.5]: https://github.com/lucatume/function-mocker/compare/1.3.4...1.3.5
 [1.3.4]: https://github.com/lucatume/function-mocker/compare/1.3.3...1.3.4
 [1.3.3]: https://github.com/lucatume/function-mocker/compare/1.3.2...1.3.3
 [1.3.2]: https://github.com/lucatume/function-mocker/compare/1.3.1...1.3.2
