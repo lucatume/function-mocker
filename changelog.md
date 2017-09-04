@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.3.6]
+### Fixed
+- smaller PHPUnit `<= 6.0` incompatibilities
+
 ## [1.3.5]
 ### Fixed
 - Patchwork library configuration creation to address caching issues
@@ -58,7 +62,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.5...HEAD
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.6...HEAD
+[1.3.6]: https://github.com/lucatume/function-mocker/compare/1.3.5...1.3.6
 [1.3.5]: https://github.com/lucatume/function-mocker/compare/1.3.4...1.3.5
 [1.3.4]: https://github.com/lucatume/function-mocker/compare/1.3.3...1.3.4
 [1.3.3]: https://github.com/lucatume/function-mocker/compare/1.3.2...1.3.3
