@@ -60,12 +60,17 @@ class InstanceForger
             $mockObject = $this->testCase->getMockBuilder($className)->disableOriginalConstructor()
                 ->setMethods($methods)->getMockForTrait();
         } else {
-            $mockObject = $this->testCase->getMockBuilder($className)
-                ->disableOriginalConstructor()
-                ->disableOriginalClone()
-                ->disableArgumentCloning()
-                ->disallowMockingUnknownTypes()
-                ->getMock();
+			$mockBuilder = $this->testCase->getMockBuilder($className)
+				->disableOriginalConstructor()
+				->disableOriginalClone()
+				->disableArgumentCloning();
+
+			// removed in later versions of PHPUnit
+			if (method_exists($mockBuilder, 'disallowMockingUnknownTypes')) {
+				$mockBuilder->disallowMockingUnknownTypes();
+			}
+
+			$mockObject = $mockBuilder->getMock();
         }
 
         return $mockObject;
