@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.3.7]
+### Fixed
+- issue that would generate en excpetion when providing an empty configuration to the `FunctionMocker::init` method
+
 ## [1.3.6]
 ### Fixed
 - smaller PHPUnit `<= 6.0` incompatibilities
@@ -62,7 +66,8 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.6...HEAD
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.7...HEAD
+[1.3.7]: https://github.com/lucatume/function-mocker/compare/1.3.6...1.3.7
 [1.3.6]: https://github.com/lucatume/function-mocker/compare/1.3.5...1.3.6
 [1.3.5]: https://github.com/lucatume/function-mocker/compare/1.3.4...1.3.5
 [1.3.4]: https://github.com/lucatume/function-mocker/compare/1.3.3...1.3.4

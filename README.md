@@ -74,7 +74,7 @@ use tad\FunctionMocker\FunctionMocker;
 
 require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
 
-FunctionMocker::init();
+FunctionMocker::init(['blacklist' => dirname(__DIR__)]);
 ```
 
 The `init` method will accept a configuration array supporting the following arguments:
@@ -88,11 +88,13 @@ The `init` method will accept a configuration array supporting the following arg
 ```php
 \tad\FunctionMocker\FunctionMocker::init([
     'whitelist' => [dirname(__DIR__) . '/src',dirname(__DIR__) . '/vendor'],
-    'blacklist' => [dirname(__DIR__) . '/included', dirname(__FILE__) . 'patchwork-cache'],
+    'blacklist' => [dirname(__DIR__) . '/included', dirname(__FILE__) . 'patchwork-cache', dirname(__DIR__)],
     'cache-path' => dirname(__DIR__) . 'patchwork-cache' 
     'redefinable-internals' => ['time', 'filter_var']
 ]);
 ```
+
+Excluding the project root folder, `dirname(__DIR__)` in the examples, is usually a good idea.
 
 **Note**: the library will ignore `patchwork.json` files even if no configuration is provided to the `FunctionMocker::init` method.
 
