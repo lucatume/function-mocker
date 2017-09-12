@@ -89,7 +89,7 @@ The `init` method will accept a configuration array supporting the following arg
 \tad\FunctionMocker\FunctionMocker::init([
     'whitelist' => [dirname(__DIR__) . '/src',dirname(__DIR__) . '/vendor'],
     'blacklist' => [dirname(__DIR__) . '/included', dirname(__FILE__) . 'patchwork-cache', dirname(__DIR__)],
-    'cache-path' => dirname(__DIR__) . 'patchwork-cache' 
+    'cache-path' => dirname(__DIR__) . 'patchwork-cache,
     'redefinable-internals' => ['time', 'filter_var']
 ]);
 ```
