@@ -376,10 +376,10 @@ YAML;
 	 * @param array   $options           An array of options as those supported by Patchwork configuration.
 	 * @param  string $destinationFolder The absolute path to the folder that will contain the cache folder and the Patchwork
 	 *                                   configuration file.
-	 *
+	 t *
 	 * @return array
 	 */
-	public static function getPatchworkConfiguration(array $options, $destinationFolder) {
+	public static function getPatchworkConfiguration($options = [], $destinationFolder) {
 		$translatedFields = ['include' => 'whitelist', 'exclude' => 'blacklist'];
 
 		foreach ($translatedFields as $from => $to) {
