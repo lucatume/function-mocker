@@ -47,7 +47,6 @@ class MockWrapper
      */
     public function wrap(\PHPUnit_Framework_MockObject_MockObject $mockObject, \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder, ReplacementRequest $request)
     {
-
         $extender = new SpyExtender();
 
         return $this->getWrappedInstance($mockObject, $extender, $invokedRecorder, $request);

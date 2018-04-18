@@ -401,7 +401,7 @@ YAML;
 			: $defaultIncluded;
 
 		if (empty($options['cache-path'])) {
-			$options['cache-path'] = $destinationFolder . '/cache';
+			$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
 		}
 		return $options;
 	}
