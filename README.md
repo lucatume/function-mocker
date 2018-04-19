@@ -1,6 +1,7 @@
 # Function Mocker
 
-*A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker.*
+*A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker with additional WordPress goodies.*
+
 
 [![Build Status](https://travis-ci.org/lucatume/function-mocker.svg?branch=master)](https://travis-ci.org/lucatume/function-mocker)
 
@@ -9,19 +10,7 @@ This can be written in a [PHPUnit](http://phpunit.de/) test suite
     
 ```php
 <?php
-
-// FunctionMocker needs the functions to be defined to replace them
-function get_option($option)
-{
-    // no-op
-}
-
-function update_option($option, $value)
-{
-    // no-op
-}
-
-// The class under test
+// The class under test, file Logger.php
 class Logger
 {
     public function log($type, $message)
@@ -32,8 +21,10 @@ class Logger
     }
 }
 
-class InternaFunctionReplacementTest extends \PHPUnit\Framework\TestCase
-{
+// file LoggerTest.php
+
+use \tad\FunctionMocker\FunctionMocker;
+class InternaFunctionReplacementTest extends \PHPUnit\Framework\TestCase {
     /**
      * It should log the correct message
      * @test
@@ -41,16 +32,18 @@ class InternaFunctionReplacementTest extends \PHPUnit\Framework\TestCase
     public function log_the_correct_message()
     {
         $mockTime = time();
-        \tad\FunctionMocker\FunctionMocker::replace('time', $mockTime);
-        \tad\FunctionMocker\FunctionMocker::replace('get_option', []);
-        $update_option = \tad\FunctionMocker\FunctionMocker::replace('update_option');
+        // it can replace an internal function
+        FunctionMocker::time()->willReturn($mockTime);
+        // it can replace a function that is not defined
+        FunctionMocker::get_option()->willReturn([]);
+        // it can spy functions
+        $expected = sprintf('[%s] error - There was an error', date(DATE_ATOM, $mockTime));
+        FunctionMocker::update_option('log', $expected )
+            ->shouldBeCalled();
 
         $logger = new Logger();
 
         $logger->log('error', 'There was an error');
-
-        $expected = sprintf('[%s] error - There was an error', date(DATE_ATOM, $mockTime));
-        $update_option->wasCalledWithOnce(['log', $expected]);
     }
 }
 ```
