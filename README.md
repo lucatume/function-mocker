@@ -24,26 +24,39 @@ class Logger
 // file LoggerTest.php
 
 use \tad\FunctionMocker\FunctionMocker;
+
 class InternaFunctionReplacementTest extends \PHPUnit\Framework\TestCase {
+	
+	public function setUp(){
+		FucntionMocker::setUp();
+	}
+	
     /**
      * It should log the correct message
      * @test
      */
     public function log_the_correct_message()
     {
-        $mockTime = time();
         // it can replace an internal function
+        $mockTime = time();
         FunctionMocker::time()->willReturn($mockTime);
+        
         // it can replace a function that is not defined
         FunctionMocker::get_option()->willReturn([]);
+        
         // it can spy functions
         $expected = sprintf('[%s] error - There was an error', date(DATE_ATOM, $mockTime));
+        
         FunctionMocker::update_option('log', $expected )
             ->shouldBeCalled();
 
         $logger = new Logger();
 
         $logger->log('error', 'There was an error');
+    }
+    
+    public function tearDown(){
+    	FunctionMocker::tearDown();
     }
 }
 ```

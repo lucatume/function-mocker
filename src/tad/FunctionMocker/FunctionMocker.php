@@ -3,9 +3,15 @@
 namespace tad\FunctionMocker;
 
 use Prophecy\Prophecy\MethodProphecy;
+use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use Prophecy\Prophet;
 
+/**
+ * Class FunctionMocker
+ *
+ * @package tad\FunctionMocker
+ */
 class FunctionMocker {
 
 	/**
@@ -24,35 +30,63 @@ class FunctionMocker {
 	/**
 	 * @var ProphecyInterface[]
 	 */
-	protected $prophecies;
+	protected $prophecies = [];
+
+	/**
+	 * @var MethodProphecy[]
+	 */
+	protected $methodProphecies = [];
 
 	/**
 	 * @var \Prophecy\Prophet
 	 */
-	private $prophet;
+	protected $prophet;
 
-	/**
-	 * FunctionMocker constructor.
-	 *
-	 * @param \Prophecy\Prophet $prophet
-	 */
-	public function __construct( Prophet $prophet ) {
+	protected function __construct( Prophet $prophet ) {
 		$this->prophet = $prophet;
 	}
 
 	/**
-	 * Loads Patchwork, use in setUp method of the test case.
+	 * Sets up the class to redefine, stub and mock functions, use in the `setUp` method of the test case and in conjunction
+	 * with the `tad\FunctionMocker\FunctionMocker\tearDown` method.
 	 *
-	 * @return void
+	 * Example usage:
+	 *
+	 *      use \tad\FunctionMocker\FunctionMocker;
+	 *
+	 *      class MyTestCase extends \PHPUnit\Framework\TestCase {
+	 *          public function setUp(){
+	 *              FunctionMocker::setUp();
+	 *          }
+	 *
+	 *          public function test_something_requiring_function_mocking(){
+	 *              // ...
+	 *          }
+	 *
+	 *          public function tearDown(){
+	 *              FunctionMocker::tearDown();
+	 *          }
+	 *      }
+	 *
+	 * @see \tad\FunctionMocker\FunctionMocker::tearDown()
 	 */
 	public static function setUp() {
-		if ( ! self::$didInit ) {
+		if ( ! self::instance()->didInit ) {
 			self::init();
 		}
+		static::instance()->prophet = new Prophet();
+	}
+
+	protected static function instance(): FunctionMocker {
+		if ( static::$instance === null ) {
+			static::$instance = new static( new Prophet() );
+		}
+
+		return static::$instance;
 	}
 
 	/**
-	 * Inits the mocking engine including the Patchwork library.
+	 * Inits the mocking engine including the Patchwork library and configuring it.
 	 *
 	 * @param array|null $options An array of options to init the Patchwork library.
 	 *                            ['include'|'whitelist']     array|string A list of absolute paths that should be included in the patching.
@@ -60,149 +94,187 @@ class FunctionMocker {
 	 *                            ['cache-path']              string The absolute path to the folder where Patchwork should cache the wrapped files.
 	 *                            ['redefinable-internals']   array A list of internal PHP functions that are available for replacement.
 	 *
-	 * @param bool       $forceReinit
-	 *
 	 * @see \Patchwork\configure()
 	 */
-	public static function init( array $options = null, $forceReinit = false ) {
-		if ( ! $forceReinit && self::instance()->didInit ) {
+	public static function init( array $options = null ) {
+		$function_mocker = static::instance();
+
+		if ( $function_mocker->didInit ) {
 			return;
 		}
 
-		$packageRoot = dirname( __DIR__, 3 );
-
-		static::instance()->writePatchworkConfig( $options, $packageRoot );
+		writePatchworkConfig( $options );
 
 		/** @noinspection PhpIncludeInspection */
-		Utils::includePatchwork();
+		includePatchwork();
 
-		require_once dirname( __DIR__, 2 ) . '/utils.php';
+		require_once __DIR__ . '/utils.php';
 
-		static::instance()->didInit = true;
-	}
-
-	public static function instance( FunctionMocker $instance = null ): FunctionMocker {
-		if ( static::$instance === null ) {
-			static::$instance = $instance ?? new static( new Prophet() );
-		}
-
-		return static::$instance;
+		$function_mocker->didInit = true;
 	}
 
 	/**
-	 * Writes Patchwork configuration to file if needed.
-	 *j
+	 * Tears down the class artifacts after a test, use in the `tearDown` method of the test case and in conjunction
+	 * with the `tad\FunctionMocker\FunctionMocker\setUp` method.
 	 *
-	 * @param array   $options           An array of options as those supported by Patchwork configuration.
-	 * @param  string $destinationFolder The absolute path to the folder that will contain the cache folder and the Patchwork
-	 *                                   configuration file.
+	 * Example usage:
 	 *
-	 * @return bool Whether the configuration file was written or not.
+	 *      use \tad\FunctionMocker\FunctionMocker;
 	 *
-	 * @throws \RuntimeException If the Patchwork configuration file or the checksum file could not be written.
-	 */
-	public function writePatchworkConfig( array $options = null, $destinationFolder ) {
-		$options = static::instance()->getPatchworkConfiguration( $options, $destinationFolder );
-
-		$configFileContents = json_encode( $options );
-		$configChecksum     = md5( $configFileContents );
-		$configFilePath     = $destinationFolder . '/patchwork.json';
-		$checksumFilePath   = "{$destinationFolder}/pw-cs-{$configChecksum}.yml";
-
-		if ( file_exists( $configFilePath ) && file_exists( $checksumFilePath ) ) {
-			return false;
-		}
-
-		if ( false === file_put_contents( $configFilePath, $configFileContents ) ) {
-			throw new \RuntimeException( "Could not write Patchwork library configuration file to {$configFilePath}" );
-		}
-
-		foreach ( glob( $destinationFolder . '/pw-cs-*.yml' ) as $file ) {
-			unlink( $file );
-		}
-
-		$date                 = date( 'Y-m-d H:i:s' );
-		$checksumFileContents = <<< YAML
-generator: FunctionMocker
-date: $date
-checksum: $configChecksum
-for: $configFilePath
-YAML;
-
-		if ( false === file_put_contents( $checksumFilePath, $checksumFileContents ) ) {
-			throw new \RuntimeException( "Could not write Patchwork library configuration checksum file to {$checksumFilePath}" );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Return the Patchwork configuration that should be written to file.
+	 *      class MyTestCase extends \PHPUnit\Framework\TestCase {
+	 *          public function setUp(){
+	 *              FunctionMocker::setUp();
+	 *          }
 	 *
-	 * @param array   $options           An array of options as those supported by Patchwork configuration.
-	 * @param  string $destinationFolder The absolute path to the folder that will contain the cache folder and the Patchwork
-	 *                                   configuration file.
+	 *          public function test_something_requiring_function_mocking(){
+	 *              // ...
+	 *          }
 	 *
-	 * @return array
-	 */
-	public function getPatchworkConfiguration( $options = [], $destinationFolder ) {
-		$translatedFields = [ 'include' => 'whitelist', 'exclude' => 'blacklist' ];
-
-		foreach ( $translatedFields as $from => $to ) {
-			if ( ! empty( $options[ $from ] ) && empty( $options[ $to ] ) ) {
-				$options[ $to ] = $options[ $from ];
-			}
-			unset( $options[ $from ] );
-		}
-
-		// but always exclude function-mocker and Patchwork themselves
-		$defaultExcluded      = [ $destinationFolder, Utils::getVendorDir( 'antecedent/patchwork' ) ];
-		$defaultIncluded      = [ $destinationFolder . '/src/utils.php' ];
-		$options['blacklist'] = ! empty( $options['blacklist'] )
-			? array_merge( (array) $options['blacklist'], $defaultExcluded )
-			: $defaultExcluded;
-
-		$options['whitelist'] = ! empty( $options['whitelist'] )
-			? array_merge( (array) $options['whitelist'], $defaultIncluded )
-			: $defaultIncluded;
-
-		if ( empty( $options['cache-path'] ) ) {
-			$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
-		}
-
-		return $options;
-	}
-
-	/**
-	 * Undoes Patchwork bindings, use in tearDown method of test case.
+	 *          public function tearDown(){
+	 *              FunctionMocker::tearDown();
+	 *          }
+	 *      }
 	 *
-	 * @return void
+	 * @see \tad\FunctionMocker\FunctionMocker::setUp()
 	 */
 	public static function tearDown() {
 		\Patchwork\restoreAll();
+
+		if ( self::instance()->prophet === null ) {
+			return;
+		}
+
+		$prophet                    = static::instance()->prophet;
+		static::instance()->prophet = null;
+		$prophet->checkPredictions();
 	}
 
+	/**
+	 * Magic method to offer a flexible function-mocking API.
+	 *
+	 * Example usage:
+	 *
+	 *      use tad\FunctionMocker\FunctionMocker;
+	 *
+	 *      class MyTestCase extends \PHPUnit\Framework\TestCase {
+	 *          public function setUp(){
+	 *              FunctionMocker::setUp();
+	 *          }
+	 *
+	 *          public function test_something_requiring_function_mocking(){
+	 *              FunctionMocker::update_option('foo', ['bar'])
+	 *                  ->shouldBeCalled();
+	 *              FunctionMocker::get_option(Argument::type('string'))
+	 *                  ->willReturn([]);
+	 *
+	 *              $logger = new OptionLogger($option = 'foo');
+	 *              $logger->log('bar');
+	 *          }
+	 *
+	 *          public function tearDown(){
+	 *              FunctionMocker::tearDown();
+	 *          }
+	 *      }
+	 *
+	 * @param string $function  Handled by PHP; if calling `FunctionMocker::update_option` then this
+	 *                          will be `update_option`; see usage example above.
+	 * @param array  $arguments Handled by PHP
+	 *
+	 * @return \Prophecy\Prophecy\MethodProphecy
+	 */
 	public static function __callStatic( string $function, array $arguments ): MethodProphecy {
+		return self::replace( $function, ...$arguments );
+	}
+
+	/**
+	 * Replaces a function, be it defined or not, with Patchwork.
+	 *
+	 * This method is the one used by the `__callStatic` implementation and is the
+	 * one that should be used to replace namespaced functions.
+	 *
+	 * Example usage:
+	 *
+	 *      use tad\FunctionMocker\FunctionMocker;
+	 *
+	 *      class MyTestCase extends \PHPUnit\Framework\TestCase {
+	 *          public function setUp(){
+	 *              FunctionMocker::setUp();
+	 *          }
+	 *
+	 *          public function test_something_requiring_function_mocking(){
+	 *              FunctionMocker::replace('MyNamespace\\SubSpace\\update_option', 'foo', ['bar'])
+	 *                  ->shouldBeCalled();
+	 *              FunctionMocker::replace('MyNamespace\\SubSpace\\get_option', Argument::type('string'))
+	 *                  ->willReturn([]);
+	 *
+	 *              $logger = new OptionLogger($option = 'foo');
+	 *              $logger->log('bar');
+	 *          }
+	 *
+	 *          public function tearDown(){
+	 *              FunctionMocker::tearDown();
+	 *          }
+	 *      }
+	 *
+	 * @param string $function     The name of the function to replace, including the namespace.
+	 * @param mixed  ...$arguments Arguments that are expected to be used to call the function.
+	 *                             The arguments can be scalar or instances of the `Prophecy\Argument`
+	 *                             class.
+	 *
+	 * @return \Prophecy\Prophecy\MethodProphecy
+	 * @throws \Exception
+	 */
+	public static function replace( string $function, ...$arguments ): MethodProphecy {
 		$instance = self::instance();
 
-		if ( ! function_exists( $function ) ) {
-			\tad\FunctionMocker\createFunction( $function );
+		list( $function, $namespace, $functionFQN ) = $instance->extractFunctionAndNamespace( $function );
+
+		if ( ! function_exists( $functionFQN ) ) {
+			\tad\FunctionMocker\createFunction( $function, $namespace );
 		}
 
-		$class                             = $instance->createClassForFunction( $function );
-		$prophecy                          = $instance->prophet->prophesize( $class );
-		$instance->prophecies[ $function ] = $prophecy;
+		$prophecy = $instance->buildProphecyFor( $function, $functionFQN );
+		$instance->redefineFunctionWithPatchwork( $function, $functionFQN );
 
-		if ( empty( $arguments ) ) {
-			$methodProphecy = call_user_func( [ $prophecy, $function ] );
+		return $instance->buildMethodProphecy( $function, $functionFQN, $arguments, $prophecy );
+	}
+
+	protected function extractFunctionAndNamespace( string $function ): array {
+		$function       = '\\' . ltrim( $function, '\\' );
+		$namespaceFrags = array_filter( explode( '\\', $function ) );
+		$function       = array_pop( $namespaceFrags );
+		$namespace      = implode( '\\', $namespaceFrags );
+		$functionFQN    = $namespace . '\\' . $function;
+
+		return array( $function, $namespace, $functionFQN );
+	}
+
+	protected function buildProphecyFor( string $function, $functionFQN ) {
+		if ( ! array_key_exists( $functionFQN, $this->prophecies ) ) {
+			$class                            = $this->createClassForFunction( $function, $functionFQN );
+			$prophecy                         = $this->prophet->prophesize( $class );
+			$this->prophecies[ $functionFQN ] = $prophecy;
 		} else {
-			$methodProphecy = call_user_func( [ $prophecy, $function ], ...$arguments );
+			$prophecy = $this->prophecies[ $functionFQN ];
 		}
 
-		\Patchwork\redefine( $function, function () use ( $function ) {
-			$prophecy = FunctionMocker::instance()->getRevealedProphecyFor( $function );
+		return $prophecy;
+	}
 
-			$args = func_get_args();
+	protected function createClassForFunction( string $function, string $functionFQN ): string {
+		$uniqid       = md5( uniqid( 'function-', true ) );
+		$functionSlug = str_replace( '\\', '_', $functionFQN );
+		$className    = "_{$functionSlug}_{$uniqid}";
+
+		eval( "class {$className}{ public function {$function}(){}}" );
+
+		return $className;
+	}
+
+	protected function redefineFunctionWithPatchwork( string $function, string $functionFQN ) {
+		\Patchwork\redefine( $functionFQN, function () use ( $functionFQN, $function ) {
+			$prophecy = FunctionMocker::instance()->getRevealedProphecyFor( $functionFQN );
+			$args     = func_get_args();
 
 			if ( empty( $args ) ) {
 				return call_user_func( [ $prophecy, $function ] );
@@ -210,20 +282,6 @@ YAML;
 
 			return call_user_func( [ $prophecy, $function ], ...$args );
 		} );
-
-		return $methodProphecy;
-	}
-
-	/**
-	 * @param string $function
-	 */
-	protected function createClassForFunction( string $function ): string {
-		$uniqid    = md5( uniqid( 'function-', true ) );
-		$className = "_{$function}_{$uniqid}";
-
-		eval( "class {$className}{ public function {$function}(){}}" );
-
-		return $className;
 	}
 
 	protected function getRevealedProphecyFor( string $function ) {
@@ -234,24 +292,16 @@ YAML;
 		return $this->revealed[ $function ];
 	}
 
-	/**
-	 * Replaces a function, a static method or an instance method.
-	 *
-	 * The function or methods to be replaced must be specified with fully
-	 * qualified names like
-	 *
-	 *     FunctionMocker::replace('my\name\space\aFunction');
-	 *     FunctionMocker::replace('my\name\space\SomeClass::someMethod');
-	 *
-	 * not specifying a return value will make the replaced function or value
-	 * return `null`.
-	 *
-	 * @param      $functionName
-	 * @param null $returnValue
-	 *
-	 * @return mixed
-	 */
-	public static function replace( $functionName, $returnValue = null ) {
-		// @todo
+	protected function buildMethodProphecy( string $function, string $functionFQN, array $arguments, ObjectProphecy $prophecy ) {
+		if ( ! array_key_exists( $functionFQN, $this->methodProphecies ) ) {
+			if ( empty( $arguments ) ) {
+				$methodProphecy = call_user_func( [ $prophecy, $function ] );
+			} else {
+				$methodProphecy = call_user_func( [ $prophecy, $function ], ...$arguments );
+			}
+			$this->methodProphecies[ $functionFQN ] = $methodProphecy;
+		}
+
+		return $this->methodProphecies[ $functionFQN ];
 	}
 }

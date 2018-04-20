@@ -19,7 +19,7 @@
       "tad\\FunctionMocker": "src"
     },
     "files": [
-      "src/functions.php"
+      "src/tad/FunctionMocker/functions.php"
     ]
   },
   "require-dev": {
