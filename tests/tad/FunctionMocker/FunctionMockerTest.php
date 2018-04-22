@@ -3,6 +3,7 @@
 namespace tad\FunctionMocker;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Exception\Prediction\AggregateException;
 
 class FunctionMockerTest extends TestCase {
@@ -143,6 +144,18 @@ class FunctionMockerTest extends TestCase {
 		catch ( AggregateException $e ) {
 			$this->assertRegExp( '/^.*testFunctionFive.*exactly 2 calls.*$/us', $e->getMessage() );
 		}
+	}
+
+	/**
+	 * It should allow replacing namespaced functions using the __callStatic API
+	 *
+	 * @test
+	 */
+	public function should_allow_replacing_namespaced_functions_using_the_call_static_api() {
+		FunctionMocker::inNamespace( '\\Test\\Space', function () {
+			FunctionMocker::testFunctionFive( Argument::type( 'string' ) )->willReturn( 'string' );
+			FunctionMocker::testFunctionFive( Argument::type( 'array' ) )->willReturn( 'array' );
+		} );
 	}
 
 	protected function setUp() {
