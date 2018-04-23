@@ -3,7 +3,6 @@
 namespace tad\FunctionMocker;
 
 use Prophecy\Prophecy\MethodProphecy;
-use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use Prophecy\Prophet;
 
@@ -41,6 +40,11 @@ class FunctionMocker {
 	 * @var \Prophecy\Prophet
 	 */
 	protected $prophet;
+
+	/**
+	 * @var string
+	 */
+	protected $currentReplacementNamespace;
 
 	protected function __construct( Prophet $prophet ) {
 		$this->prophet = $prophet;
@@ -229,14 +233,20 @@ class FunctionMocker {
 
 		list( $function, $namespace, $functionFQN ) = $instance->extractFunctionAndNamespace( $function );
 
+		if ( $instance->currentReplacementNamespace !== null ) {
+			$namespace   = rtrim( '\\' . $instance->currentReplacementNamespace . '\\' . ltrim( $namespace, '\\' ), '\\' );
+			$functionFQN = $namespace . '\\' . trim( $function, '\\' );
+		}
+
 		if ( ! function_exists( $functionFQN ) ) {
 			\tad\FunctionMocker\createFunction( $function, $namespace );
 		}
 
-		$prophecy = $instance->buildProphecyFor( $function, $functionFQN );
-		$instance->redefineFunctionWithPatchwork( $function, $functionFQN );
+		if ( $prophecy = $instance->buildNewProphecyFor( $function, $functionFQN ) ) {
+			$instance->redefineFunctionWithPatchwork( $function, $functionFQN );
+		}
 
-		return $instance->buildMethodProphecy( $function, $functionFQN, $arguments, $prophecy );
+		return $instance->buildMethodProphecy( $function, $functionFQN, $arguments, $instance->prophecies[ $functionFQN ] );
 	}
 
 	protected function extractFunctionAndNamespace( string $function ): array {
@@ -249,14 +259,14 @@ class FunctionMocker {
 		return array( $function, $namespace, $functionFQN );
 	}
 
-	protected function buildProphecyFor( string $function, $functionFQN ) {
-		if ( ! array_key_exists( $functionFQN, $this->prophecies ) ) {
-			$class                            = $this->createClassForFunction( $function, $functionFQN );
-			$prophecy                         = $this->prophet->prophesize( $class );
-			$this->prophecies[ $functionFQN ] = $prophecy;
-		} else {
-			$prophecy = $this->prophecies[ $functionFQN ];
+	protected function buildNewProphecyFor( string $function, $functionFQN ) {
+		if ( array_key_exists( $functionFQN, $this->prophecies ) ) {
+			return false;
 		}
+
+		$class                            = $this->createClassForFunction( $function, $functionFQN );
+		$prophecy                         = $this->prophet->prophesize( $class );
+		$this->prophecies[ $functionFQN ] = $prophecy;
 
 		return $prophecy;
 	}
@@ -292,16 +302,52 @@ class FunctionMocker {
 		return $this->revealed[ $function ];
 	}
 
-	protected function buildMethodProphecy( string $function, string $functionFQN, array $arguments, ObjectProphecy $prophecy ) {
-		if ( ! array_key_exists( $functionFQN, $this->methodProphecies ) ) {
-			if ( empty( $arguments ) ) {
-				$methodProphecy = call_user_func( [ $prophecy, $function ] );
-			} else {
-				$methodProphecy = call_user_func( [ $prophecy, $function ], ...$arguments );
-			}
-			$this->methodProphecies[ $functionFQN ] = $methodProphecy;
+	protected function buildMethodProphecy( string $function, string $functionFQN, array $arguments, ProphecyInterface $prophecy ) {
+		if ( empty( $arguments ) ) {
+			$methodProphecy = call_user_func( [ $prophecy, $function ] );
+		} else {
+			$methodProphecy = call_user_func( [ $prophecy, $function ], ...$arguments );
 		}
 
-		return $this->methodProphecies[ $functionFQN ];
+		return $methodProphecy;
+	}
+
+	/**
+	 * Localizes all function redefinitions in a namespace.
+	 *
+	 * Example usage:
+	 *
+	 *      use \tad\FunctionMocker\FunctionMocker;
+	 *
+	 *      class MyTestCase extends \PHPUnit\Framework\TestCase {
+	 *          public function setUp(){
+	 *              FunctionMocker::setUp();
+	 *          }
+	 *
+	 *          public function test_something_requiring_function_mocking(){
+	 *              FunctionMocker::inNamespace('Acme', function(){
+	 *                  FunctionMocker::aFunction('foo')->willReturn('bar');
+	 *                  FunctionMocker::anotherFunction('bar')->shouldBeCalled();
+	 *              });
+	 *
+	 *              $this->assertEquals('bar', \Acme\aFunction('foo'));
+	 *              \Acme\anotherFunction('bar');
+	 *          }
+	 *
+	 *          public function tearDown(){
+	 *              FunctionMocker::tearDown();
+	 *          }
+	 *      }
+	 *
+	 * @param string   $namespace     The namespace the redefinitions should happen into.
+	 * @param callable $redefinitions A closure detailing the redefinitions that should happen
+	 *                                in the namespace.
+	 */
+	public static function inNamespace( string $namespace, callable $redefinitions ) {
+		self::instance()->currentReplacementNamespace = trim( $namespace, '\\' );
+
+		$redefinitions();
+
+		self::instance()->currentReplacementNamespace = null;
 	}
 }

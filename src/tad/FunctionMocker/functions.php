@@ -134,6 +134,7 @@ function getPatchworkConfiguration( array $options = [], string $destinationFold
 	// but always exclude function-mocker and Patchwork themselves
 	$defaultExcluded      = [ $destinationFolder, getVendorDir( 'antecedent/patchwork' ) ];
 	$defaultIncluded      = [ $destinationFolder . '/src/tad/FunctionMocker/utils.php' ];
+
 	$options['blacklist'] = ! empty( $options['blacklist'] )
 		? array_merge( (array) $options['blacklist'], $defaultExcluded )
 		: $defaultExcluded;
@@ -143,6 +144,7 @@ function getPatchworkConfiguration( array $options = [], string $destinationFold
 		: $defaultIncluded;
 
 	if ( empty( $options['cache-path'] ) ) {
+		// by default cache code in a `cache` folder in the package root
 		$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
 	}
 

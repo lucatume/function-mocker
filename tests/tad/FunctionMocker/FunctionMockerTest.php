@@ -152,10 +152,14 @@ class FunctionMockerTest extends TestCase {
 	 * @test
 	 */
 	public function should_allow_replacing_namespaced_functions_using_the_call_static_api() {
-		FunctionMocker::inNamespace( '\\Test\\Space', function () {
-			FunctionMocker::testFunctionFive( Argument::type( 'string' ) )->willReturn( 'string' );
-			FunctionMocker::testFunctionFive( Argument::type( 'array' ) )->willReturn( 'array' );
+		FunctionMocker::
+		inNamespace( '\\Test\\Space', function () {
+			FunctionMocker::testFunctionFive( Argument::type( 'string' ) )->willReturn( 'is string' );
+			FunctionMocker::testFunctionFive( Argument::type( 'array' ) )->willReturn( 'is array' );
 		} );
+
+		$this->assertEquals( 'is string', \Test\Space\testFunctionFive( 'one' ) );
+		$this->assertEquals( 'is array', \Test\Space\testFunctionFive( [ 'foo' => 'bar' ] ) );
 	}
 
 	protected function setUp() {
