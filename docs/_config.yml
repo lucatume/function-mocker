@@ -39,3 +39,10 @@ plugins:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+# Sidebar
+sidebar_home_link: "https://lucatume.github.io/function-mocker"
+
+# Repository
+github:
+  repo: https://github.com/lucatume/function-mocker
