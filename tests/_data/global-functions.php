@@ -19,3 +19,7 @@ function testFunctionFour() {
 function testFunctionFive() {
 	return 'foo';
 }
+
+function testFunctionSix() {
+	return 'foo';
+}

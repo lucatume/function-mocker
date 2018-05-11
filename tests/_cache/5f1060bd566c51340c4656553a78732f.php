@@ -2,10 +2,11 @@
 
 namespace tad\FunctionMocker; \Patchwork\CallRerouting\deployQueue();
 
+use PhpSpec\Exception\Exception;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Exception\Prediction\AggregateException;
-use function Patchwork\redefine;
+use Prophecy\Exception\Prophecy\MethodProphecyException;
 
 class FunctionMockerTest extends TestCase {
 
@@ -130,20 +131,77 @@ class FunctionMockerTest extends TestCase {
 	}
 
 	/**
-	 * It should allow spying a function
+	 * It should allow mocking a function
 	 *
 	 * @test
 	 */
-	public function should_allow_spying_a_function() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+	public function should_allow_mocking_a_function() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
 		FunctionMocker::testFunctionFive( 'bar' )->shouldBeCalledTimes( 2 );
 
 		testFunctionFive( 'bar' );
 
 		try {
 			FunctionMocker::tearDown();
+		} catch ( AggregateException $e ) {
+			$this->assertRegExp( '/^.*testFunctionFive.*exactly 2 calls.*$/usm', $e->getMessage() );
 		}
-		catch ( AggregateException $e ) {
-			$this->assertRegExp( '/^.*testFunctionFive.*exactly 2 calls.*$/us', $e->getMessage() );
+	}
+
+	/**
+	 * It should allow mocking a namespaced function
+	 *
+	 * @test
+	 */
+	public function should_allow_mocking_a_namespaced_function() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+		FunctionMocker::inNamespace( '\\Test\\Space', function () {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+			FunctionMocker::testFunctionFive( 'bar' )->shouldBeCalledTimes( 2 );
+		} );
+
+		\Test\Space\testFunctionFive( 'bar' );
+
+		try {
+			FunctionMocker::tearDown();
+		} catch ( AggregateException $e ) {
+			$this->assertRegExp( '/^.*testFunctionFive.*exactly 2 calls.*$/usm', $e->getMessage() );
+		}
+	}
+
+	/**
+	 * It should allow spying a function
+	 *
+	 * @test
+	 */
+	public function should_allow_spying_a_function() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+		FunctionMocker::spy( 'testFunctionSix' );
+
+		testFunctionSix( 'bar' );
+		try {
+			FunctionMocker::testFunctionSix( 'bar' )->shouldHaveBeenCalledTimes( 2 );
+		} catch ( MethodProphecyException $e ) {
+			$this->assertRegExp( '/^.*exactly 2 calls.*testFunctionSix.*$/usm', $e->getMessage() );
+			FunctionMocker::_skipChecks();
+		}
+	}
+
+	/**
+	 * It should allow spying a namespaced function
+	 *
+	 * @test
+	 */
+	public function should_allow_spying_a_namespaced_function() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+		FunctionMocker::inNamespace( '\\Test\\Space', function () {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+			FunctionMocker::spy( 'testFunctionSix' );
+		} );
+
+		\Test\Space\testFunctionSix( 'bar' );
+
+		try {
+			FunctionMocker::inNamespace( '\\Test\\Space', function () {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+				FunctionMocker::testFunctionSix( 'bar' )->shouldHaveBeenCalledTimes( 2 );
+			} );
+		} catch ( MethodProphecyException $e ) {
+			$this->assertRegExp( '/^.*exactly 2 calls.*testFunctionSix.*$/usm', $e->getMessage() );
+			FunctionMocker::_skipChecks();
 		}
 	}
 

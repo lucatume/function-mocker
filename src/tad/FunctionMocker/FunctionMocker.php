@@ -46,6 +46,11 @@ class FunctionMocker {
 	 */
 	protected $currentReplacementNamespace;
 
+	/**
+	 * @var Whether checks made in the `tearDown` method should be skipped or not.
+	 */
+	protected $_skipChecks = false;
+
 	protected function __construct( Prophet $prophet ) {
 		$this->prophet = $prophet;
 	}
@@ -145,21 +150,28 @@ class FunctionMocker {
 		\Patchwork\restoreAll();
 
 		$instance = static::instance();
-		$instance->checkPredictions( $testCase );
+
+		if ( ! $instance->_skipChecks ) {
+			$instance->checkPredictions( $testCase );
+		}
+
 		$instance->resetProperties();
 	}
 
 	protected function checkPredictions( $testCase = null ) {
-		if ( $this->prophet !== null ) {
-			$prophet = $this->prophet;
+		if ( $this->prophet === null ) {
+			return;
+		}
 
-			if ( class_exists( '\PHPUnit\Framework\TestCase' ) && $testCase instanceof \PHPUnit\Framework\TestCase ) {
-				$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
-			} elseif ( class_exists( 'PHPUnit_Framework_TestCase' ) && $testCase instanceof PHPUnit_Framework_TestCase ) {
-				$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
-			} else {
-				$prophet->checkPredictions();
-			}
+		$prophet = $this->prophet;
+		$this->prophet = null;
+
+		if ( class_exists( '\PHPUnit\Framework\TestCase' ) && $testCase instanceof \PHPUnit\Framework\TestCase ) {
+			$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
+		} elseif ( class_exists( 'PHPUnit_Framework_TestCase' ) && $testCase instanceof PHPUnit_Framework_TestCase ) {
+			$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
+		} else {
+			$prophet->checkPredictions();
 		}
 	}
 
@@ -374,5 +386,9 @@ class FunctionMocker {
 
 	public static function spy( $function ) {
 		return static::replace( $function );
+	}
+
+	public static function _skipChecks() {
+		static::instance()->_skipChecks = true;
 	}
 }

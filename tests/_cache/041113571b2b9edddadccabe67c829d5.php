@@ -19,3 +19,7 @@ function testFunctionFour() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{cl
 function testFunctionFive() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
 	return 'foo';
 }
+
+function testFunctionSix() {$__pwClosureName=__NAMESPACE__?__NAMESPACE__."\\{closure}":"\\{closure}";$__pwClass=(__CLASS__&&__FUNCTION__!==$__pwClosureName)?__CLASS__:null;if(!empty(\Patchwork\CallRerouting\State::$routes[$__pwClass][__FUNCTION__])){$__pwCalledClass=$__pwClass?\get_called_class():null;$__pwFrame=\count(\debug_backtrace(false));if(\Patchwork\CallRerouting\dispatch($__pwClass,$__pwCalledClass,__FUNCTION__,$__pwFrame,$__pwResult)){return$__pwResult;}}unset($__pwClass,$__pwCalledClass,$__pwResult,$__pwClosureName,$__pwFrame);
+	return 'foo';
+}

@@ -16,3 +16,6 @@ function testFunctionFour() {
 
 function testFunctionFive() {
 }
+
+function testFunctionSix() {
+}

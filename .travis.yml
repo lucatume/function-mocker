@@ -11,8 +11,8 @@ install:
     - composer update
 
 script:
-    # test with PHPUnit, higher supported version
-    - vendor/bin/phpunit
+    # test with PHPUnit, higher supported version, provided by Travis
+    - phpunit
     # run PHPUnit example
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpunit && composer install && vendor/bin/phpunit); fi
     # run phpspec example
