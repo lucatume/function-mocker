@@ -78,7 +78,7 @@ function findParentContainingFrom( $children, $cwd ) {
  * @throws \RuntimeException If the Patchwork configuration file or the checksum file could not be written.
  */
 function writePatchworkConfig( array $userOptions ) {
-	$destinationFolder = dirname( __DIR__, 3 );
+	$destinationFolder = dirname( dirname( dirname( __DIR__) ) );
 	$options           = getPatchworkConfiguration( $userOptions, $destinationFolder );
 
 	$configFileContents = json_encode( $options );
