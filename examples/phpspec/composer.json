@@ -1,6 +1,6 @@
 {
-  "name": "lucatume/function-mocker-phpunit-example",
-  "description": "An example integration of Function Mocker in PHPUnit",
+  "name": "lucatume/function-mocker-phpspec-example",
+  "description": "An example integration of Function Mocker in phpspec",
   "type": "project",
   "license": "GPL-2.0",
   "authors": [
@@ -18,8 +18,5 @@
     "files": [
       "../../vendor/autoload.php"
     ]
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^6.5"
   }
 }

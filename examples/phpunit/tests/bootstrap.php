@@ -1,10 +1,10 @@
 <?php
-require_once  __DIR__ . '/vendor/autoload.php';
+require_once  dirname(__DIR__) . '/vendor/autoload.php';
 
 // init Function Mocker
 \tad\FunctionMocker\FunctionMocker::init( [
 	'cache-path'            => __DIR__ . '/_cache',
-	'whitelist'             => [ __DIR__ ],
+	'whitelist'             => [ __DIR__, dirname( __DIR__ ) . '/src' ],
 	'redefinable-internals' => [ 'time' ],
 ] );
 
@@ -14,5 +14,5 @@ if ( ! defined( 'DAY_IN_SECONDS' ) ) {
 }
 
 // include the class to test
-include_once __DIR__ . '/src/Logger.php';
+include_once dirname(__DIR__) . '/src/Logger.php';
 
