@@ -10,8 +10,8 @@ php:
 before_install:
     - phpunit --version
     - composer dump-autoload
-    - if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then composer require phpunit/phpunit:<6.0; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then composer require phpunit/phpunit:*; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then composer require --dev phpunit/phpunit:^5.7.23; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then composer require --dev phpunit/phpunit:*; fi
 
 script:
     # test with PHPUnit, higher supported version
