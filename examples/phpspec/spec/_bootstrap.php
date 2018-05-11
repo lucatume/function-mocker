@@ -1,5 +1,5 @@
 <?php
-require_once  dirname(__DIR__) . '/vendor/autoload.php';
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
 // init Function Mocker
 \tad\FunctionMocker\FunctionMocker::init( [

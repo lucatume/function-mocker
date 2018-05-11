@@ -11,12 +11,15 @@
   ],
   "autoload": {
     "psr-4": {
-      "Examples\\": "src/"
+      "Examples\\phpspec\\": "src/"
     }
   },
   "autoload-dev": {
     "files": [
       "../../vendor/autoload.php"
     ]
+  },
+  "require-dev": {
+    "phpspec/phpspec": "^4.3"
   }
 }

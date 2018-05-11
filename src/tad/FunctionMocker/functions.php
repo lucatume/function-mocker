@@ -148,5 +148,16 @@ function getPatchworkConfiguration( array $options = [], string $destinationFold
 		$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
 	}
 
+	$options['cache-path'] = rtrim($options['cache-path'], '\\/');
+
+	if ( ! file_exists( $options['cache-path'] ) ) {
+		if ( ! mkdir( $options['cache-path'] ) && ! is_dir( $options['cache-path'] ) ) {
+			throw new \RuntimeException( sprintf( 'Cache directory "%s" was not created', $options['cache-path'] ) );
+		}
+		if ( ! file_exists( $options['cache-path'] . '/.gitignore' ) ) {
+			file_put_contents( $options['cache-path'] . '/.gitignore', '*' );
+		}
+	}
+
 	return $options;
 }
