@@ -2,7 +2,7 @@
 
 namespace tad\FunctionMocker;
 
-function filterPathListFrom( array $list, string $rootDir ): array {
+function filterPathListFrom( array $list, $rootDir ) {
 	if ( ! ( is_dir( $rootDir ) && is_readable( $rootDir ) ) ) {
 		throw new \InvalidArgumentException( $rootDir . ' is not a directory or is not readable.' );
 	}
@@ -16,7 +16,7 @@ function filterPathListFrom( array $list, string $rootDir ): array {
 	return array_filter( $_list );
 }
 
-function normalizePathFrag( string $path ): string {
+function normalizePathFrag( $path ) {
 	return trim( trim( $path ), '/' );
 }
 
@@ -34,7 +34,7 @@ function includePatchwork() {
  *
  * @return string The absolute path to the file.
  */
-function getVendorDir( string $path = '' ): string {
+function getVendorDir( $path = '' ) {
 	$vendorDir = null;
 
 	$root = __DIR__;

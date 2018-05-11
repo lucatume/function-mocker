@@ -86,7 +86,7 @@ class FunctionMocker {
 		static::instance()->prophet = new Prophet();
 	}
 
-	protected static function instance(): FunctionMocker {
+	protected static function instance() {
 		if ( static::$instance === null ) {
 			static::$instance = new static( new Prophet() );
 		}
@@ -215,7 +215,7 @@ class FunctionMocker {
 	 *
 	 * @return \Prophecy\Prophecy\MethodProphecy
 	 */
-	public static function __callStatic( string $function, array $arguments ): MethodProphecy {
+	public static function __callStatic( $function, array $arguments ) {
 		return self::replace( $function, ...$arguments );
 	}
 
@@ -257,7 +257,7 @@ class FunctionMocker {
 	 * @return \Prophecy\Prophecy\MethodProphecy
 	 * @throws \Exception
 	 */
-	public static function replace( string $function, ...$arguments ): MethodProphecy {
+	public static function replace( $function, ...$arguments ) {
 		$instance = self::instance();
 
 		list( $function, $namespace, $functionFQN ) = $instance->extractFunctionAndNamespace( $function );
@@ -278,7 +278,7 @@ class FunctionMocker {
 		return $instance->buildMethodProphecy( $function, $functionFQN, $arguments, $instance->prophecies[ $functionFQN ] );
 	}
 
-	protected function extractFunctionAndNamespace( string $function ): array {
+	protected function extractFunctionAndNamespace( $function ) {
 		$function = '\\' . ltrim( $function, '\\' );
 		$namespaceFrags = array_filter( explode( '\\', $function ) );
 		$function = array_pop( $namespaceFrags );
@@ -304,7 +304,7 @@ class FunctionMocker {
 		return $prophecy;
 	}
 
-	protected function createClassForFunction( string $function, string $functionFQN ): string {
+	protected function createClassForFunction( $function, $functionFQN ) {
 		$uniqid = md5( uniqid( 'function-', true ) );
 		$functionSlug = str_replace( '\\', '_', $functionFQN );
 		$className = "_{$functionSlug}_{$uniqid}";
