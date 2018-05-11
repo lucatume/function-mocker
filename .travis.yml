@@ -7,6 +7,9 @@ php:
     - '7.2'
     - nightly
 
+before_install:
+    - composer dump-autoload
+
 script:
     # test with PHPUnit, higher supported version
     - phpunit
