@@ -8,11 +8,12 @@ php:
     - nightly
 
 before_install:
+    - composer require --dev phpunit/phpunit:*
     - composer dump-autoload
 
 script:
     # test with PHPUnit, higher supported version
-    - phpunit
+    - vendor/bin/phpunit
     # run PHPUnit example
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpunit && rm composer.lock && composer install && vendor/bin/phpunit); fi
     # run phpspec example
