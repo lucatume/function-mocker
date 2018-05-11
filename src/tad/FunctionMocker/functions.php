@@ -122,7 +122,7 @@ YAML;
  *
  * @return array
  */
-function getPatchworkConfiguration( array $options = [], string $destinationFolder ): array {
+function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 	foreach ( [ 'include' => 'whitelist', 'exclude' => 'blacklist' ] as $from => $to ) {
 		if ( ! empty( $options[ $from ] ) && empty( $options[ $to ] ) ) {
 			$options[ $to ] = $options[ $from ];
