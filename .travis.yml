@@ -8,9 +8,7 @@ php:
   - nightly
 
 script:
-  - rm -rf vendor composer.lock
-  # test with PHPUnit ~5.7
-  - composer require --dev phpunit/phpunit:~5.0
+  # test with PHPUnit, higher supported version
   - vendor/bin/phpunit
   # test with PHPUnit ~6.0
   - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then rm -rf vendor composer.lock && composer require --dev phpunit/phpunit:~6.0 && vendor/bin/phpunit; fi
