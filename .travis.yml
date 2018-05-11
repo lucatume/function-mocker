@@ -8,8 +8,8 @@ php:
   - nightly
 
 script:
-  # test with PHPUnit ~5.7
   - rm -rf vendor composer.lock
+  # test with PHPUnit ~5.7
   - composer require --dev phpunit/phpunit:~5.0
   - vendor/bin/phpunit
   # test with PHPUnit ~6.0
@@ -17,6 +17,6 @@ script:
   # test with PHPUnit ~7.0
   - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then rm -rf vendor composer.lock && composer require --dev phpunit/phpunit:~7.0 && vendor/bin/phpunit; fi
   # run PHPUnit example
-  - (cd examples/phpunit && composer install && vendor/bin/phpunit)
+  - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpunit && composer install && vendor/bin/phpunit); fi
   # run phpspec example
-  - (cd examples/phpspec && composer install && vendor/bin/phpspec run)
+  - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpspec && composer install && vendor/bin/phpspec run); fi
