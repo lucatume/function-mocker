@@ -5,6 +5,7 @@ namespace tad\FunctionMocker;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Exception\Prediction\AggregateException;
+use function Patchwork\redefine;
 
 class FunctionMockerTest extends TestCase {
 
@@ -160,6 +161,17 @@ class FunctionMockerTest extends TestCase {
 
 		$this->assertEquals( 'is string', \Test\Space\testFunctionFive( 'one' ) );
 		$this->assertEquals( 'is array', \Test\Space\testFunctionFive( [ 'foo' => 'bar' ] ) );
+	}
+
+	/**
+	 * It should allow mocking an internal function
+	 *
+	 * @test
+	 */
+	public function should_allow_mocking_an_internal_function() {
+		FunctionMocker::time()->willReturn( 'foo bar' );
+
+		$this->assertEquals( 'foo bar', time() );
 	}
 
 	protected function setUp() {

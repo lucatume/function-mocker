@@ -1,0 +1,22 @@
+{
+  "name": "lucatume/function-mocker-phpunit-example",
+  "description": "An example integration of Function Mocker in PHPUnit",
+  "type": "project",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "theAverageDev (Luca Tumedei)",
+      "email": "luca@theaveragedev.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Examples\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "files": [
+      "../../vendor/autoload.php"
+    ]
+  }
+}

@@ -141,16 +141,33 @@ class FunctionMocker {
 	 *
 	 * @see \tad\FunctionMocker\FunctionMocker::setUp()
 	 */
-	public static function tearDown() {
+	public static function tearDown( $testCase = null ) {
 		\Patchwork\restoreAll();
 
-		if ( self::instance()->prophet === null ) {
-			return;
-		}
+		$instance = static::instance();
+		$instance->checkPredictions( $testCase );
+		$instance->resetProperties();
+	}
 
-		$prophet                    = static::instance()->prophet;
-		static::instance()->prophet = null;
-		$prophet->checkPredictions();
+	protected function checkPredictions( $testCase = null ) {
+		if ( $this->prophet !== null ) {
+			$prophet = $this->prophet;
+
+			if ( class_exists( '\PHPUnit\Framework\TestCase' ) && $testCase instanceof \PHPUnit\Framework\TestCase ) {
+				$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
+			} elseif ( class_exists( 'PHPUnit_Framework_TestCase' ) && $testCase instanceof PHPUnit_Framework_TestCase ) {
+				$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
+			} else {
+				$prophet->checkPredictions();
+			}
+		}
+	}
+
+	protected function resetProperties() {
+		unset( $this->prophet );
+		$this->prophecies = [];
+		$this->methodProphecies = [];
+		$this->revealed = [];
 	}
 
 	/**
@@ -234,7 +251,7 @@ class FunctionMocker {
 		list( $function, $namespace, $functionFQN ) = $instance->extractFunctionAndNamespace( $function );
 
 		if ( $instance->currentReplacementNamespace !== null ) {
-			$namespace   = rtrim( '\\' . $instance->currentReplacementNamespace . '\\' . ltrim( $namespace, '\\' ), '\\' );
+			$namespace = rtrim( '\\' . $instance->currentReplacementNamespace . '\\' . ltrim( $namespace, '\\' ), '\\' );
 			$functionFQN = $namespace . '\\' . trim( $function, '\\' );
 		}
 
@@ -250,11 +267,15 @@ class FunctionMocker {
 	}
 
 	protected function extractFunctionAndNamespace( string $function ): array {
-		$function       = '\\' . ltrim( $function, '\\' );
+		$function = '\\' . ltrim( $function, '\\' );
 		$namespaceFrags = array_filter( explode( '\\', $function ) );
-		$function       = array_pop( $namespaceFrags );
-		$namespace      = implode( '\\', $namespaceFrags );
-		$functionFQN    = $namespace . '\\' . $function;
+		$function = array_pop( $namespaceFrags );
+		$namespace = implode( '\\', $namespaceFrags );
+		$functionFQN = $namespace . '\\' . $function;
+
+		if ( $function === ltrim( $functionFQN, '\\' ) ) {
+			$functionFQN = $function;
+		}
 
 		return array( $function, $namespace, $functionFQN );
 	}
@@ -264,17 +285,17 @@ class FunctionMocker {
 			return false;
 		}
 
-		$class                            = $this->createClassForFunction( $function, $functionFQN );
-		$prophecy                         = $this->prophet->prophesize( $class );
+		$class = $this->createClassForFunction( $function, $functionFQN );
+		$prophecy = $this->prophet->prophesize( $class );
 		$this->prophecies[ $functionFQN ] = $prophecy;
 
 		return $prophecy;
 	}
 
 	protected function createClassForFunction( string $function, string $functionFQN ): string {
-		$uniqid       = md5( uniqid( 'function-', true ) );
+		$uniqid = md5( uniqid( 'function-', true ) );
 		$functionSlug = str_replace( '\\', '_', $functionFQN );
-		$className    = "_{$functionSlug}_{$uniqid}";
+		$className = "_{$functionSlug}_{$uniqid}";
 
 		eval( "class {$className}{ public function {$function}(){}}" );
 
@@ -284,7 +305,7 @@ class FunctionMocker {
 	protected function redefineFunctionWithPatchwork( string $function, string $functionFQN ) {
 		\Patchwork\redefine( $functionFQN, function () use ( $functionFQN, $function ) {
 			$prophecy = FunctionMocker::instance()->getRevealedProphecyFor( $functionFQN );
-			$args     = func_get_args();
+			$args = func_get_args();
 
 			if ( empty( $args ) ) {
 				return call_user_func( [ $prophecy, $function ] );
@@ -349,5 +370,9 @@ class FunctionMocker {
 		$redefinitions();
 
 		self::instance()->currentReplacementNamespace = null;
+	}
+
+	public static function spy( $function ) {
+		return static::replace( $function );
 	}
 }
