@@ -13,3 +13,7 @@ script:
   - vendor/bin/phpunit
   # test with PHPUnit ~6.0
   - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then rm -rf vendor composer.lock && composer require --dev phpunit/phpunit:~6.0 && vendor/bin/phpunit; fi
+  # run PHPUnit example
+  - (cd examples/phpunit && composer install && vendor/bin/phpunit)
+  # run phpspec example
+  - (cd examples/phpspec && composer install && vendor/bin/phpspec run)
