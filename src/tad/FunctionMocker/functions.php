@@ -24,6 +24,8 @@ function includePatchwork() {
 	if ( function_exists( 'Patchwork\replace' ) ) {
 		return;
 	}
+
+	/** @noinspection PhpIncludeInspection */
 	require_once getVendorDir( 'antecedent/patchwork/Patchwork.php' );
 }
 
@@ -57,9 +59,9 @@ function findParentContainingFrom( $children, $cwd ) {
 	while ( true ) {
 		if ( file_exists( $dir . $children ) ) {
 			break;
-		} else {
-			$dir = dirname( $dir );
 		}
+
+		$dir = dirname( $dir );
 	}
 
 	return $dir;
@@ -69,9 +71,7 @@ function findParentContainingFrom( $children, $cwd ) {
  * Writes Patchwork configuration to file if needed.
  *
  *
- * @param array   $options           An array of options as those supported by Patchwork configuration.
- * @param  string $destinationFolder The absolute path to the folder that will contain the cache folder and the Patchwork
- *                                   configuration file.
+ * @param array   $userOptions           An array of options as those supported by Patchwork configuration.
  *
  * @return bool Whether the configuration file was written or not.
  *

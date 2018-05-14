@@ -47,10 +47,15 @@ class FunctionMocker {
 	protected $currentReplacementNamespace;
 
 	/**
-	 * @var Whether checks made in the `tearDown` method should be skipped or not.
+	 * @var bool Whether checks made in the `tearDown` method should be skipped or not.
 	 */
 	protected $_skipChecks = false;
 
+	/**
+	 * FunctionMocker constructor.
+	 *
+	 * @param \Prophecy\Prophet $prophet
+	 */
 	protected function __construct( Prophet $prophet ) {
 		$this->prophet = $prophet;
 	}
@@ -73,7 +78,7 @@ class FunctionMocker {
 	 *          }
 	 *
 	 *          public function tearDown(){
-	 *              FunctionMocker::tearDown();
+	 *              FunctionMocker::tearDown($this);
 	 *          }
 	 *      }
 	 *
@@ -95,7 +100,7 @@ class FunctionMocker {
 	}
 
 	/**
-	 * Inits the mocking engine including the Patchwork library and configuring it.
+	 * Initializes the mocking engine including the Patchwork library and configuring it.
 	 *
 	 * @param array|null $options An array of options to init the Patchwork library.
 	 *                            ['include'|'whitelist']     array|string A list of absolute paths that should be included in the patching.
@@ -140,11 +145,16 @@ class FunctionMocker {
 	 *          }
 	 *
 	 *          public function tearDown(){
-	 *              FunctionMocker::tearDown();
+	 *              FunctionMocker::tearDown($this);
 	 *          }
 	 *      }
 	 *
 	 * @see \tad\FunctionMocker\FunctionMocker::setUp()
+	 *
+	 * @param null|\PHPUnit\Framework\TestCase $testCase If the method is running in
+	 *                                                   the context of a PHPUnit `tearDown`
+	 *                                                   method then the the current test case should
+	 *                                                   be passed to this method.
 	 */
 	public static function tearDown( $testCase = null ) {
 		\Patchwork\restoreAll();
@@ -169,6 +179,7 @@ class FunctionMocker {
 		if ( class_exists( '\PHPUnit\Framework\TestCase' ) && $testCase instanceof \PHPUnit\Framework\TestCase ) {
 			$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
 		} elseif ( class_exists( 'PHPUnit_Framework_TestCase' ) && $testCase instanceof PHPUnit_Framework_TestCase ) {
+			/** @noinspection PhpUndefinedMethodInspection */
 			$testCase->addToAssertionCount( count( $prophet->getProphecies() ) );
 		} else {
 			$prophet->checkPredictions();
@@ -205,7 +216,7 @@ class FunctionMocker {
 	 *          }
 	 *
 	 *          public function tearDown(){
-	 *              FunctionMocker::tearDown();
+	 *              FunctionMocker::tearDown($this);
 	 *          }
 	 *      }
 	 *
@@ -214,6 +225,7 @@ class FunctionMocker {
 	 * @param array  $arguments Handled by PHP
 	 *
 	 * @return \Prophecy\Prophecy\MethodProphecy
+	 * @throws \Exception If the function could not be created.
 	 */
 	public static function __callStatic( $function, array $arguments ) {
 		return self::replace( $function, ...$arguments );
@@ -245,7 +257,7 @@ class FunctionMocker {
 	 *          }
 	 *
 	 *          public function tearDown(){
-	 *              FunctionMocker::tearDown();
+	 *              FunctionMocker::tearDown($this);
 	 *          }
 	 *      }
 	 *
@@ -255,7 +267,7 @@ class FunctionMocker {
 	 *                             class.
 	 *
 	 * @return \Prophecy\Prophecy\MethodProphecy
-	 * @throws \Exception
+	 * @throws \Exception If the function could not be created.
 	 */
 	public static function replace( $function, ...$arguments ) {
 		$instance = self::instance();
@@ -275,7 +287,7 @@ class FunctionMocker {
 			$instance->redefineFunctionWithPatchwork( $function, $functionFQN );
 		}
 
-		return $instance->buildMethodProphecy( $function, $functionFQN, $arguments, $instance->prophecies[ $functionFQN ] );
+		return $instance->buildMethodProphecy( $function, $arguments, $instance->prophecies[ $functionFQN ] );
 	}
 
 	protected function extractFunctionAndNamespace( $function ) {
@@ -292,7 +304,7 @@ class FunctionMocker {
 		return array( $function, $namespace, $functionFQN );
 	}
 
-	protected function buildNewProphecyFor( string $function, $functionFQN ) {
+	protected function buildNewProphecyFor( $function, $functionFQN ) {
 		if ( array_key_exists( $functionFQN, $this->prophecies ) ) {
 			return false;
 		}
@@ -314,20 +326,20 @@ class FunctionMocker {
 		return $className;
 	}
 
-	protected function redefineFunctionWithPatchwork( string $function, string $functionFQN ) {
+	protected function redefineFunctionWithPatchwork( $function, $functionFQN ) {
 		\Patchwork\redefine( $functionFQN, function () use ( $functionFQN, $function ) {
 			$prophecy = FunctionMocker::instance()->getRevealedProphecyFor( $functionFQN );
 			$args = func_get_args();
 
 			if ( empty( $args ) ) {
-				return call_user_func( [ $prophecy, $function ] );
+				return $prophecy->$function();
 			}
 
-			return call_user_func( [ $prophecy, $function ], ...$args );
+			return $prophecy->$function( $args );
 		} );
 	}
 
-	protected function getRevealedProphecyFor( string $function ) {
+	protected function getRevealedProphecyFor( $function ) {
 		if ( ! array_key_exists( $function, $this->revealed ) ) {
 			$this->revealed[ $function ] = $this->prophecies[ $function ]->reveal();
 		}
@@ -335,11 +347,11 @@ class FunctionMocker {
 		return $this->revealed[ $function ];
 	}
 
-	protected function buildMethodProphecy( string $function, string $functionFQN, array $arguments, ProphecyInterface $prophecy ) {
+	protected function buildMethodProphecy( $function, array $arguments, ProphecyInterface $prophecy ) {
 		if ( empty( $arguments ) ) {
-			$methodProphecy = call_user_func( [ $prophecy, $function ] );
+			$methodProphecy = $prophecy->$function();
 		} else {
-			$methodProphecy = call_user_func( [ $prophecy, $function ], ...$arguments );
+			$methodProphecy = $prophecy->$function( $arguments );
 		}
 
 		return $methodProphecy;
@@ -368,7 +380,7 @@ class FunctionMocker {
 	 *          }
 	 *
 	 *          public function tearDown(){
-	 *              FunctionMocker::tearDown();
+	 *              FunctionMocker::tearDown($this);
 	 *          }
 	 *      }
 	 *
@@ -376,7 +388,7 @@ class FunctionMocker {
 	 * @param callable $redefinitions A closure detailing the redefinitions that should happen
 	 *                                in the namespace.
 	 */
-	public static function inNamespace( string $namespace, callable $redefinitions ) {
+	public static function inNamespace( $namespace, callable $redefinitions ) {
 		self::instance()->currentReplacementNamespace = trim( $namespace, '\\' );
 
 		$redefinitions();
@@ -384,10 +396,21 @@ class FunctionMocker {
 		self::instance()->currentReplacementNamespace = null;
 	}
 
+	/**
+	 * Starts spying a function for its calls.
+	 *
+	 * @param $function
+	 *
+	 * @return \Prophecy\Prophecy\MethodProphecy
+	 * @throws \Exception If the function could not be created.
+	 */
 	public static function spy( $function ) {
 		return static::replace( $function );
 	}
 
+	/**
+	 * Avoids checks on predictions from being performed at `tearDown` time
+	 */
 	public static function _skipChecks() {
 		static::instance()->_skipChecks = true;
 	}
