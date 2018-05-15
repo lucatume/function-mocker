@@ -16,6 +16,6 @@ script:
     # test with PHPUnit, higher supported version
     - vendor/bin/phpunit
     # run PHPUnit example
-    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpunit && composer update && vendor/bin/phpunit); fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then cd examples/phpunit && composer update && vendor/bin/phpunit; fi
     # run phpspec example
-    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpspec && composer update && vendor/bin/phpspec run); fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then cd examples/phpspec && composer update && vendor/bin/phpspec run; fi
