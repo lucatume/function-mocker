@@ -335,7 +335,7 @@ class FunctionMocker {
 				return $prophecy->$function();
 			}
 
-			return $prophecy->$function( $args );
+			return call_user_func_array( [ $prophecy, $function ], $args );
 		} );
 	}
 
@@ -351,7 +351,7 @@ class FunctionMocker {
 		if ( empty( $arguments ) ) {
 			$methodProphecy = $prophecy->$function();
 		} else {
-			$methodProphecy = $prophecy->$function( $arguments );
+			$methodProphecy = call_user_func_array( [ $prophecy, $function ], $arguments );
 		}
 
 		return $methodProphecy;

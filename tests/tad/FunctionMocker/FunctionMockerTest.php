@@ -2,7 +2,6 @@
 
 namespace tad\FunctionMocker;
 
-use PhpSpec\Exception\Exception;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Exception\Prediction\AggregateException;
@@ -213,12 +212,11 @@ class FunctionMockerTest extends TestCase {
 	public function should_allow_replacing_namespaced_functions_using_the_call_static_api() {
 		FunctionMocker::
 		inNamespace( '\\Test\\Space', function () {
-			FunctionMocker::testFunctionFive( Argument::type( 'string' ) )->willReturn( 'is string' );
-			FunctionMocker::testFunctionFive( Argument::type( 'array' ) )->willReturn( 'is array' );
+			FunctionMocker::testFunctionFive( Argument::type('string') )->willReturn( 'foo' );
 		} );
 
-		$this->assertEquals( 'is string', \Test\Space\testFunctionFive( 'one' ) );
-		$this->assertEquals( 'is array', \Test\Space\testFunctionFive( [ 'foo' => 'bar' ] ) );
+		$this->assertEquals( 'foo', \Test\Space\testFunctionFive( 'foo' ) );
+		$this->assertEquals( 'foo', \Test\Space\testFunctionFive( 'bar' ) );
 	}
 
 	/**
