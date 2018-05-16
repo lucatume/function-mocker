@@ -18,3 +18,5 @@ script:
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpunit && composer update && vendor/bin/phpunit); fi
     # run phpspec example
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpspec && composer update && vendor/bin/phpspec run); fi
+    # run Codeception example
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/codeception && composer update && vendor/bin/codecept run); fi
