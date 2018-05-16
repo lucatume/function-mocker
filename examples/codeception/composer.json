@@ -1,0 +1,25 @@
+{
+  "name": "lucatume/function-mocker-codeception-example",
+  "description": "An example integration of Function Mocker in Codeception",
+  "type": "project",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "theAverageDev (Luca Tumedei)",
+      "email": "luca@theaveragedev.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Examples\\Codeception\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "files": [
+      "../../vendor/autoload.php"
+    ]
+  },
+  "require-dev": {
+    "codeception/codeception": "^2.4"
+  }
+}
