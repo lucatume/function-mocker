@@ -1,3 +1,4 @@
 vendor
 tests/_cache
 tests/_output
+!tests/suite.yml
