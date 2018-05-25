@@ -26,3 +26,5 @@ script:
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/codeception && composer update && vendor/bin/codecept run unit); fi
     # run Core Suite example
     - (cd examples/wp-core-suite && composer update && vendor/bin/phpunit)
+    # run wp-browser example
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/wp-browser && composer update && vendor/bin/codecept run unit && vendor/bin/codecept run integration); fi

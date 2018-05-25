@@ -1,6 +1,6 @@
 {
-  "name": "lucatume/function-mocker-wp-core-suite-example",
-  "description": "An example integration of Function Mocker in the PHPUnit-base WordPress Core suite",
+  "name": "lucatume/wp-browser-example",
+  "description": "An example integration of Function Mocker in wp-browser",
   "type": "project",
   "license": "GPL-2.0",
   "authors": [
@@ -9,7 +9,6 @@
       "email": "luca@theaveragedev.com"
     }
   ],
-  "minimum-stability": "dev",
   "repositories": [
     {
       "type": "package",
@@ -26,7 +25,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Examples\\WPCore\\": "src/"
+      "Examples\\WPBrowser\\": "src/"
     }
   },
   "autoload-dev": {
@@ -35,16 +34,7 @@
     ]
   },
   "require-dev": {
-    "phpunit/phpunit": "<6.0",
-    "wordpress": "4.9.6",
-    "vlucas/phpdotenv": "^2.5@dev",
-    "cweagans/composer-patches": "dev-master"
-  },
-  "extra": {
-    "patches": {
-      "wordpress": {
-        "Do not load the PHPUnit6 compat file while bootstrapping WordPress tests": "tests/_support/wordpress.patch"
-      }
-    }
+    "lucatume/wp-browser": "^2.0",
+    "wordpress": "4.9.6"
   }
 }

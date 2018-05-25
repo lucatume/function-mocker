@@ -131,6 +131,8 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 		unset( $options[ $from ] );
 	}
 
+	$destinationFolder = realpath( $destinationFolder );
+
 	// but always exclude function-mocker and Patchwork themselves
 	$defaultExcluded      = [ $destinationFolder, getVendorDir( 'antecedent/patchwork' ) ];
 	$defaultIncluded      = [ $destinationFolder . '/src/tad/FunctionMocker/utils.php' ];
@@ -148,7 +150,7 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 		$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
 	}
 
-	$options['cache-path'] = rtrim($options['cache-path'], '\\/');
+	$options['cache-path'] = realpath(rtrim($options['cache-path'], '\\/'));
 
 	if ( ! file_exists( $options['cache-path'] ) ) {
 		if ( ! mkdir( $options['cache-path'] ) && ! is_dir( $options['cache-path'] ) ) {
