@@ -17,4 +17,3 @@ function logger_start() {
 }
 
 add_action('init', 'logger_start');
-add_action('shutdown', 'logger_stop');
