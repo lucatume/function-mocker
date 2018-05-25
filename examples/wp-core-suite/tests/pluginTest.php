@@ -9,10 +9,10 @@ class pluginTest extends \WP_UnitTestCase {
 	protected $backupGlobals = false;
 
 	function setUp() {
-		// Start wrapping...
-		FunctionMocker::setUp();
-		// ...and then include WordPress
+		// Load WordPress...
 		parent::setUp();
+		// ...then start intercepting calls
+		FunctionMocker::setUp();
 	}
 
 	/**

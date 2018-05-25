@@ -10,8 +10,10 @@ class LoggerTest extends \WP_UnitTestCase {
 	protected $backupGlobals = false;
 
 	public function setUp() {
-		FunctionMocker::setUp();
+		// Load WordPress...
 		parent::setUp();
+		// ...then start intercepting calls
+		FunctionMocker::setUp();
 	}
 
 	/**
@@ -89,7 +91,9 @@ class LoggerTest extends \WP_UnitTestCase {
 	}
 
 	public function tearDown() {
+		// Stop wrapping...
 		FunctionMocker::tearDown( $this );
+		// ...to let WordPress tearDown smoothly
 		parent::tearDown();
 	}
 }
