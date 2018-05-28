@@ -54,7 +54,7 @@ function getVendorDir( $path = '' ) {
 }
 
 function findParentContainingFrom( $children, $cwd ) {
-	$dir      = $cwd;
+	$dir = $cwd;
 	$children = '/' . normalizePathFrag( $children );
 	while ( true ) {
 		if ( file_exists( $dir . $children ) ) {
@@ -71,20 +71,20 @@ function findParentContainingFrom( $children, $cwd ) {
  * Writes Patchwork configuration to file if needed.
  *
  *
- * @param array   $userOptions           An array of options as those supported by Patchwork configuration.
+ * @param array $userOptions An array of options as those supported by Patchwork configuration.
  *
  * @return bool Whether the configuration file was written or not.
  *
  * @throws \RuntimeException If the Patchwork configuration file or the checksum file could not be written.
  */
 function writePatchworkConfig( array $userOptions ) {
-	$destinationFolder = dirname( dirname( dirname( __DIR__) ) );
-	$options           = getPatchworkConfiguration( $userOptions, $destinationFolder );
+	$destinationFolder = dirname( dirname( dirname( __DIR__ ) ) );
+	$options = getPatchworkConfiguration( $userOptions, $destinationFolder );
 
 	$configFileContents = json_encode( $options );
-	$configChecksum     = md5( $configFileContents );
-	$configFilePath     = $destinationFolder . '/patchwork.json';
-	$checksumFilePath   = "{$destinationFolder}/pw-cs-{$configChecksum}.yml";
+	$configChecksum = md5( $configFileContents );
+	$configFilePath = $destinationFolder . '/patchwork.json';
+	$checksumFilePath = "{$destinationFolder}/pw-cs-{$configChecksum}.yml";
 
 	if ( file_exists( $configFilePath ) && file_exists( $checksumFilePath ) ) {
 		return false;
@@ -98,7 +98,7 @@ function writePatchworkConfig( array $userOptions ) {
 		unlink( $file );
 	}
 
-	$date                 = date( 'Y-m-d H:i:s' );
+	$date = date( 'Y-m-d H:i:s' );
 	$checksumFileContents = <<< YAML
 generator: FunctionMocker
 date: $date
@@ -134,8 +134,8 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 	$destinationFolder = realpath( $destinationFolder );
 
 	// but always exclude function-mocker and Patchwork themselves
-	$defaultExcluded      = [ $destinationFolder, getVendorDir( 'antecedent/patchwork' ) ];
-	$defaultIncluded      = [ $destinationFolder . '/src/tad/FunctionMocker/utils.php' ];
+	$defaultExcluded = [ $destinationFolder, getVendorDir( 'antecedent/patchwork' ) ];
+	$defaultIncluded = [ $destinationFolder . '/src/tad/FunctionMocker/utils.php' ];
 
 	$options['blacklist'] = ! empty( $options['blacklist'] )
 		? array_merge( (array) $options['blacklist'], $defaultExcluded )
@@ -150,15 +150,14 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 		$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
 	}
 
-	$options['cache-path'] = realpath(rtrim($options['cache-path'], '\\/'));
+	$options['cache-path'] = realpath( rtrim( $options['cache-path'], '\\/' ) ) ?: $options['cache-path'];
 
-	if ( ! file_exists( $options['cache-path'] ) ) {
-		if ( ! mkdir( $options['cache-path'], 0777, true ) && ! is_dir( $options['cache-path'] ) ) {
-			throw new \RuntimeException( sprintf( 'Cache directory "%s" was not created', $options['cache-path'] ) );
-		}
-		if ( ! file_exists( $options['cache-path'] . '/.gitignore' ) ) {
-			file_put_contents( $options['cache-path'] . '/.gitignore', '*' );
-		}
+	if ( ! mkdir( $options['cache-path'], 0777, true ) && ! is_dir( $options['cache-path'] ) ) {
+		throw new \RuntimeException( sprintf( 'Cache directory "%s" was not created', $options['cache-path'] ) );
+	}
+
+	if ( ! file_exists( $options['cache-path'] . '/.gitignore' ) ) {
+		file_put_contents( $options['cache-path'] . '/.gitignore', '*' );
 	}
 
 	return $options;
