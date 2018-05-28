@@ -1,0 +1,21 @@
+actor: IntegrationTester
+modules:
+    enabled:
+        - WPLoader
+        - \Helper\Wpunit
+    config:
+        WPLoader:
+            wpRootFolder: "%WP_ROOT_FOLDER%"
+            dbName: "%TEST_DB_NAME%"
+            dbHost: "%TEST_DB_HOST%"
+            dbUser: "%TEST_DB_USER%"
+            dbPassword: "%TEST_DB_PASSWORD%"
+            tablePrefix: "%TEST_TABLE_PREFIX%"
+            domain: "%WP_DOMAIN%"
+            adminEmail: "%ADMIN_EMAIL%"
+            title: "Test"
+            # here we climb up to tell wordpress our plugins live in the wp-browser example root folder...
+            pluginsFolder: "%WP_PLUGINS_FOLDER%"
+            # ...and that the plugin we want to activate is in there
+            plugins: ['plugin.php']
+            activatePlugins: ['plugin.php']
