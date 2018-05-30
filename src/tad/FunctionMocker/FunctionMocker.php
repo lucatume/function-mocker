@@ -117,12 +117,21 @@ class FunctionMocker {
 			return;
 		}
 
+		$loadWP = true;
+		$options['load-wp-env'] = isset( $options['load-wp-env'] )
+			? (bool) $options['load-wp-env']
+			: true;
+
 		writePatchworkConfig( $options );
 
 		/** @noinspection PhpIncludeInspection */
 		includePatchwork();
 
 		require_once __DIR__ . '/utils.php';
+
+		if ( $loadWP ) {
+			require_once __DIR__ . '/../../includes/wordpress/plugin.php';
+		}
 
 		$function_mocker->didInit = true;
 	}

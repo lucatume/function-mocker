@@ -137,6 +137,11 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 	$defaultExcluded = [ $destinationFolder, getVendorDir( 'antecedent/patchwork' ) ];
 	$defaultIncluded = [ $destinationFolder . '/src/tad/FunctionMocker/utils.php' ];
 
+	if ( ! empty( $options['load-wp-env'] ) ) {
+		$defaultIncluded[] = $destinationFolder . '/src/includes/wordpress';
+	}
+	unset( $options['load-wp-env'] );
+
 	$options['blacklist'] = ! empty( $options['blacklist'] )
 		? array_merge( (array) $options['blacklist'], $defaultExcluded )
 		: $defaultExcluded;
@@ -152,8 +157,10 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 
 	$options['cache-path'] = realpath( rtrim( $options['cache-path'], '\\/' ) ) ?: $options['cache-path'];
 
-	if ( ! mkdir( $options['cache-path'], 0777, true ) && ! is_dir( $options['cache-path'] ) ) {
-		throw new \RuntimeException( sprintf( 'Cache directory "%s" was not created', $options['cache-path'] ) );
+	if ( ! file_exists( $options['cache-path'] ) ) {
+		if ( ! mkdir( $options['cache-path'], 0777, true ) && ! is_dir( $options['cache-path'] ) ) {
+			throw new \RuntimeException( sprintf( 'Cache directory "%s" was not created', $options['cache-path'] ) );
+		}
 	}
 
 	if ( ! file_exists( $options['cache-path'] . '/.gitignore' ) ) {
