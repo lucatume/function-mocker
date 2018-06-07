@@ -107,6 +107,8 @@ class FunctionMocker {
 	 *                            ['exclude'|'blacklist']     array|string A list of absolute paths that should be excluded in the patching.
 	 *                            ['cache-path']              string The absolute path to the folder where Patchwork should cache the wrapped files.
 	 *                            ['redefinable-internals']   array A list of internal PHP functions that are available for replacement.
+	 *                            ['env']                     array|string|bool Specifies one or more environment setup files to load immediately
+	 *                                                        after including Patchwork.
 	 *
 	 * @see \Patchwork\configure()
 	 */
@@ -117,11 +119,8 @@ class FunctionMocker {
 			return;
 		}
 
-		$loadWP = true;
-		$options['load-wp-env'] = isset( $options['load-wp-env'] )
-			? (bool) $options['load-wp-env']
-			: true;
-
+		$envs = readEnvsFromOptions( $options );
+		$options = whitelistEnvs( $options, $envs );
 		writePatchworkConfig( $options );
 
 		/** @noinspection PhpIncludeInspection */
@@ -129,9 +128,7 @@ class FunctionMocker {
 
 		require_once __DIR__ . '/utils.php';
 
-		if ( $loadWP ) {
-			require_once __DIR__ . '/../../includes/wordpress/plugin.php';
-		}
+		includeEnvs( $envs );
 
 		$function_mocker->didInit = true;
 	}
