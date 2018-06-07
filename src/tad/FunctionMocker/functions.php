@@ -169,3 +169,52 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 
 	return $options;
 }
+
+function validatePath($path){
+	$original = $path;
+	$path = file_exists( $path ) ? realpath( $path ) : realpath( getcwd() . '/' . trim( $path, '\\/' ) );
+
+	if ( ! $path ) {
+		throw new \InvalidArgumentException( "{$original} is not a valid relative or absolute path" );
+	}
+
+	return $path;
+}
+
+function readEnvsFromOptions( array $options ) {
+	$envs = isset( $options['env'] ) ?
+		(array) $options['env']
+		: [ __DIR__ . '/../../includes/wordpress/env.php' ];
+
+	return array_map( '\tad\FunctionMocker\validatePath', $envs );
+}
+
+function castEnvToDir( $env ) {
+	return ! is_dir( $env ) && basename( $env ) === 'env.php' ? dirname( $env ) : $env;
+}
+
+function whitelistEnvs( array $options, $envs ) {
+	unset( $options['env'] );
+
+	$envs = array_map( '\tad\FunctionMocker\castEnvToDir', $envs );
+
+	$options['whitelist'] = isset( $options['whitelist'] )
+		? array_merge( (array) $options['whitelist'], $envs )
+		: $envs;
+
+	return $options;
+}
+
+function includeEnvs( array $envs ) {
+	foreach ( $envs as $env ) {
+		$realpath = validatePath( $env );
+
+		if ( is_dir( $realpath ) ) {
+			foreach ( glob( $realpath . '/*.php' ) as $file ) {
+				require_once $file;
+			}
+		} else {
+			require_once $realpath;
+		}
+	}
+}
