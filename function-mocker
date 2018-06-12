@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+
+<?php
+$autoloadPaths = [
+	__DIR__ . '/vendor/autoload.php', // locally
+	__DIR__ . '/../../autoload.php' // dependency
+];
+
+foreach ( $autoloadPaths as $path ) {
+	if ( file_exists( $path ) ) {
+		require_once $path;
+		break;
+	}
+}
+
+define( 'VERSION', '0.1.0' );
+
+$app = new \Symfony\Component\Console\Application( 'Function Mocker CLI', VERSION );
+$app->add( new \tad\FunctionMocker\CLI\CreateEnv( 'env:create' ) );
+$app->run();
+
