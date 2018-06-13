@@ -1,0 +1,17 @@
+{
+    "source": "vendor/wordpress/src",
+    "destination": "src/envs/wordpress",
+    "functions": {
+        "wp_list_filter": {
+            "removeDocBlocks": false,
+            "body": "copy"
+        }
+    },
+    "classes": [
+        "WP_List_Util"
+    ],
+    "remove-docblocks": false,
+    "blacklist": [
+        "vendor/wordpress/src/wp-admin/includes/noop.php"
+    ]
+}
