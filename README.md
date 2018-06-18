@@ -1,7 +1,9 @@
 # Function Mocker
 
-*A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker with additional WordPress goodies.*
+*A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker born to make WordPress unit-testing easier.*
 
+In a perfect world you should never need to mock static methods and functions, should use [TDD](http://en.wikipedia.org/wiki/Test-driven_development) to write better object-oriented code and use tests as a code design tool.  
+But sometimes a grim and sad need to mock those functions and static methods might arise when working with code that has a lot of miles under its belt; this library is here to help.
 
 [![Build Status](https://travis-ci.org/lucatume/function-mocker.svg?branch=master)](https://travis-ci.org/lucatume/function-mocker)
 
@@ -9,108 +11,97 @@
 This can be written in a [PHPUnit](http://phpunit.de/) test suite
     
 ```php
-<?php
-// The class under test, file Logger.php
-class Logger
-{
-    public function log($type, $message)
-    {
-        $option = get_option('log');
-        $option[] = sprintf('[%s] %s - %s', date(DATE_ATOM, time()), $type, $message);
-        update_option('log', sprintf('[%s] %s - %s', date(DATE_ATOM, time()), $type, $message));
+// the class under test
+// it uses the WordPress `get_option` and `update_option` functions
+class Logger {
+    public function log( $type, $message ) {
+        $option = get_option( 'log' );
+        $option[] = sprintf( '[%s] %s - %s', date(DATE_ATOM, time() ), $type, $message );
+        update_option( 'log', sprintf('[%s] %s - %s', date( DATE_ATOM, time() ), $type, $message ));
     }
 }
+```
 
-// file LoggerTest.php
+```php
+// the test case for the class
 
 use \tad\FunctionMocker\FunctionMocker;
 
 class InternaFunctionReplacementTest extends \PHPUnit\Framework\TestCase {
 	
-	public function setUp(){
+	public function setUp() {
 		FucntionMocker::setUp();
 	}
 	
-    /**
-     * It should log the correct message
-     * @test
-     */
-    public function log_the_correct_message()
-    {
-        // it can replace an internal function
+    public function test_it_logs_the_correct_message() {
+        // replace the `time` internal function
         $mockTime = time();
-        FunctionMocker::time()->willReturn($mockTime);
+        FunctionMocker::time()->willReturn( $mockTime );
         
-        // it can replace a function that is not defined
+        // stub the `get_option` function
         FunctionMocker::get_option()->willReturn([]);
         
-        // it can spy functions
+        // mock the `update_option` function
         $expected = sprintf('[%s] error - There was an error', date(DATE_ATOM, $mockTime));
-        
-        FunctionMocker::update_option('log', $expected )
+        FunctionMocker::update_option( 'log', $expected )
             ->shouldBeCalled();
 
         $logger = new Logger();
 
-        $logger->log('error', 'There was an error');
+        $logger->log( 'error', 'There was an error' );
     }
     
-    public function tearDown(){
+    public function tearDown() {
     	FunctionMocker::tearDown();
     }
 }
 ```
 
-## Installation
-Either zip and move it to the appropriate folder or use [Composer](https://getcomposer.org/)
+TOC here
 
-    composer require lucatume/function-mocker:~1.0
+## Installation
+Use [Composer](https://getcomposer.org/) to require Function Mocker as a developer dependency:
+
+    composer require lucatume/function-mocker:^2.0 --dev
 
 ## Usage
-In a perfect world you should never need to mock static methods and functions, should use [TDD](http://en.wikipedia.org/wiki/Test-driven_development) to write better object-oriented code and use it as a design tool.  
-But sometimes a grim and sad need to mock those functions and static methods might arise and this library is here to help.
 
-### Bootstrapping
-To make Fucntion Mocker behave in its wrapping power (a power granted by [patchwork](https://github.com/antecedent/patchwork)) the `FunctionMocker::init` method needs to be called in the proper bootstrap file of [Codeception](http://codeception.com/) or [PHPUnit](http://phpunit.de/) like this
+### Initializing Function Mocker
+To make Function Mocker behave in its wrapping power (a power granted by [patchwork](https://github.com/antecedent/patchwork)) the `FunctionMocker::init` method needs to be called in the tests bootstrap file.  
+In this example I'm using [PHPUnit](http://phpunit.de/) but the `/examples` folder provides more working and complete setups covering [Codeception](http://codeception.com/ "Codeception - BDD-style PHP testing."), [Behat][2848-0001], [wp-browser](https://github.com/lucatume/wp-browser "lucatume/wp-browser · GitHub") and [phpspec][2848-0002].
 
 ```php
-<?php
-// This is global bootstrap for autoloading
-use tad\FunctionMocker\FunctionMocker;
-
 require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
 
-FunctionMocker::init(['blacklist' => dirname(__DIR__)]);
-```
-
-The `init` method will accept a configuration array supporting the following arguments:
-
-* `include` or `whitelist` - array|string; a list of **absolute** paths that should be included in the patching.
-* `exclude` or `blacklist` - array|string; a list of **absolute** paths that should be excluded in the patching.
-* `cache-path` - string; the **absolute** path to the folder where Pathchwork should cache the wrapped files.
-* `redefinable-internals` - array; a list of internal PHP functions that are available for replacement; if an internal function (a function defined by PHP) is not listed here then it will never be replaced in the tests.
-
-
-```php
 \tad\FunctionMocker\FunctionMocker::init([
-    'whitelist' => [dirname(__DIR__) . '/src',dirname(__DIR__) . '/vendor'],
-    'blacklist' => [dirname(__DIR__) . '/included', dirname(__FILE__) . 'patchwork-cache', dirname(__DIR__)],
-    'cache-path' => dirname(__DIR__) . 'patchwork-cache,
+
+	// whitelist the folders and files FunctionMocker should "wrap"
+    'whitelist' => [
+		dirname(__DIR__) . '/src',
+		dirname(__DIR__) . '/vendor',
+    ],
+    
+    // blacklist folders or files to avoid function mocker from wrapping them
+    'blacklist' => [
+		dirname(__DIR__) . '/includes', 
+		dirname(__DIR__) . '/env.php', 
+	 ],
+	 
+	 // when wrapping files Function Mocker will create a modified copy of them the first time it "wraps" them
+	 // set a cache path to control where the files should be stored, possibly outside the folder your IDE is indexing
+    'cache-path' => sys_get_temp_dir() . '/fm-cache/my-project',
+    
+    // finally tell Function Mocker what internal PHP functions it should allow you to mock, stub and spy in your tests
     'redefinable-internals' => ['time', 'filter_var']
 ]);
 ```
 
-Excluding the project root folder, `dirname(__DIR__)` in the examples, is usually a good idea.
+The `init` method will accept a configuration array supporting the following arguments:
 
-**Note**: the library will ignore `patchwork.json` files even if no configuration is provided to the `FunctionMocker::init` method.
-
-#### Initialization parameters
-Function mocker will take care of initializing Patchwork with some sensible defaults but those initialization parameters can be customized:
-
- * `whitelist` - array or string, def. empty; a list of absolute paths that should be included in the patching.
- * `blacklist` - array or string, def. empty; a list of absolute paths that should be excluded from the patching; the Patchwork library itself and the Function Mocker library are always excluded.
- * `cache-path` - string, def. `cache` folder; the absolute path to the folder where Pathcwork should cache the wrapped files.
- * `redefinable-internals`   array, def. empty; a list of internal PHP functions that are available for replacement; any *internal* function (defined by the PHP Standard Library) that needs to be replaced in the tests should be listed here.
+* `whitelist` - array; a list of **absolute** paths to files and folders that should be included in the monkey-patching.
+* `blacklist` - array; a list of **absolute** paths to files and folders that should be excluded in the monkey-patching.
+* `cache-path` - string; the **absolute** path to the folder where Pathchwork should cache the patched files.
+* `redefinable-internals` - array; a list of internal PHP functions that will be available for redefinition in your tests
 
 ### setUp and tearDown methods  
 The library is meant to be used in the context of a [PHPUnit](http://phpunit.de/) test case and provides two `static` methods that **must** be inserted in the test case `setUp` and `tearDown` method for the function mocker to work properly:
@@ -651,3 +642,7 @@ $do_action->wasCalledWithOnce(['before_switch_to_theme_foo', ])
 // restore state
 $GLOBALS['switchingToTheme'] = $prev;
 ```
+
+[2848-0001]: http://behat.org/en/latest/
+[2848-0002]: http://www.phpspec.net/en/stable/
+

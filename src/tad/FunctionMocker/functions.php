@@ -184,7 +184,8 @@ function validatePath($path){
 function readEnvsFromOptions( array $options ) {
 	$envs = isset( $options['env'] ) ?
 		(array) $options['env']
-		: [ __DIR__ . '/../../includes/wordpress/env.php' ];
+		// @todo load WordPress env here
+		: [];
 
 	return array_map( '\tad\FunctionMocker\validatePath', $envs );
 }
