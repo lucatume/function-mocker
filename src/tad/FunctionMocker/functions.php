@@ -167,6 +167,8 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 		file_put_contents( $options['cache-path'] . '/.gitignore', '*' );
 	}
 
+	$options['cache-path'] = realpath( $options['cache-path'] );
+
 	return $options;
 }
 

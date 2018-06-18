@@ -89,7 +89,8 @@ require_once dirname( __FILE__ ) . '/../vendor/autoload.php';
 	 
 	 // when wrapping files Function Mocker will create a modified copy of them the first time it "wraps" them
 	 // set a cache path to control where the files should be stored, possibly outside the folder your IDE is indexing
-    'cache-path' => sys_get_temp_dir() . '/fm-cache/my-project',
+	 // assuming this file is in `/repos/my-project/tests`, then the cache will be in `/repos/fm-cache/my-project`
+    'cache-path' => __DIR__ . '/../../fm-cache/my-project',
     
     // finally tell Function Mocker what internal PHP functions it should allow you to mock, stub and spy in your tests
     'redefinable-internals' => ['time', 'filter_var']
