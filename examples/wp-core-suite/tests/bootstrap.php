@@ -3,7 +3,7 @@ require_once( __DIR__ . '/../vendor/autoload.php' );
 
 // init Function Mocker before WordPress to wrap its code
 \tad\FunctionMocker\FunctionMocker::init( [
-	'cache-path'            => __DIR__ . '/_cache',
+	'cache-path'            => __DIR__ .'/../../../../_cache/fm-coresuite-example',
 	'whitelist'             => [
 		__DIR__,
 		dirname( __DIR__ ) . '/src',

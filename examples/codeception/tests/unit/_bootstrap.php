@@ -3,7 +3,7 @@ require_once dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 
 // init Function Mocker
 \tad\FunctionMocker\FunctionMocker::init( [
-	'cache-path'            => dirname( __DIR__ ) . '/_cache',
+	'cache-path'            => __DIR__ . '/../../../../../_cache/fm-codeception-example',
 	'whitelist'             => [ __DIR__, dirname( __DIR__, 2 ) . '/src' ],
 	'redefinable-internals' => [ 'time' ],
 ] );
