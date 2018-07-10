@@ -2,13 +2,15 @@
 
 namespace tad\FunctionMocker;
 
+use InvalidArgumentException;
+
 function filterPathListFrom( array $list, $rootDir ) {
 	if ( ! ( is_dir( $rootDir ) && is_readable( $rootDir ) ) ) {
 		throw new \InvalidArgumentException( $rootDir . ' is not a directory or is not readable.' );
 	}
 
 	$_list = array_map( function ( $frag ) use ( $rootDir ) {
-		$path = $rootDir . DIRECTORY_SEPARATOR . normalizePathFrag( $frag );
+		$path = $rootDir . DIRECTORY_SEPARATOR . normalizePath( $frag );
 
 		return file_exists( $path ) ? $path : null;
 	}, $list );
@@ -16,7 +18,7 @@ function filterPathListFrom( array $list, $rootDir ) {
 	return array_filter( $_list );
 }
 
-function normalizePathFrag( $path ) {
+function normalizePath( $path ) {
 	return trim( trim( $path ), '/' );
 }
 
@@ -53,9 +55,9 @@ function getVendorDir( $path = '' ) {
 	return empty( $path ) ? $vendorDir : $vendorDir . '/' . $path;
 }
 
-function findParentContainingFrom( $children, $cwd ) {
+function findParentContainingFolder( $children, $cwd ) {
 	$dir = $cwd;
-	$children = '/' . normalizePathFrag( $children );
+	$children = '/' . normalizePath( $children );
 	while ( true ) {
 		if ( file_exists( $dir . $children ) ) {
 			break;
@@ -172,7 +174,7 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 	return $options;
 }
 
-function validatePath($path){
+function validatePath( $path ) {
 	$original = $path;
 	$path = file_exists( $path ) ? realpath( $path ) : realpath( getcwd() . '/' . trim( $path, '\\/' ) );
 
@@ -220,4 +222,97 @@ function includeEnvs( array $envs ) {
 			require_once $realpath;
 		}
 	}
+}
+
+function expandTildeIn( $path ) {
+	if ( \function_exists( 'posix_getuid' ) && strpos( $path, '~' ) !== false ) {
+		$info = posix_getpwuid( posix_getuid() );
+		$path = str_replace( '~', $info['dir'], $path );
+	}
+
+	return $path;
+}
+
+function validateFileOrDir( string $source, string $name ): string {
+	if ( ! file_exists( $source ) ) {
+		$source = getcwd() . '/' . trim( $source, '\\/' );
+	}
+
+	$source = realpath( $source ) ?: $source;
+
+	if ( ! ( file_exists( $source ) && is_readable( $source ) ) ) {
+		throw new InvalidArgumentException( $name . ' [' . $source . '] does not exist or is not readable.' );
+	}
+
+	return rtrim( $source, '\\/' );
+}
+
+function validateJsonFile( string $file ): array {
+	$decoded = json_decode( file_get_contents( $file ), true );
+
+	if ( empty( $decoded ) ) {
+		throw new InvalidArgumentException( 'Error while reading [' . $file . ']: ' . json_last_error_msg() );
+	}
+
+	return $decoded;
+}
+
+function getMaxMemory(): int {
+	try {
+		$val = ini_get( 'memory_limit' );
+		if ( $val == - 1 ) {
+			return - 1;
+		}
+	} catch ( \Exception $e ) {
+		// ok, assume there is no limit
+		return - 1;
+	}
+
+	$val = trim( $val );
+
+	$last = strtolower( $val[ \strlen( $val ) - 1 ] );
+	$val = str_split( $val, \strlen( $val ) - 1 )[0];
+
+	switch ( $last ) {
+		case 'g':
+			$val *= 1024;
+		case 'm':
+			$val *= 1024;
+		case 'k':
+			$val *= 1024;
+	}
+
+	return $val;
+}
+
+function isInFiles( $needle, array $filesHaystack = array() ) {
+	foreach ( $filesHaystack as $file ) {
+		if ( strpos( $needle, $file ) === 0 ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function getDirPhpFiles( $dir, array &$results = [] ) {
+	foreach ( scandir( $dir, SCANDIR_SORT_NONE ) as $key => $value ) {
+		$path = realpath( $dir . DIRECTORY_SEPARATOR . $value );
+
+		if ( ! is_dir( $path ) ) {
+			if ( pathinfo( $path, PATHINFO_EXTENSION ) !== 'php' ) {
+				continue;
+			}
+
+			$results[] = $path;
+		} elseif ( $value !== '.' && $value !== '..' ) {
+			getDirPhpFiles( $path, $results );
+		}
+	}
+
+	return $results;
+}
+
+function slugify( $str ) {
+	return strtolower( preg_replace( '/[\\s-_]+/', '-', $str ) );
 }

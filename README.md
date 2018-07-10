@@ -142,9 +142,57 @@ class MyTest extends \PHPUnit_Framework_TestCase {
 }
 ```
 
-### Environments
+### Creating, updating and using test environments
+When initializing Function Mocker without specifying an `env` argument the default WordPress test environment will be loaded. 
+The default WordPress test environment will define commonly used WordPress functions like `add_filter` or `__` that your code might rely on and just *assume* as defined and "working as usual".  
+When using Function Mocker in the context of integration tests, where WordPress is loaded, testing environments should not be loaded to avoid double definition issues; defining the `env` parameter as an empty array will tell Function Mocker not to load any testing environments:
 
-### Stubbing, mocking and spying fucntions
+```php
+FunctionMocker i it without envs
+```
+
+The default WordPress testing environment defines a reduced and barebones set of functions and methods:
+
+```
+add_filter
+add_action
+do_action
+apply_filters
+did_action
+__
+_e
+```
+
+That might be enough for most unit tests but, should that not be the case, then Function Mocker comes with its own test environment generation CLI  tool.  
+As an example let's use it to generate an environment based on [The Events Calendar plugin](!wpp).  
+In this example I'm assuming The Events Calendar code is located in the `/repos/the-events-calendar` folder and that the following commands run from the same folder that contains the Composer-manager `/vendor` foder.  
+I can instruct Function Mocker to parse the code and generate a first version of The Events Calendar testing environment with this command:
+
+```bash
+vendor/bin/function-mocker generate:env /repos/the-events-calendar
+```
+
+After **a lot** of churning Function Mocker will generate the `/tests/envs/the-events-calendar/functions.php` file.  
+The file contains **all** functions defined in The Events Calendar; Function Mocker found each function in the codebase and copied as it is, including the doc-blocks, in the file.  
+Getting **all** the functions is probably not what we need so some refinement is in order; along with the functions file Function Mocker has created a `/tests/envs/the-events-calendar/generation-config.json` file that specifies how the environment configuration happened; the file can be customized to refine the test environment generation process.  
+First of 
+
+```json
+{
+	"src": "/repos/the-events-calendar",
+	"dest": "tests/envs/the-events/calendar",
+	"functions":[
+		"tribe_do_something"
+		...insanely long list...
+	],
+	"classes": []
+}
+```
+
+the example plugin will use just a subset of functions from The Events Calendar 
+
+
+### Stubbing, mocking and spying function\
 #### Stubbing functions
 The library will allow for replacement of **defined and undefined** functions at test run time using the `FunctionMocker::replace` method like:
 
