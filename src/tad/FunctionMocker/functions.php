@@ -23,7 +23,7 @@ function normalizePath( $path ) {
 }
 
 function includePatchwork() {
-	if ( function_exists( 'Patchwork\replace' ) ) {
+	if ( \function_exists( 'Patchwork\replace' ) ) {
 		return;
 	}
 
@@ -49,7 +49,7 @@ function getVendorDir( $path = '' ) {
 				break;
 			}
 		}
-		$root = dirname( $root );
+		$root = \dirname( $root );
 	}
 
 	return empty( $path ) ? $vendorDir : $vendorDir . '/' . $path;
@@ -194,14 +194,8 @@ function readEnvsFromOptions( array $options ) {
 	return array_map( '\tad\FunctionMocker\validatePath', $envs );
 }
 
-function castEnvToDir( $env ) {
-	return ! is_dir( $env ) && basename( $env ) === 'env.php' ? dirname( $env ) : $env;
-}
-
-function whitelistEnvs( array $options, $envs ) {
+function whitelistEnvs( array $options, array $envs ) {
 	unset( $options['env'] );
-
-	$envs = array_map( '\tad\FunctionMocker\castEnvToDir', $envs );
 
 	$options['whitelist'] = isset( $options['whitelist'] )
 		? array_merge( (array) $options['whitelist'], $envs )
@@ -225,26 +219,40 @@ function includeEnvs( array $envs ) {
 }
 
 function expandTildeIn( $path ) {
-	if ( \function_exists( 'posix_getuid' ) && strpos( $path, '~' ) !== false ) {
-		$info = posix_getpwuid( posix_getuid() );
-		$path = str_replace( '~', $info['dir'], $path );
+	if ( ! \function_exists( 'posix_getuid' ) ) {
+		return $path;
 	}
 
-	return $path;
+	$paths = (array) $path;
+
+	foreach ( $paths as &$thisPath ) {
+		if ( strpos( $thisPath, '~' ) !== false ) {
+			$info = posix_getpwuid( posix_getuid() );
+			$thisPath = str_replace( '~', $info['dir'], $thisPath );
+		}
+	}
+
+	return is_array( $path ) ? $paths : $paths[0];
 }
 
-function validateFileOrDir( string $source, string $name ): string {
-	if ( ! file_exists( $source ) ) {
-		$source = getcwd() . '/' . trim( $source, '\\/' );
+function validateFileOrDir( $source, string $name ) {
+	$sources = (array) $source;
+
+	foreach ( $source as &$thisSource ) {
+		if ( ! file_exists( $thisSource ) ) {
+			$thisSource = getcwd() . '/' . trim( $thisSource, '\\/' );
+		}
+
+		$thisSource = realpath( $thisSource ) ?: $thisSource;
+
+		if ( ! ( file_exists( $thisSource ) && is_readable( $thisSource ) ) ) {
+			throw new InvalidArgumentException( $name . ' [' . $thisSource . '] does not exist or is not readable.' );
+		}
+
+		$thisSource = rtrim( $thisSource, '\\/' );
 	}
 
-	$source = realpath( $source ) ?: $source;
-
-	if ( ! ( file_exists( $source ) && is_readable( $source ) ) ) {
-		throw new InvalidArgumentException( $name . ' [' . $source . '] does not exist or is not readable.' );
-	}
-
-	return rtrim( $source, '\\/' );
+	return \is_array( $source ) ? $sources : $sources[0];
 }
 
 function validateJsonFile( string $file ): array {
@@ -295,7 +303,21 @@ function isInFiles( $needle, array $filesHaystack = array() ) {
 	return false;
 }
 
+function getDirsPhpFiles( array $dirs, array &$results = [] ) {
+	$allResults = array_map( function ( $dir ) {
+		return getDirPhpFiles( $dir );
+	}, $dirs );
+
+	return array_merge( ...$allResults );
+}
+
 function getDirPhpFiles( $dir, array &$results = [] ) {
+	if ( ! is_dir( $dir ) ) {
+		$results[] = $dir;
+
+		return $results;
+	}
+
 	foreach ( scandir( $dir, SCANDIR_SORT_NONE ) as $key => $value ) {
 		$path = realpath( $dir . DIRECTORY_SEPARATOR . $value );
 
@@ -315,4 +337,39 @@ function getDirPhpFiles( $dir, array &$results = [] ) {
 
 function slugify( $str ) {
 	return strtolower( preg_replace( '/[\\s-_]+/', '-', $str ) );
+}
+
+function findRelativePath( $fromPath, $toPath ) {
+	$fromPath = realpath( $fromPath ) ?: $fromPath;
+	$toPath = realpath( $toPath ) ?: $toPath;
+	$from = explode( DIRECTORY_SEPARATOR, $fromPath ); // Folders/File
+	$to = explode( DIRECTORY_SEPARATOR, $toPath ); // Folders/File
+	$relpath = '';
+
+	$i = 0;
+	// Find how far the path is the same
+	while ( isset( $from[ $i ] ) && isset( $to[ $i ] ) ) {
+		if ( $from[ $i ] != $to[ $i ] ) {
+			break;
+		}
+		$i ++;
+	}
+	$j = count( $from ) - 1;
+	// Add '..' until the path is the same
+	while ( $i <= $j ) {
+		if ( ! empty( $from[ $j ] ) ) {
+			$relpath .= '..' . DIRECTORY_SEPARATOR;
+		}
+		$j --;
+	}
+	// Go to folder from where it starts differing
+	while ( isset( $to[ $i ] ) ) {
+		if ( ! empty( $to[ $i ] ) ) {
+			$relpath .= $to[ $i ] . DIRECTORY_SEPARATOR;
+		}
+		$i ++;
+	}
+
+	// Strip last separator
+	return substr( $relpath, 0, - 1 );
 }

@@ -1,0 +1,417 @@
+{
+    "_readme": [
+        "This file defines the woocommerce testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "timestamp": 1531560864,
+    "date": "2018-07-14 09:34:24 (UTC)",
+    "name": "woocommerce",
+    "source": [
+        "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php",
+        "vendor/woocommerce/woocommerce/includes/abstracts/abstract-wc-product.php"
+    ],
+    "destination": "tests/envs/woocommerce",
+    "bootstrap": "tests/envs/woocommerce/bootstrap.php",
+    "remove-doc-blocks": false,
+    "wrap-in-if": true,
+    "body": "copy",
+    "functions": {
+        "wc_string_to_bool": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_bool_to_string": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_string_to_array": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_sanitize_taxonomy_name": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_sanitize_permalink": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_filename_from_url": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_dimension": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_weight": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_trim_zeros": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_round_tax_total": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_legacy_round_half_down": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_refund_total": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_decimal": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_float_to_string": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_localized_price": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_localized_decimal": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_coupon_code": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_clean": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_sanitize_textarea": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_sanitize_tooltip": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_array_overlay": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_stock_amount": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "get_woocommerce_price_format": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_price_thousand_separator": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_price_decimal_separator": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_price_decimals": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_price": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_let_to_num": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_date_format": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_time_format": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_string_to_timestamp": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_string_to_datetime": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_timezone_string": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_timezone_offset": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_flatten_meta_callback": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_postcode": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_normalize_postcode": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_phone_number": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_strtoupper": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_strtolower": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_trim_string": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_content": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_product_short_description": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_option_price_separators": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_option_price_num_decimals": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_option_hold_stock_minutes": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_sanitize_term_text_based": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_stock_for_display": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_stock_quantity_for_display": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_sale_price": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_price_range": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_weight": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_dimensions": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_datetime": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_do_oembeds": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_string_before_colon": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_array_merge_recursive_numeric": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_implode_html_attributes": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_parse_relative_date_option": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_rgb_from_hex": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_hex_darker": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_hex_lighter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_hex_is_light": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_light_or_dark": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_format_hex": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_make_numeric_postcode": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        }
+    }
+}

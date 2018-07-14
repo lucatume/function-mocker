@@ -1,0 +1,34 @@
+{
+  "name": "lucatume/function-mocker-phpunit-example",
+  "description": "An example integration of Function Mocker in PHPUnit",
+  "type": "project",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "theAverageDev (Luca Tumedei)",
+      "email": "luca@theaveragedev.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Examples\\WoocommerceEnv\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "files": [
+      "../../vendor/autoload.php"
+    ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.0",
+    "woocommerce/woocommerce": "^3.4",
+    "composer/installers": "^1.5"
+  },
+  "extra": {
+    "installer-paths": {
+      "vendor/woocommerce/woocommerce": [
+        "woocommerce/woocommerce"
+      ]
+    }
+  }
+}

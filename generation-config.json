@@ -1,17 +1,145 @@
 {
-    "source": "vendor/wordpress/src",
-    "destination": "src/envs/wordpress",
+    "timestamp": 1531205263,
+    "date": "2018-07-10 06:47:43 (UTC)",
+    "source": "../../Local Sites/eaclient/app/public/wp-content/plugins/the-events-calendar/src/functions/template-tags",
+    "destination": "tests/envs/template-tags",
+    "remove-doc-blocks": false,
+    "wrap-in-if": true,
+    "body": "copy",
     "functions": {
-        "wp_list_filter": {
+        "tribe_is_day": {
             "removeDocBlocks": false,
-            "body": "copy"
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_day_link": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_linked_day": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_the_day_link": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_the_day_link_label": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_the_day_link_date": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_next_day_date": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_previous_day_date": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_display_end_date": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_event_is_on_date": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_events_timezone_choice": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_display_current_events_slug": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_display_current_single_event_slug": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_display_current_ical_link": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_is_community_my_events_page": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_is_community_edit_event_page": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_single_ical_link": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_ical_link": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
+        },
+        "tribe_get_gcal_link": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "/deprecated.php",
+            "destination": "/tests/envs/template-tags"
         }
     },
-    "classes": [
-        "WP_List_Util"
-    ],
-    "remove-docblocks": false,
-    "blacklist": [
-        "vendor/wordpress/src/wp-admin/includes/noop.php"
-    ]
+    "classes": []
 }
