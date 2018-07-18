@@ -1,13 +1,27 @@
 <?php
-
+/**
+ * Function one
+ *
+ * @return string
+ */
 function testFunctionOne() {
 	return 'foo';
 }
 
+/**
+ * Function two
+ *
+ * @return string
+ */
 function testFunctionTwo() {
 	return 'foo';
 }
 
+/**
+ * FunctionThree
+ *
+ * @return stringF
+ */
 function testFunctionThree() {
 	return 'foo';
 }

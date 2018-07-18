@@ -54,11 +54,10 @@ As the error from the previous run suggested I'm narrowing down the scope of the
 	./vendor/woocommerce/woocommerce/includes/abstracts/abstract-wc-product.php	
 ```
 
-> The `\` followed by newline in the command example above is just a marker to break the lines; you could write the whole command on one line.
+The command will generate, in this folder, the following files:
 
-The command will generate, in this folder:
-
-* a `tests/envs/woocommerce/functions.php` containing the copied signature, documentation and body of all the functions found in the source file
-* a `tests/envs/woocommerce/boostrap.php` file that will just include all the environment files
-* a `generation-config.json` file that reports the configuration used for this first generation
+* `tests/envs/woocommerce/functions.php` - contains the copied signature, documentation and body of all the functions found in the source file
+* `tests/envs/woocommerce/class-wc-product.php` - contains a copy of the `WC_Product` class code
+* `tests/envs/woocommerce/boostrap.php` - the environment bootstrap file will include all the environment files
+* `generation-config.json` - reports the configuration used for this first generation
 

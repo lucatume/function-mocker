@@ -83,7 +83,7 @@ function writePatchworkConfig( array $userOptions ) {
 	$destinationFolder = dirname( dirname( dirname( __DIR__ ) ) );
 	$options = getPatchworkConfiguration( $userOptions, $destinationFolder );
 
-	$configFileContents = json_encode( $options );
+	$configFileContents = json_encode( $options, JSON_PRETTY_PRINT );
 	$configChecksum = md5( $configFileContents );
 	$configFilePath = $destinationFolder . '/patchwork.json';
 	$checksumFilePath = "{$destinationFolder}/pw-cs-{$configChecksum}.yml";
@@ -145,11 +145,11 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 	unset( $options['load-wp-env'] );
 
 	$options['blacklist'] = ! empty( $options['blacklist'] )
-		? array_merge( (array) $options['blacklist'], $defaultExcluded )
+		? array_merge( array_map( 'realpath', (array) $options['blacklist'] ), $defaultExcluded )
 		: $defaultExcluded;
 
 	$options['whitelist'] = ! empty( $options['whitelist'] )
-		? array_merge( (array) $options['whitelist'], $defaultIncluded )
+		? array_merge( array_map( 'realpath', (array) $options['whitelist'] ), $defaultIncluded )
 		: $defaultIncluded;
 
 	if ( empty( $options['cache-path'] ) ) {
@@ -238,7 +238,7 @@ function expandTildeIn( $path ) {
 function validateFileOrDir( $source, string $name ) {
 	$sources = (array) $source;
 
-	foreach ( $source as &$thisSource ) {
+	foreach ( $sources as &$thisSource ) {
 		if ( ! file_exists( $thisSource ) ) {
 			$thisSource = getcwd() . '/' . trim( $thisSource, '\\/' );
 		}
@@ -318,17 +318,13 @@ function getDirPhpFiles( $dir, array &$results = [] ) {
 		return $results;
 	}
 
-	foreach ( scandir( $dir, SCANDIR_SORT_NONE ) as $key => $value ) {
-		$path = realpath( $dir . DIRECTORY_SEPARATOR . $value );
-
-		if ( ! is_dir( $path ) ) {
-			if ( pathinfo( $path, PATHINFO_EXTENSION ) !== 'php' ) {
-				continue;
-			}
-
-			$results[] = $path;
-		} elseif ( $value !== '.' && $value !== '..' ) {
-			getDirPhpFiles( $path, $results );
+	$iterator = new \FilesystemIterator( $dir, \FilesystemIterator::SKIP_DOTS );
+	/** @var \SplFileInfo $f */
+	foreach ( $iterator as $f ) {
+		if ( $f->isFile() ) {
+			$results[] = $f;
+		} elseif ( $f->isDir() ) {
+			getDirPhpFiles( $f->getPathname(), $results );
 		}
 	}
 
@@ -336,7 +332,7 @@ function getDirPhpFiles( $dir, array &$results = [] ) {
 }
 
 function slugify( $str ) {
-	return strtolower( preg_replace( '/[\\s-_]+/', '-', $str ) );
+	return strtolower( preg_replace( '/[^\\w]+/', '-', $str ) );
 }
 
 function findRelativePath( $fromPath, $toPath ) {

@@ -2,6 +2,7 @@
 
 namespace tad\FunctionMocker;
 
+use function Patchwork\redefine;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Exception\Prediction\AggregateException;
