@@ -1,0 +1,23 @@
+{
+    "_readme": [
+        "This file defines the test-env testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "name": "test-env",
+    "source": [
+        "../../_data/env/src/GlobalNamespaceClass.php"
+    ],
+    "bootstrap": "bootstrap.php",
+    "remove-doc-blocks": false,
+    "wrap-in-if": true,
+    "body": "copy",
+    "functions": [],
+    "classes": {
+        "GlobalNamespaceClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true
+        }
+    }
+}

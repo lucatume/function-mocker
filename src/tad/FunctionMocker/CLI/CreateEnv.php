@@ -27,7 +27,6 @@ use function tad\FunctionMocker\findRelativePath;
 use function tad\FunctionMocker\getDirsPhpFiles;
 use function tad\FunctionMocker\getMaxMemory;
 use function tad\FunctionMocker\isInFiles;
-use function tad\FunctionMocker\slugify;
 use function tad\FunctionMocker\validateFileOrDir;
 use function tad\FunctionMocker\validateJsonFile;
 
@@ -45,7 +44,7 @@ class CreateEnv extends Command {
 	protected $bootstrapFile;
 	protected $envName;
 	protected $source;
-	protected $generationConfig = [ 'functions' => [], 'classes' => [] ];
+	protected $generationConfig = [];
 	protected $skipped = [];
 	protected $excludedFiles = [];
 	protected $sourceFiles = [];
@@ -177,7 +176,6 @@ TEXT;
 	 */
 	protected function initRunConfiguration() {
 		$config = $this->generationConfig = $this->initConfig( $this->input );
-
 		$this->envName = $this->input->getArgument( 'name' );
 		$this->source = (array) validateFileOrDir( $config['source'], 'Source file or directory' );
 		$this->destination = $config['destination'] ?? getcwd() . '/tests/envs/' . $this->envName;
@@ -208,10 +206,10 @@ TEXT;
 			'destination' => $inputDestination,
 			'functions'   => $input->hasOption( 'functions' ) && ! empty( $input->getOption( 'functions' ) ) ?
 				preg_split( '\\s*,\\s*', $input->getOption( 'functions' ) )
-				: null,
+				: [],
 			'classes'     => $input->hasOption( 'classes' ) && ! empty( $input->getOption( 'classes' ) ) ?
 				preg_split( '\\s*,\\s*', $input->getOption( 'classes' ) )
-				: null,
+				: [],
 			'save'        => $input->hasOption( 'save' ) ?
 				$input->getOption( 'save' )
 				: null,
@@ -476,7 +474,7 @@ TEXT;
 				$this->classesToFindCount --;
 			}
 
-			if ( 0 === $this->functionsToFindCount && 0 === $this->classesToFindCount ) {
+			if ( 0 >= $this->functionsToFindCount && 0 >= $this->classesToFindCount ) {
 				throw BreakSignal::becauseThereAreNoMoreFunctionsOrClassesToFind();
 			}
 		}
@@ -494,6 +492,10 @@ TEXT;
 	}
 
 	protected function writeFunctionFiles() {
+		if ( empty( $this->functionIndex ) ) {
+			return;
+		}
+
 		$normalizedFunctionsEntries = $this->normalizeEntries( $this->functionsToFind,
 			[ 'removeDocBlocks' => $this->removeDocBlocks, 'body' => 'copy', 'wrapInIf' => true ] );
 		$defaultFunctionSettings = (object) [
@@ -646,11 +648,15 @@ TEXT;
 	}
 
 	protected function writeClassFiles() {
+		if ( empty( $this->classIndex ) ) {
+			return;
+		}
+
 		$normalizedClassesEntries = $this->normalizeEntries( $this->classesToFind,
 			[ 'removeDocBlocks' => $this->removeDocBlocks, 'body' => 'copy', 'wrapInIf' => true ] );
 		$defaultClassSetting = (object) [
-			'removeDocBlocks' => true,
-			'body'            => 'empty',
+			'removeDocBlocks' => false,
+			'body'            => 'copy',
 			'wrapInIf'        => true,
 		];
 
@@ -660,7 +666,6 @@ TEXT;
 			/** @var Stmt $stmt */
 			/** @var Namespace_ $namespace */
 			list( $file, $stmt, $namespace ) = array_values( $classEntry );
-			$slug = slugify( $name );
 			$classFile = $this->destination . '/' . str_replace( '\\', '/', $name ) . '.php';
 			$this->filesToInclude[] = $classFile;
 			$thisConfig = $normalizedClassesEntries[ $name ] ?? $defaultClassSetting;
@@ -709,7 +714,7 @@ TEXT;
 				);
 			}
 
-			$classCode = "\n" . $codePrinter->prettyPrintFile( [ $stmt ] );
+			$classCode = "\n" . $codePrinter->prettyPrint( [ $stmt ] );
 
 			if ( ! is_dir( \dirname( $classFile ) ) ) {
 				if ( ! mkdir( \dirname( $classFile ), 0777, true ) && ! is_dir( \dirname( $classFile ) ) ) {
@@ -717,7 +722,12 @@ TEXT;
 				}
 			}
 
-			file_put_contents( $classFile, $this->getFileHeader( "{$name} class." ) . $classCode, LOCK_EX );
+			$fileHandle = fopen( $classFile, 'wb' );
+			$this->writePhpOpeningTagToFile( $fileHandle );
+			$this->writeFileHeaderToFile( $fileHandle, "{$name} class." );
+			fwrite( $fileHandle, $classCode );
+			fclose( $fileHandle );
+			$this->generationConfig['classes'][ $name ] = $generatedConfig;
 		}
 	}
 
