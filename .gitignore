@@ -11,6 +11,5 @@ vendor/
 
 patchwork.json
 cache/*
-tests/_cache
+tests/_output/*
 pw-cs-*.yml
-.vendor
