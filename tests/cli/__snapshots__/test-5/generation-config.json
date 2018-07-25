@@ -6,14 +6,14 @@
     ],
     "name": "test-env",
     "source": [
-        "../../_data/env/src/GlobalNamespaceClass.php"
+        "../../_data/env/src/FinalClass.php"
     ],
     "bootstrap": "bootstrap.php",
     "remove-doc-blocks": false,
     "wrap-in-if": true,
     "body": "copy",
     "classes": {
-        "GlobalNamespaceClass": {
+        "Acme\\Company\\FinalClass": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true

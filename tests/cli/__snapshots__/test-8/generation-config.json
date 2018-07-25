@@ -6,17 +6,24 @@
     ],
     "name": "test-env",
     "source": [
-        "../../_data/env/src/GlobalNamespaceClass.php"
+        "../../_data/env/src/namespaced-functions.php"
     ],
     "bootstrap": "bootstrap.php",
     "remove-doc-blocks": false,
     "wrap-in-if": true,
     "body": "copy",
-    "classes": {
-        "GlobalNamespaceClass": {
+    "functions": {
+        "Acme\\Company\\functionOne": {
             "removeDocBlocks": false,
             "body": "copy",
-            "wrapInIf": true
+            "wrapInIf": true,
+            "source": "../../_data/env/src/namespaced-functions.php"
+        },
+        "Acme\\Company\\function_two": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/namespaced-functions.php"
         }
     }
 }

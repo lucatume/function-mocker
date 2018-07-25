@@ -1,13 +1,21 @@
 <?php
 
-function withoutComments($a, $b){};
+function withoutComments( $a, $b ) {
+	return 'withoutComments';
+}
 
 /**
- * This function as a doc-block.
+ * This function has a doc-block.
  *
  * @param string $a
- * @param int $b
+ * @param int    $b
+ *
+ * @return string
  */
-function withDocBlock($a, $b){};
+function withDocBlock( $a, $b ) {
+	return 'withDocBlock';
+}
 
-function withoutDocBlock($a,$b){};
+function withoutDocBlock( $a, $b ) {
+	return 'withoutDocBlock';
+}

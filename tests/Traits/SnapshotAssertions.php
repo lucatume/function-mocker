@@ -15,7 +15,8 @@ trait SnapshotAssertions {
 	protected function assertFilesSnapshot( $actual, $snapshot = null ) {
 		if ( is_dir( $actual ) ) {
 			$this->assertDirectoryExists( $actual );
-		} else {
+		} else
+			{
 			$this->assertFileExists( $actual );
 		}
 
@@ -71,17 +72,21 @@ trait SnapshotAssertions {
 		closedir( $dir );
 	}
 
-	private function getDirectoryPathNames( $directory, &$pathNames = [] ) {
-		$iterator = new \FilesystemIterator( $directory );
+	private function getDirectoryPathNames( $currentDir, &$pathNames = [], $path ='' ) {
+		$iterator = new \FilesystemIterator( $currentDir );
 		$iterator->setFlags( \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS );
 		/** @var \SplFileInfo $file
 		 */
 		foreach ( $iterator as $file ) {
+			$pathname = $file->getPathname();
+			$path = $path ?: $currentDir;
+
 			if ( $file->isFile() ) {
-				$pathNames[] = str_replace( $directory, '', $file->getPathname() );
+				$pathNames[] = str_replace( $path, '', $pathname );
 			}
+
 			if ( $file->isDir() ) {
-				$this->getDirectoryPathNames( $file->getPathname(), $pathNames );
+				$this->getDirectoryPathNames( $pathname, $pathNames, $path );
 			}
 		}
 

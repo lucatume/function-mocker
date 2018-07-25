@@ -1,12 +1,5 @@
 <?php
 
-if (!function_exists('withoutComments')) {
-    function withoutComments($a, $b)
-    {
-        return 'withoutComments';
-    }
-}
-
 if (!function_exists('withDocBlock')) {
     /**
      * This function has a doc-block.
@@ -22,10 +15,8 @@ if (!function_exists('withDocBlock')) {
     }
 }
 
-if (!function_exists('withoutDocBlock')) {
-    function withoutDocBlock($a, $b)
-    {
-        return 'withoutDocBlock';
-    }
+function withoutDocBlock($a, $b)
+{
+    throw new RuntimeException('Not implemented.');
 }
 

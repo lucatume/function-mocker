@@ -11,7 +11,9 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Console\Command\Command;
@@ -126,12 +128,6 @@ TEXT;
 			     'The destination directory in which the environment files should be generated.' )
 		     ->addOption( 'config', 'c', InputOption::VALUE_OPTIONAL,
 			     'A configuration file that should be used to fine tune the behaviour of the environment generation.', false )
-		     ->addOption( 'functions', null, InputOption::VALUE_OPTIONAL,
-			     'A comma separated list of fully qualified function names that should be copied in the environment; will override the `functions` config file parameter; defaults to all found functions.',
-			     '' )
-		     ->addOption( 'classes', null, InputOption::VALUE_OPTIONAL,
-			     'A comma separated list of fully qualified class names that should be copied in the environment; will override the `classes` config file parameter; defaults to all found classes.',
-			     '' )
 		     ->addOption( 'save', null, InputOption::VALUE_OPTIONAL,
 			     'If set to `true` a `generation-config.json` file will be generated in the current working directory.', true );
 	}
@@ -204,15 +200,7 @@ TEXT;
 			'name'        => $name,
 			'source'      => $input->getArgument( 'source' ),
 			'destination' => $inputDestination,
-			'functions'   => $input->hasOption( 'functions' ) && ! empty( $input->getOption( 'functions' ) ) ?
-				preg_split( '\\s*,\\s*', $input->getOption( 'functions' ) )
-				: [],
-			'classes'     => $input->hasOption( 'classes' ) && ! empty( $input->getOption( 'classes' ) ) ?
-				preg_split( '\\s*,\\s*', $input->getOption( 'classes' ) )
-				: [],
-			'save'        => $input->hasOption( 'save' ) ?
-				$input->getOption( 'save' )
-				: null,
+			'save'        => $input->hasOption( 'save' ) ? $input->getOption( 'save' ) : null,
 		];
 
 		foreach ( [ 'source', 'destination' ] as $key ) {
@@ -380,7 +368,9 @@ TEXT;
 	protected function getFunctionAndClassStmts( array $allStmts ): array {
 		$stmts = array_filter( $allStmts, function ( Stmt $stmt ) {
 			return $stmt instanceof Function_
-				|| $stmt instanceof Class_;
+				|| $stmt instanceof Class_
+				|| $stmt instanceof Interface_
+				|| $stmt instanceof Stmt\Trait_;
 		} );
 
 		return $stmts;
@@ -417,7 +407,12 @@ TEXT;
 
 			$thisName = $funcName->toString();
 
-			if ( ! \in_array( $thisName, [ 'class_exists', 'function_exists' ] ) ) {
+			if ( ! \in_array( $thisName, [
+				'class_exists',
+				'function_exists',
+				'interface_exists',
+				'trait_exists',
+			] ) ) {
 				return $found;
 			}
 
@@ -453,7 +448,11 @@ TEXT;
 			}
 
 			if (
-				$stmt instanceof Class_
+				(
+					$stmt instanceof Class_
+					|| $stmt instanceof Interface_
+					|| $stmt instanceof Trait_
+				)
 				&& $this->classesToFindCount > 0
 				&& ! \array_key_exists( $name, $this->classesToFind )
 			) {
@@ -474,7 +473,7 @@ TEXT;
 				$this->classesToFindCount --;
 			}
 
-			if ( 0 >= $this->functionsToFindCount && 0 >= $this->classesToFindCount ) {
+			if ( 0 === $this->functionsToFindCount && 0 === $this->classesToFindCount ) {
 				throw BreakSignal::becauseThereAreNoMoreFunctionsOrClassesToFind();
 			}
 		}
@@ -506,15 +505,16 @@ TEXT;
 
 		$codePrinter = new Standard;
 
-		$namespaceOrderedFunctions = array_reduce( $this->functionIndex, function ( array $acc, array $fEntry ) {
+		$namespaceOrderedFunctions = array_filter( array_reduce( $this->functionIndex, function ( array $acc, array $fEntry ) {
 			$namespace = null === $fEntry['namespace'] ? '\\' : $fEntry['namespace']->name;
 			/** @var Function_ $stmt */
 			$stmt = $fEntry['stmt'];
 			$fIndex = $namespace === '\\' ? $stmt->name->name : $namespace . '\\' . $stmt->name->name;
-			$acc[ $namespace ][ $fIndex ] = $fEntry;
+			$namespaceString = \is_string( $namespace ) ? $namespace : $namespace->toString();
+			$acc[ $namespaceString ][ $fIndex ] = $fEntry;
 
 			return $acc;
-		}, [ '\\' => [] ] );
+		}, [ '\\' => [] ] ) );
 
 		foreach ( $namespaceOrderedFunctions as $namespace => $fEntries ) {
 			$functionsFilePath = $namespace === '\\' ?
@@ -522,9 +522,17 @@ TEXT;
 				: $this->destination . '/' . str_replace( '\\', '/', $namespace ) . '/functions.php';
 			$this->filesToInclude[] = $functionsFilePath;
 
+			$functionFileDirectory = \dirname( $functionsFilePath );
+			if ( ! is_dir( $functionFileDirectory ) ) {
+				if ( ! mkdir( $functionFileDirectory ) && ! is_dir( $functionFileDirectory ) ) {
+					throw new \RuntimeException( sprintf( 'Directory "%s" was not created', $functionFileDirectory ) );
+				}
+			}
+
 			$functionsFile = $this->openFileForWriting( $functionsFilePath );
 			$this->writePhpOpeningTagToFile( $functionsFile );
 			$this->writeFileHeaderToFile( $functionsFile, "{$this->envName} environment functions" );
+			$this->writeNamespaceToFile( $functionsFile, $namespace );
 
 			foreach ( $fEntries as $name => $data ) {
 				list( $file, $stmt ) = array_values( $data );
@@ -554,15 +562,7 @@ TEXT;
 					? (bool) $generatedConfig->wrapInIf
 					: true;
 				if ( (bool) $thisConfig->wrapInIf ) {
-					$functionStmt = new Stmt\If_(
-						new BooleanNot(
-							new Expr\FuncCall(
-								new Name( 'function_exists' ),
-								[ new Arg( new String_( $name ) ) ]
-							)
-						),
-						[ 'stmts' => [ $stmt ] ]
-					);
+					$functionStmt = $this->wrapFunctionInIfBlock( $stmt, $name, $namespace );
 				}
 
 				$functionCode = $codePrinter->prettyPrint( [ $functionStmt ] ) . "\n\n";
@@ -580,16 +580,8 @@ TEXT;
 		$normalized = [];
 		foreach ( $entries as $index => $entry ) {
 			$name = is_numeric( $index ) ? $entry : $index;
-
-			$entry = \is_object( $entry ) ? $entry : new \stdClass();
-
-			foreach ( $defaults as $key => $value ) {
-				if ( ! isset( $entry->{$key} ) ) {
-					$entry->{$key} = $value;
-				}
-			}
-
-			$normalized[ $name ] = $entry;
+			$normalizedEntry = array_merge( $defaults, (array) $entry );
+			$normalized[ $name ] = (object) $normalizedEntry;
 		}
 
 		return $normalized;
@@ -636,6 +628,13 @@ TEXT;
 			] ) . "\n\n";
 	}
 
+	protected function writeNamespaceToFile( $fileHandle, $namespace ) {
+		if ( $namespace === '\\' || empty( $namespace ) ) {
+			return;
+		}
+		fwrite( $fileHandle, "namespace {$namespace};\n\n" );
+	}
+
 	protected function throwNotImplementedException(): array {
 		return [
 			new Stmt\Throw_(
@@ -645,6 +644,28 @@ TEXT;
 				] )
 			),
 		];
+	}
+
+	protected function wrapFunctionInIfBlock( Function_ $stmt, string $functionName, string $namespace = null ): \PhpParser\Node\Stmt\If_ {
+		$checkHow = empty( $namespace ) || $namespace === '\\' ?
+			'function_exists'
+			: '\function_exists';
+
+		return $this->wrapStmtInIfBlock( $stmt, $functionName, $checkHow );
+	}
+
+	protected function wrapStmtInIfBlock( Stmt $stmt, string $checkWhat, string $checkHow ): \PhpParser\Node\Stmt\If_ {
+		$functionStmt = new Stmt\If_(
+			new BooleanNot(
+				new Expr\FuncCall(
+					new Name( $checkHow ),
+					[ new Arg( new String_( $checkWhat ) ) ]
+				)
+			),
+			[ 'stmts' => [ $stmt ] ]
+		);
+
+		return $functionStmt;
 	}
 
 	protected function writeClassFiles() {
@@ -681,6 +702,10 @@ TEXT;
 				} );
 			}
 
+			$this->removeFinalFromClass( $stmt );
+			$this->removeFinalFromClassMethods( $stmt );
+			$this->openPrivateClassMethods( $stmt );
+
 			if ( $thisConfig->body === 'throw' ) {
 				$generatedConfig->body = 'throw';
 				array_walk( $stmt->stmts, function ( Stmt &$stmt ) {
@@ -703,15 +728,8 @@ TEXT;
 				? (bool) $generatedConfig->wrapInIf
 				: true;
 			if ( (bool) $thisConfig->wrapInIf ) {
-				$stmt = new Stmt\If_(
-					new BooleanNot(
-						new Expr\FuncCall(
-							new Name( 'class_exists' ),
-							[ new Arg( new String_( $name ) ) ]
-						)
-					),
-					[ 'stmts' => [ $stmt ] ]
-				);
+				$namespaceString = $namespace instanceof Namespace_ ? $namespace->name : null;
+				$stmt = $this->wrapClassInIfBlock( $stmt, $name, $namespaceString );
 			}
 
 			$classCode = "\n" . $codePrinter->prettyPrint( [ $stmt ] );
@@ -729,6 +747,55 @@ TEXT;
 			fclose( $fileHandle );
 			$this->generationConfig['classes'][ $name ] = $generatedConfig;
 		}
+	}
+
+	protected function removeFinalFromClass( Stmt $stmt ) {
+		if ( ( $stmt instanceof Class_ ) && $stmt->isFinal() ) {
+			$stmt->flags -= Class_::MODIFIER_FINAL;
+		}
+	}
+
+	protected function removeFinalFromClassMethods( Stmt $stmt ) {
+		if ( ! $stmt instanceof Class_ ) {
+			return;
+		}
+
+		array_walk( $stmt->stmts, function ( Stmt &$stmt ) {
+			if ( $stmt instanceof Stmt\ClassMethod && $stmt->isFinal() ) {
+				$stmt->flags -= Class_::MODIFIER_FINAL;
+			}
+		} );
+	}
+
+	protected function openPrivateClassMethods( Stmt $stmt ) {
+		if ( ! ( $stmt instanceof Class_ || $stmt instanceof Stmt\Trait_ ) ) {
+			return;
+		}
+
+		array_walk( $stmt->stmts, function ( Stmt &$stmt ) {
+			if ( $stmt instanceof Stmt\ClassMethod && $stmt->isPrivate() ) {
+				$stmt->flags -= Class_::MODIFIER_PRIVATE;
+				$stmt->flags += Class_::MODIFIER_PROTECTED;
+			}
+		} );
+	}
+
+	protected function wrapClassInIfBlock( Stmt $stmt, string $fqClassName, string $namespace = null ): \PhpParser\Node\Stmt\If_ {
+		if ( $stmt instanceof Class_ ) {
+			$checkHow = empty( $namespace ) || $namespace === '\\' ?
+				'class_exists'
+				: '\class_exists';
+		} elseif ( $stmt instanceof Trait_ ) {
+			$checkHow = empty( $namespace ) || $namespace === '\\' ?
+				'trait_exists'
+				: '\trait_exists';
+		} else {
+			$checkHow = empty( $namespace ) || $namespace === '\\' ?
+				'interface_exists'
+				: '\interface_exists';
+		}
+
+		return $this->wrapStmtInIfBlock( $stmt, $fqClassName, $checkHow );
 	}
 
 	protected function writeEnvBootstrapFile() {

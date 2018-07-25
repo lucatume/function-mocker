@@ -1,0 +1,34 @@
+{
+	"remove-doc-blocks": true,
+	"wrap-in-if": false,
+	"body": "empty",
+	"functions": {
+		"withDocBlock": {
+			"body": "copy"
+		},
+		"withoutDocBlock": {
+			"body": "throw",
+			"wrapInIf": false
+		},
+		"Acme\\Company\\functionOne": {
+			"body": "copy",
+			"wrapInIf": true
+		},
+		"Acme\\Company\\function_two": {
+			"removeDocBlocks": false,
+			"body": "empty",
+			"wrapInIf": true
+		}
+	},
+	"classes": {
+		"Acme\\Company\\ClassWPrivateMethods": {
+			"removeDocBlocks": false,
+			"body": "throw",
+			"wrapInIf": true
+		},
+		"Acme\\Company\\ClassWFinalMethods": {
+			"body": "empty",
+			"wrapInIf": false
+		}
+	}
+}

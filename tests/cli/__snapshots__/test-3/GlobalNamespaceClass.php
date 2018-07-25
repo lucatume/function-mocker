@@ -32,11 +32,11 @@ if (!class_exists('GlobalNamespaceClass')) {
         /**
          * @param array $a
          */
-        private function privateMethodWithDocBlock(array $a)
+        protected function privateMethodWithDocBlock(array $a)
         {
             return 'a';
         }
-        private function privateMethodWithoutDocBlock(array $a)
+        protected function privateMethodWithoutDocBlock(array $a)
         {
             return 'foo';
         }
