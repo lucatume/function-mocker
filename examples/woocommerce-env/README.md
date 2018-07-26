@@ -56,8 +56,61 @@ As the error from the previous run suggested I'm narrowing down the scope of the
 
 The command will generate, in this folder, the following files:
 
+* `tests/envs/woocommerce/boostrap.php` - the environment bootstrap file will include all the environment files one by one
 * `tests/envs/woocommerce/functions.php` - contains the copied signature, documentation and body of all the functions found in the source file
-* `tests/envs/woocommerce/class-wc-product.php` - contains a copy of the `WC_Product` class code
-* `tests/envs/woocommerce/boostrap.php` - the environment bootstrap file will include all the environment files
-* `generation-config.json` - reports the configuration used for this first generation
+* `tests/envs/woocommerce/generation-config.json` - reports the configuration used for this first generation
+* `tests/envs/woocommerce/WC_Product.php` - contains a copy of the `WC_Product` class code
 
+Taking a look at the code I can see that the `WC_Product` class has been copied and, in the same way, all the functions found in the file have been copied as well.  
+Since I will not need all of them I update the `generation-config.json` file to specify that I only want to get two specific functions; the environment generation command has already done the job for me and I just need to remove excess lines:
+
+```json
+{
+    "_readme": [
+        "This file defines the woocommerce testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "timestamp": 1532613689,
+    "date": "2018-07-26 14:01:29 (UTC)",
+    "name": "woocommerce",
+    "source": [
+        "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php",
+        "../../../vendor/woocommerce/woocommerce/includes/abstracts/abstract-wc-product.php"
+    ],
+    "bootstrap": "bootstrap.php",
+    "remove-doc-blocks": false,
+    "wrap-in-if": true,
+    "body": "copy",
+    "functions": {
+        "wc_get_dimension": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_weight": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        }
+    },
+    "classes": {
+        "WC_Product": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true
+        }
+    }
+}
+```
+
+Now I run the environment creation command again specifying, this time, the configuration file to use:
+
+```bash
+../../function-mocker generate:env woocommerce \
+	--config tests/envs/woocommerce/generation-config.json
+```
+
+Mind that I'm not specifying the sources anymore as the configuration file is doing that for me.  

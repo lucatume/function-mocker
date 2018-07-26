@@ -235,24 +235,31 @@ function expandTildeIn( $path ) {
 	return is_array( $path ) ? $paths : $paths[0];
 }
 
-function validateFileOrDir( $source, string $name ) {
-	$sources = (array) $source;
+function validateFileOrDir( $source, string $name, $fromRoot = null ) {
+	$paths = (array) $source;
+	$roots = $fromRoot ? array_filter( (array) $fromRoot ) : [ getcwd() ];
 
-	foreach ( $sources as &$thisSource ) {
-		if ( ! file_exists( $thisSource ) ) {
-			$thisSource = getcwd() . '/' . trim( $thisSource, '\\/' );
+	foreach ( $paths as &$path ) {
+		foreach ( $roots as $root ) {
+			if ( file_exists( $path ) ) {
+				continue;
+			}
+
+			$found = array_values( array_filter( array_map( function ( $root ) use ( $path ) {
+				$path = $root . '/' . trim( $path, '\\/' );
+
+				return file_exists( $path ) ? $path : false;
+			}, $roots ) ) );
+
+			if ( \count( $found ) === 0 ) {
+				throw new InvalidArgumentException( $name . ' [' . $path . '] does not exist or is not readable.' );
+			}
+
+			$path = realpath( $found[0] );
 		}
-
-		$thisSource = realpath( $thisSource ) ?: $thisSource;
-
-		if ( ! ( file_exists( $thisSource ) && is_readable( $thisSource ) ) ) {
-			throw new InvalidArgumentException( $name . ' [' . $thisSource . '] does not exist or is not readable.' );
-		}
-
-		$thisSource = rtrim( $thisSource, '\\/' );
 	}
 
-	return \is_array( $source ) ? $sources : $sources[0];
+	return \is_array( $source ) ? $paths : $paths[0];
 }
 
 function validateJsonFile( string $file ): array {
@@ -368,4 +375,8 @@ function findRelativePath( $fromPath, $toPath ) {
 
 	// Strip last separator
 	return substr( $relpath, 0, - 1 );
+}
+
+function realpath( $file ) {
+	return \realpath( $file ) ?: $file;
 }

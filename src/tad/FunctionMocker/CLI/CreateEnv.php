@@ -64,6 +64,7 @@ class CreateEnv extends Command {
 	protected $input;
 	protected $filesToInclude = [];
 	protected $writeFileHeaders = true;
+	protected $configFileDir;
 
 	/**
 	 * @param bool $writeFileHeaders
@@ -122,7 +123,7 @@ TEXT;
 		     ->setDescription( 'Generates an environment file from a source folder or file.' )
 		     ->setHelp( $help )
 		     ->addArgument( 'name', InputArgument::REQUIRED, 'The environment name' )
-		     ->addArgument( 'source', InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+		     ->addArgument( 'source', InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
 			     'The environment source files of directories; separate them with a space' )
 		     ->addOption( 'destination', 'd', InputOption::VALUE_OPTIONAL,
 			     'The destination directory in which the environment files should be generated.' )
@@ -173,7 +174,7 @@ TEXT;
 	protected function initRunConfiguration() {
 		$config = $this->generationConfig = $this->initConfig( $this->input );
 		$this->envName = $this->input->getArgument( 'name' );
-		$this->source = (array) validateFileOrDir( $config['source'], 'Source file or directory' );
+		$this->source = (array) validateFileOrDir( $config['source'], 'Source file or directory', [ getcwd(), $this->configFileDir ] );
 		$this->destination = $config['destination'] ?? getcwd() . '/tests/envs/' . $this->envName;
 		$this->bootstrapFile = ! empty( $config['bootstrap'] )
 			? $this->destination . '/' . trim( $config['bootstrap'], '\\/' )
@@ -222,6 +223,7 @@ TEXT;
 		if ( $configFile ) {
 			$configFile = validateFileOrDir( $configFile, "JSON configuration file" );
 			$configFileConfig = validateJsonFile( $configFile );
+			$this->configFileDir = \tad\FunctionMocker\realpath( \dirname($configFile));
 		}
 
 		$configFileConfig['_readme'] = [
@@ -230,9 +232,17 @@ TEXT;
 			'This file was automatically @generated.',
 		];
 
+		if ( empty( $cliConfig['source'] ) ) {
+			unset( $cliConfig['source'] );
+		}
+
 		$config = array_merge( $configFileConfig, array_filter( $cliConfig, function ( $v ) {
 			return null !== $v;
 		} ) );
+
+		if ( empty( $config['source'] ) ) {
+			throw RuntimeException::becasueNoSourcesWereSpecified();
+		}
 
 		return $config;
 	}
