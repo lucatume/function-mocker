@@ -184,8 +184,8 @@ TEXT;
 		$this->saveGenerationConfigFile = empty( $config['save'] ) ? false : (bool) $config['save'];
 		$this->functionsToFind = $config['functions'] ?? [];
 		$this->classesToFind = $config['classes'] ?? [];
-		$this->functionsToFindCount = \count( $this->functionsToFind );
-		$this->classesToFindCount = \count( $this->classesToFind );
+		$this->functionsToFindCount = \count( $this->functionsToFind ) ?: -1;
+		$this->classesToFindCount = \count( $this->classesToFind ) ?: -1;
 	}
 
 	/**
@@ -451,7 +451,7 @@ TEXT;
 
 			if (
 				$stmt instanceof Function_
-				&& $this->functionsToFindCount > 0
+				&& $this->functionsToFindCount >= 0
 				&& ! \array_key_exists( $name, $this->functionsToFind )
 			) {
 				continue;
@@ -463,7 +463,7 @@ TEXT;
 					|| $stmt instanceof Interface_
 					|| $stmt instanceof Trait_
 				)
-				&& $this->classesToFindCount > 0
+				&& $this->classesToFindCount >= 0
 				&& ! \array_key_exists( $name, $this->classesToFind )
 			) {
 				continue;
