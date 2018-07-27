@@ -1,3 +1,5 @@
 - check php 5.6 full compat
 - add explicit exception when trying to replace internal function in test that is not in `redefinable-internals`
 - generate WordPress environment
+- remove the /docs folder in favor of README file
+- 
