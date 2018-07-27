@@ -130,7 +130,7 @@ The other entries in the configuration file are just informative and will not be
 
 ## Using testing environments
 Now that my WooCommerce testing environment is ready it's time to load it in Function Mocker.  
-By default Function Mocker will always load a base WordPress testing environment defining the common utility functions (`add_filter`, `add_action`, l10n functions et cetera) but I want it to load the one I just generated as well.  
+By default Function Mocker will always load a base WordPress testing environment defining the common utility functions (`add_filter`, `add_action`, l10n functions et cetera) if no `env` parameter is specified but I want it to load the one I just generated as well.  
 To do so I will update the tests bootstrap file, the one where `FunctionMocker::init` is being called, to include the `WordPress` environment and then the generated one:
 
 ```php
@@ -147,5 +147,5 @@ require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 ] );
 ```
 
-The environments will be loaded in the specified order.  
+The environments will be loaded in the specified order.
 Testing environments will be whitelisted by Function Mocker, there is no need to specify them in the `whitelist` entry when calling the `FunctionMocker::init` method.
