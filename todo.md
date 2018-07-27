@@ -1,3 +1,3 @@
 - check php 5.6 full compat
-- check writing to sys temp dir works
 - add explicit exception when trying to replace internal function in test that is not in `redefinable-internals`
+- generate WordPress environment
