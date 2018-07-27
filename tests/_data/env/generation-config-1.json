@@ -1,6 +1,6 @@
 {
-	"remove-doc-blocks": true,
-	"wrap-in-if": false,
+	"removeDocBlocks": true,
+	"wrapInIf": false,
 	"body": "empty",
 	"functions": {
 		"withDocBlock": {

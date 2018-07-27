@@ -14,8 +14,8 @@
         "../../_data/env/src/NamespacedTrait.php"
     ],
     "bootstrap": "bootstrap.php",
-    "remove-doc-blocks": false,
-    "wrap-in-if": true,
+    "removeDodBlocks": false,
+    "wrapInIf": true,
     "body": "copy",
     "classes": {
         "GlobalAbstractClass": {

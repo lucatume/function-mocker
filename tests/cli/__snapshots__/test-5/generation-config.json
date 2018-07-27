@@ -9,8 +9,8 @@
         "../../_data/env/src/FinalClass.php"
     ],
     "bootstrap": "bootstrap.php",
-    "remove-doc-blocks": false,
-    "wrap-in-if": true,
+    "removeDodBlocks": false,
+    "wrapInIf": true,
     "body": "copy",
     "classes": {
         "Acme\\Company\\FinalClass": {

@@ -9,8 +9,8 @@
         "../../_data/env/src/namespaced-functions.php"
     ],
     "bootstrap": "bootstrap.php",
-    "remove-doc-blocks": false,
-    "wrap-in-if": true,
+    "removeDocBlocks": false,
+    "wrapInIf": true,
     "body": "copy",
     "functions": {
         "Acme\\Company\\functionOne": {

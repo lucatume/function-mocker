@@ -12,8 +12,8 @@
         "../../_data/env/src/ClassWFinalMethods.php"
     ],
     "bootstrap": "bootstrap.php",
-    "remove-doc-blocks": true,
-    "wrap-in-if": false,
+    "removeDocBlocks": true,
+    "wrapInIf": false,
     "body": "empty",
     "functions": {
         "withDocBlock": {

@@ -9,8 +9,8 @@
         "../../_data/env/src/ClassWFinalMethods.php"
     ],
     "bootstrap": "bootstrap.php",
-    "remove-doc-blocks": false,
-    "wrap-in-if": true,
+    "removeDocBlocks": false,
+    "wrapInIf": true,
     "body": "copy",
     "classes": {
         "Acme\\Company\\ClassWFinalMethods": {
