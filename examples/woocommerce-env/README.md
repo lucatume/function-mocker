@@ -78,9 +78,8 @@ Since I will not need all of them I update the `generation-config.json` file to 
         "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php",
         "../../../vendor/woocommerce/woocommerce/includes/abstracts/abstract-wc-product.php"
     ],
-    "bootstrap": "bootstrap.php",
-    "remove-doc-blocks": false,
-    "wrap-in-if": true,
+    "removeDocBlocks": false,
+    "wrapInIf": true,
     "body": "copy",
     "functions": {
         "wc_get_dimension": {
@@ -113,4 +112,40 @@ Now I run the environment creation command again specifying, this time, the conf
 	--config tests/envs/woocommerce/generation-config.json
 ```
 
-Mind that I'm not specifying the sources anymore as the configuration file is doing that for me.  
+Mind that I'm not specifying the sources anymore as those are specified in the configuration file.  
+Since the configuration file is also specifying what classes and functions I want the environment to contain then those, and only those, will be imported in the new version of the environment files.  
+
+## Using the configuration file to customize the environment generation
+Whenever I want to update the testing environment I will simply run the command above again modifying, if required, the configuration file.  
+Reading the configuration file from top to bottom here are the customization options available:
+
+* `source` - string|array - this is a list, or a single entry, indicating the source files and folders that should be parsed to import functions, classes, traits and interfaces. The source files or folder paths should be **relative to the folder containing the configuration file**.  
+* `removeDocBlocks` - boolean - whether to remove doc-blocks from functions, class, trait and interface methods or not. This is an environment-wide setting that can be overridden in each function, class, trait or interface entry; default to `false`.  
+* `wrapInIf` - boolean - whether to wrap each function, class, interface or trait declaration in `if` existence checks or not. For functions the check will be made, on the function fully-qualified name, with `function_exists`; for classes the check will be made, on the class fully-qualified name with `class_exists`; for traits the check will be made, on the trait fully-qualified name, with `trait_exists`; on interfaces the check will be made, on the interface fully qualified name, with `interface_exists`. Defaults to `true`.
+* `body` - string - how the body of functions, class, or traits methods should be filled. The default setting, `copy`, will copy the original function/method body as it is; the `empty` setting will empty any function/method of its content leaving the method signature intact; the `throw` setting will fill the body of any function/method with a `throw` statement leaving the method signature intact.  
+* `functions` - object - a list specifying the functions that should be imported from the source files to the testing environment. When at least one function is specified then any other function that does not match the searched one **will not** be imported. The object keys should be the function fully-qualified name: global functions will have keys like `global_function` while namespaced functions will have keys like `Acme\\Company\\some_function`. Each function entry can specify settings overriding the environment-wide ones; the `source` property will not be used during generation and is only printed in the file for reference purposes.
+* `classes` - object - a list specifying the classes, interfaces and traits that should be imported from the source files to the testing environment. When at least one class is specified then any other class that does not match the searched one **will not** be imported. The object keys should be the class fully-qualified name: global classes will have keys like `GlobalClass` while namespaced classes will have keys like `Acme\\Company\\SomeClass`. Each class entry can specify settings overriding the environment-wide ones; the `source` property will not be used during generation and is only printed in the file for reference purposes.
+
+The other entries in the configuration file are just informative and will not be parsed from the command.
+
+## Using testing environments
+Now that my WooCommerce testing environment is ready it's time to load it in Function Mocker.  
+By default Function Mocker will always load a base WordPress testing environment defining the common utility functions (`add_filter`, `add_action`, l10n functions et cetera) but I want it to load the one I just generated as well.  
+To do so I will update the tests bootstrap file, the one where `FunctionMocker::init` is being called, to include the `WordPress` environment and then the generated one:
+
+```php
+<?php
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+
+// init Function Mocker
+\tad\FunctionMocker\FunctionMocker::init( [
+	'cache-path'            => __DIR__ . '/../../../../_cache/fm-woocommerce-env-example',
+	'env' => [ 
+		'WordPress',
+		__DIR__ . '/envs/woocommerce/bootstrap.php',
+	],
+] );
+```
+
+The environments will be loaded in the specified order.  
+Testing environments will be whitelisted by Function Mocker, there is no need to specify them in the `whitelist` entry when calling the `FunctionMocker::init` method.

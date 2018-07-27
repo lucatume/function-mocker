@@ -215,8 +215,8 @@ TEXT;
 		$configFile = $input->getOption( 'config' );
 
 		$configFileConfig = [
-			'remove-doc-blocks' => false,
-			'wrap-in-if'        => true,
+			'removeDocBlocks' => false,
+			'wrapInIf/'        => true,
 			'body'              => 'copy',
 		];
 
@@ -862,8 +862,8 @@ TEXT;
 			'name',
 			'source',
 			'bootstrap',
-			'remove-doc-blocks',
-			'wrap-in-if',
+			'removeDocBlocks',
+			'wrapInIf',
 			'body',
 			'functions',
 			'classes',
