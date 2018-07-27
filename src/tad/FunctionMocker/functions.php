@@ -209,9 +209,12 @@ function includeEnvs( array $envs ) {
 		$realpath = validatePath( $env );
 
 		if ( is_dir( $realpath ) ) {
-			foreach ( glob( $realpath . '/*.php' ) as $file ) {
-				require_once $file;
+			$bootstrap = $realpath . '/bootstrap.php';
+			if(!file_exists($bootstrap)){
+				throw UsageException::becauseTheEnvDoesNotSpecifyABootstrapFile($env);
 			}
+			 
+			require_once $bootstrap;
 		} else {
 			require_once $realpath;
 		}
