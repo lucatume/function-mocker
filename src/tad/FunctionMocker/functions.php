@@ -188,8 +188,7 @@ function validatePath( $path ) {
 function readEnvsFromOptions( array $options ) {
 	$envs = isset( $options['env'] ) ?
 		(array) $options['env']
-		// @todo load WordPress env here
-		: [];
+		: ['WordPress'];
 
 	return array_map( '\tad\FunctionMocker\validatePath', $envs );
 }
@@ -206,6 +205,11 @@ function whitelistEnvs( array $options, array $envs ) {
 
 function includeEnvs( array $envs ) {
 	foreach ( $envs as $env ) {
+		if($env ==== 'WordPress'){
+			require_once __DIR__ . '/envs/WordPress/bootstrap.php';
+			continue;
+		}
+		
 		$realpath = validatePath( $env );
 
 		if ( is_dir( $realpath ) ) {
