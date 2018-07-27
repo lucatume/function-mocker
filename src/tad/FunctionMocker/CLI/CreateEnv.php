@@ -89,34 +89,7 @@ can be configured specifying a <info>configuration JSON file</info> with the `--
 When completed the command will generate a <info>`generation-config.json`</info> file unless the `--save`
 option is set to `false`.
 
-When using a JSON configuration file the following optional parameters can be specified:
-
-<info>source</info> - string - the path, absolute or relative to the current working directory, to the source file or directory.
-<info>exclude</info> - array - an array of files or folders that should not be parsed from the source
-<info>destination</info> - string - the path, absolute or relative to the current working directory, to the destination directory.
-<info>functions</info> - array - an array of functions that should be imported in the environment.
-<info>classes</info> - array - an array of classes that should be imported in the environment.
-<info>remove-docblocks</info> - bool - whether to remove functions, classes and methods DocBlocks in the generated environment or not.
-<info>save</info> - bool - if set to true then a `generation-config.json` file will be generated in the current working directory.
-
-An example configuration file to import a list of functions from WordPress code base:
-
-{
-	"source": "vendor/wordpress",
-	"destination": "tests/envs/wordpress",
-	"functions": [
-		"wp_list_filter",
-		"wp_list_pluck"
-	],
-	"classes": [
-		"WP_List_Util"
-	],
-	"remove-docblocks": true,
-	"exclude": [
-		"vendor/wordpress/src/wp-admin/includes/noop.php"
-	],
-	"save": false
-}
+When using a JSON configuration file the following optional parameters can be specified; read more in the README.
 TEXT;
 
 		$this->setName( 'generate:env' )
