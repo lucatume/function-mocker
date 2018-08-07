@@ -1,0 +1,180 @@
+{
+    "_readme": [
+        "This file defines the wordpress testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "timestamp": 1533629582,
+    "date": "2018-08-07 08:13:02 (UTC)",
+    "name": "wordpress",
+    "source": [
+        "vendor/wordpress/src/wp-includes"
+    ],
+    "bootstrap": "bootstrap.php",
+    "removeDocBlocks": false,
+    "body": "copy",
+    "functions": {
+        "add_action": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "do_action": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "do_action_ref_array": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "doing_action": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "did_action": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "has_action": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "remove_action": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "add_filter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "apply_filters": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "apply_filters_ref_array": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "doing_filter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "has_filter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "remove_filter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "current_filter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/plugin.php",
+            "fileName": "filters.php"
+        },
+        "__return_true": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "__return_false": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "__return_null": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "__return_zero": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "__return_empty_array": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "__return_empty_string": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "untrailingslashit": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/formatting.php",
+            "fileName": "utils.php"
+        },
+        "trailingslashit": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "vendor/wordpress/src/wp-includes/formatting.php",
+            "fileName": "utils.php"
+        }
+    },
+    "classes": {
+        "WP_Hook": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true
+        }
+    }
+}

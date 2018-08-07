@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file defines the woocommerce testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "timestamp": 1533624632,
+    "date": "2018-08-07 06:50:32 (UTC)",
+    "name": "woocommerce",
+    "source": [
+        "../../../vendor/woocommerce/woocommerce/includes/legacy",
+        "../../../vendor/woocommerce/woocommerce/includes/abstracts",
+        "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php",
+        "../../../vendor/woocommerce/woocommerce/includes/abstracts/abstract-wc-product.php"
+    ],
+    "bootstrap": "bootstrap.php",
+    "removeDocBlocks": false,
+    "body": "copy",
+    "functions": {
+        "wc_get_dimension": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_weight": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        }
+    },
+    "classes": {
+        "WC_Product": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true
+        },
+        "WC_Abstract_Legacy_Product": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true
+        },
+        "WC_Data": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true
+        }
+    }
+}
