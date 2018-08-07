@@ -2,6 +2,7 @@
 	"removeDocBlocks": true,
 	"wrapInIf": false,
 	"body": "empty",
+	"autoload": false,
 	"functions": {
 		"withDocBlock": {
 			"body": "copy"
@@ -24,7 +25,8 @@
 		"Acme\\Company\\ClassWPrivateMethods": {
 			"removeDocBlocks": false,
 			"body": "throw",
-			"wrapInIf": true
+			"wrapInIf": true,
+			"autoload": true
 		},
 		"Acme\\Company\\ClassWFinalMethods": {
 			"body": "empty",

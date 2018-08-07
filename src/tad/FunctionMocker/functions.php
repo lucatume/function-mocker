@@ -176,7 +176,9 @@ function getPatchworkConfiguration( array $options = [], $destinationFolder ) {
 
 function validatePath( $path ) {
 	$original = $path;
-	$path = file_exists( $path ) ? realpath( $path ) : realpath( getcwd() . '/' . trim( $path, '\\/' ) );
+	$path = file_exists( $path )
+		? realpath( $path )
+		: realpath( getcwd() . '/' . trim( $path, '\\/' ) );
 
 	if ( ! $path ) {
 		throw new \InvalidArgumentException( "{$original} is not a valid relative or absolute path" );
@@ -188,7 +190,11 @@ function validatePath( $path ) {
 function readEnvsFromOptions( array $options ) {
 	$envs = isset( $options['env'] ) ?
 		(array) $options['env']
-		: ['WordPress'];
+		: [ 'WordPress' ];
+
+	if ( \in_array( 'WordPress', $envs, true ) ) {
+		$envs[ array_search( 'WordPress', $envs, true ) ] = __DIR__ . '/envs/WordPress/bootstrap.php';
+	}
 
 	return array_map( '\tad\FunctionMocker\validatePath', $envs );
 }
@@ -205,19 +211,19 @@ function whitelistEnvs( array $options, array $envs ) {
 
 function includeEnvs( array $envs ) {
 	foreach ( $envs as $env ) {
-		if($env ==== 'WordPress'){
+		if ( $env === 'WordPress' ) {
 			require_once __DIR__ . '/envs/WordPress/bootstrap.php';
 			continue;
 		}
-		
+
 		$realpath = validatePath( $env );
 
 		if ( is_dir( $realpath ) ) {
 			$bootstrap = $realpath . '/bootstrap.php';
-			if(!file_exists($bootstrap)){
-				throw UsageException::becauseTheEnvDoesNotSpecifyABootstrapFile($env);
+			if ( ! file_exists( $bootstrap ) ) {
+				throw UsageException::becauseTheEnvDoesNotSpecifyABootstrapFile( $env );
 			}
-			 
+
 			require_once $bootstrap;
 		} else {
 			require_once $realpath;
@@ -317,10 +323,8 @@ function isInFiles( $needle, array $filesHaystack = array() ) {
 	return false;
 }
 
-function getDirsPhpFiles( array $dirs, array &$results = [] ) {
-	$allResults = array_map( function ( $dir ) {
-		return getDirPhpFiles( $dir );
-	}, $dirs );
+function getDirsPhpFiles( array $dirs ) {
+	$allResults = array_map( __NAMESPACE__ . '\\getDirPhpFiles', $dirs );
 
 	return array_merge( ...$allResults );
 }
@@ -336,7 +340,7 @@ function getDirPhpFiles( $dir, array &$results = [] ) {
 	/** @var \SplFileInfo $f */
 	foreach ( $iterator as $f ) {
 		if ( $f->isFile() ) {
-			$results[] = $f;
+			$results[] = $f->getRealPath();
 		} elseif ( $f->isDir() ) {
 			getDirPhpFiles( $f->getPathname(), $results );
 		}
@@ -345,8 +349,8 @@ function getDirPhpFiles( $dir, array &$results = [] ) {
 	return $results;
 }
 
-function slugify( $str ) {
-	return strtolower( preg_replace( '/[^\\w]+/', '-', $str ) );
+function slugify( $str, $replacement = '-' ) {
+	return strtolower( preg_replace( '/[^\\w]+/', $replacement, $str ) );
 }
 
 function findRelativePath( $fromPath, $toPath ) {

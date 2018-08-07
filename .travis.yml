@@ -28,3 +28,5 @@ script:
     - (cd examples/wp-core-suite && composer update && vendor/bin/phpunit)
     # run wp-browser example
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/wp-browser && composer update && vendor/bin/codecept run unit && vendor/bin/codecept run integration); fi
+    # run WooCommerce environment example
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/woocommerce-env && composer update && vendor/bin/phpunit); fi

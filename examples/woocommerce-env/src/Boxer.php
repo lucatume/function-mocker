@@ -22,10 +22,6 @@ class Boxer {
 
 		$box = $this->find_box_fitting_dimensions( $imperial_product_dimensions );
 
-		if ( $box === null ) {
-			throw PackagingException::because_the_product_does_not_fit_in_any_box();
-		}
-
 		return $box;
 	}
 
@@ -52,21 +48,19 @@ class Boxer {
 	}
 
 	protected function find_box_fitting_dimensions( $dimensions ) {
-		$box = null;
-
 		foreach ( $this->boxes as $this_box ) {
 			$box_dimensions = $this_box->dimensions();
 
 			for ( $i = 0, $iMax = \count( $dimensions ); $i < $iMax; $i ++ ) {
 				if ( $dimensions[ $i ] > $box_dimensions[ $i ] ) {
-					break;
+					continue 2;
 				}
 			}
 
-			$box = $this_box;
+			return $this_box;
 		}
 
-		return $box;
+		return new NoFitBox();
 	}
 
 	public function set_boxes( $boxes ) {

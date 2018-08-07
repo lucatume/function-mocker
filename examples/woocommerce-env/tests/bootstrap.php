@@ -9,7 +9,7 @@ require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 		 dirname( __DIR__ ) . '/src',
 		__DIR__ . '/envs/woocommerce'
 	],
-	'envs' => [ 
+	'env' => [
 		'WordPress',
 		__DIR__ . '/envs/woocommerce/bootstrap.php',
 	],

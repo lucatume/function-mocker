@@ -41,12 +41,12 @@ class BoxerTest extends PHPUnit_Framework_TestCase {
 	public function should_return_the_correct_box_for_a_product( $expected_type, $dimensions ) {
 		$boxer = new Boxer();
 		$boxer->set_boxes( [
-			'small'  => new Box( 'small', [ 5, 5, 5, 1 ], Box::INCH ),
-			'medium' => new Box( 'medium', [ 12.5, 12.5, 6, 3 ], Box::INCH ),
-			'large'  => new Box( 'large', [ 20, 15, 10, 6 ], Box::INCH ),
+			'small'  => new Box( 'small', [ 5, 5, 5, 1 ], Box::INCH, Box::LB ),
+			'medium' => new Box( 'medium', [ 12.5, 12.5, 6, 3 ], Box::INCH, Box::LB ),
+			'large'  => new Box( 'large', [ 20, 15, 10, 6 ], Box::INCH, Box::LB ),
 		] );
 
-		$product = $this->prophesize( WC_Product::class );
+		$product = $this->prophesize( \WC_Product::class );
 		$product->get_width()->willReturn( $dimensions[0] );
 		$product->get_height()->willReturn( $dimensions[1] );
 		$product->get_length()->willReturn( $dimensions[2] );
@@ -56,7 +56,7 @@ class BoxerTest extends PHPUnit_Framework_TestCase {
 
 		FunctionMocker::wc_get_product( $product_id )->willReturn( $product->reveal() );
 
-		$box = $boxer->get_box_for_product( $product_id, 0, Box::INCH );
+		$box = $boxer->get_box_for_product( $product_id, Box::INCH, Box::LB );
 
 		$this->assertEquals( $expected_type, $box->type() );
 	}

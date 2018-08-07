@@ -45,22 +45,25 @@ class Box {
 	protected $original_dimensions;
 
 	public function __construct( $type, array $dimensions, $length_unit = 'in', $weight_unit = 'lbs' ) {
-		if ( ! is_string( $type ) ) {
+		if ( ! \is_string( $type ) ) {
 			throw new \InvalidArgumentException( 'Box type should be a string' );
 		}
-		if ( count( array_filter( $dimensions, 'is_numeric' ) ) !== 4 ) {
+
+		if ( \count( array_filter( $dimensions, 'is_numeric' ) ) !== 4 ) {
 			throw new \InvalidArgumentException( 'Box dimensions should be 4 integers: max width, max length, max height, max weight.' );
 		}
-		if ( array_map( 'absint', $dimensions ) !== $dimensions ) {
+
+		if ( array_map( 'abs', $dimensions ) !== $dimensions ) {
 			throw new \InvalidArgumentException( 'Box dimensions should all be positive integers.' );
 		}
-		if ( ! in_array( $length_unit, static::supported_length_units() ) ) {
+
+		if ( ! \in_array( $length_unit, static::supported_length_units(), true ) ) {
 			throw new \InvalidArgumentException(
 				"Box unit {$length_unit} is not supported, supported units are " . implode( ', ',
 					static::supported_length_units() )
 			);
 		}
-		if ( ! in_array( $weight_unit, static::supported_weight_units() ) ) {
+		if ( ! \in_array( $weight_unit, static::supported_weight_units(), true ) ) {
 			throw new \InvalidArgumentException(
 				"Box unit {$weight_unit} is not supported, supported units are " . implode( ', ',
 					static::supported_weight_units() )
@@ -75,7 +78,7 @@ class Box {
 			wc_get_dimension( $dimensions[0], $length_unit, static::INCH ),
 			wc_get_dimension( $dimensions[1], $length_unit, static::INCH ),
 			wc_get_dimension( $dimensions[2], $length_unit, static::INCH ),
-			wc_get_weight( $dimensions[3], $length_unit, static::LB ),
+			wc_get_weight( $dimensions[3], $weight_unit, static::LB ),
 		];
 	}
 
@@ -106,5 +109,4 @@ class Box {
 	public function type() {
 		return $this->type;
 	}
-
 }
