@@ -2,8 +2,8 @@
 
 namespace tad\FunctionMocker\Templates;
 
-
-class EnvAutoloader extends Template {
+class EnvAutoloader extends Template
+{
 
 	protected static $template = <<< PHP
 class EnvAutoloader_{{id}} {

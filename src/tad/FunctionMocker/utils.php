@@ -11,11 +11,11 @@ namespace tad\FunctionMocker;
  * @throws \Exception If
  * the function could not be created.
  */
-function createFunction( $functionName, $functionNamespace = null ) {
+function createFunction($functionName, $functionNamespace = null) {
 	$namespace = $functionNamespace ? " {$functionNamespace};" : '';
-	$code = trim( sprintf( 'namespace %s {function %s(){return null;}}', $namespace, $functionName ) );
-	$ok = eval( $code );
-	if ( $ok === false ) {
-		throw new \RuntimeException( "Could not eval code $code for function $functionName" );
+	$code = trim(sprintf('namespace %s {function %s(){return null;}}', $namespace, $functionName));
+	$ok = eval($code);
+	if ($ok === false) {
+		throw new \RuntimeException("Could not eval code $code for function $functionName");
 	}
 }

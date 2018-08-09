@@ -179,7 +179,7 @@ class FunctionMockerTest extends TestCase {
 			FunctionMocker::testFunctionSix( 'bar' )->shouldHaveBeenCalledTimes( 2 );
 		} catch ( MethodProphecyException $e ) {
 			$this->assertRegExp( '/^.*exactly 2 calls.*testFunctionSix.*$/usm', $e->getMessage() );
-			FunctionMocker::_skipChecks();
+			FunctionMocker::skipChecks();
 		}
 	}
 
@@ -201,7 +201,7 @@ class FunctionMockerTest extends TestCase {
 			} );
 		} catch ( MethodProphecyException $e ) {
 			$this->assertRegExp( '/^.*exactly 2 calls.*testFunctionSix.*$/usm', $e->getMessage() );
-			FunctionMocker::_skipChecks();
+			FunctionMocker::skipChecks();
 		}
 	}
 
