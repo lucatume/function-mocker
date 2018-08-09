@@ -25,7 +25,7 @@ if (!function_exists('add_filter')) {
      *     function example_callback( $example ) {
      *         // Maybe modify $example in some way.
      *         return $example;
-     *     }
+     *
      *     add_filter( 'example_filter', 'example_callback' );
      *
      * Bound callbacks can accept from none to the total number of arguments passed as parameters

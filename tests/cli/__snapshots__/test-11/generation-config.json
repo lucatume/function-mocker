@@ -1,0 +1,34 @@
+{
+    "_readme": [
+        "This file defines the test-env testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "name": "test-env",
+    "source": [
+        "../../_data/env/src/DependingClass.php",
+        "../../_data/env/src/depending-functions.php"
+    ],
+    "destination": "/Users/luca/Repos/function-mocker/tests/_output/test-11",
+    "bootstrap": "bootstrap.php",
+    "removeDocBlocks": false,
+    "wrapInIf": true,
+    "body": "copy",
+    "autoload": true,
+    "functions": {
+        "depending_function_one": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/depending-functions.php"
+        }
+    },
+    "classes": {
+        "Acme\\Company\\DependingClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true
+        }
+    }
+}

@@ -207,4 +207,28 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertFilesSnapshot( _output_dir( 'test-10' ) );
 	}
+
+	/**
+	 * It should allow resolving dependencies
+	 *
+	 * @test
+	 */
+	public function should_allow_resolving_dependencies() {
+		$command = new CreateEnv();
+		$command->_writeFileHeaders( false );
+		$input = new ArrayInput( [
+			'name'          => 'test-env',
+			'source'        => [
+				_data_dir( 'env/src/DependingClass.php' ),
+				_data_dir( 'env/src/depending-functions.php' ),
+			],
+			'--destination' => _output_dir( 'test-11' ),
+			'--with-dependencies' => true,
+		] );
+		$output = new NullOutput();
+
+		$command->run( $input, $output );
+
+		$this->assertFilesSnapshot( _output_dir( 'test-11' ) );
+	}
 }

@@ -3,6 +3,7 @@
 namespace tad\FunctionMocker\CLI;
 
 
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
@@ -75,6 +76,10 @@ class CreateEnv extends Command {
 	protected $autoload;
 	protected $wrapInIf;
 	protected $openFunctionFiles = [];
+	protected $withDependencies;
+	protected $foundClassIndex = [];
+	protected $foundFunctionIndex = [];
+	protected $dependencies = [];
 
 	/**
 	 * @param bool $writeFileHeaders
@@ -113,7 +118,10 @@ TEXT;
 		     ->addOption( 'config', 'c', InputOption::VALUE_OPTIONAL,
 			     'A configuration file that should be used to fine tune the behaviour of the environment generation.', false )
 		     ->addOption( 'save', null, InputOption::VALUE_OPTIONAL,
-			     'If set to `true` a `generation-config.json` file will be generated in the current working directory.', true );
+			     'If set to `true` a `generation-config.json` file will be generated in the current working directory.', true )
+		     ->addOption( 'with-dependencies', null, InputOption::VALUE_OPTIONAL,
+			     'If this flag option is set than the command will try to find and pull in code dependencies of the target code automatically searchin the specified sources.',
+			     false );
 	}
 
 	/**
@@ -175,6 +183,7 @@ TEXT;
 		if ( $this->classesToFindCount === static::NOTHING_TO_FIND && $this->functionsToFindCount === static::NOTHING_TO_FIND ) {
 			$this->findAny = true;
 		}
+		$this->withDependencies = empty( $config['with-dependencies'] ) ? false : true;
 	}
 
 	/**
@@ -187,10 +196,11 @@ TEXT;
 		$inputDestination = $input->hasOption( 'destination' ) ? $input->getOption( 'destination' ) : '/tests/envs';
 
 		$cliConfig = [
-			'name'        => $name,
-			'source'      => $input->getArgument( 'source' ),
-			'destination' => $inputDestination,
-			'save'        => $input->hasOption( 'save' ) ? $input->getOption( 'save' ) : null,
+			'name'              => $name,
+			'source'            => $input->getArgument( 'source' ),
+			'destination'       => $inputDestination,
+			'save'              => $input->hasOption( 'save' ) ? $input->getOption( 'save' ) : null,
+			'with-dependencies' => $input->hasOption( 'with-dependencies' ),
 		];
 
 		foreach ( [ 'source', 'destination' ] as $key ) {
@@ -302,14 +312,13 @@ TEXT;
 		}
 
 		$progressBar->finish();
+		$this->dependencies = array_unique( array_filter( $this->dependencies ) );
 
 		$this->functionIndex = array_unique( $this->functionIndex, SORT_REGULAR );
 		$this->classIndex = array_unique( $this->classIndex, SORT_REGULAR );
 	}
 
-	/**
-	 * @param \Symfony\Component\Console\Output\OutputInterface $output
-	 *
+	/*nfin*
 	 * @return int
 	 */
 	protected function getMemoryLimit(): int {
@@ -456,38 +465,139 @@ TEXT;
 				'namespace' => $namespace,
 			];
 
-			if (
-				$stmt instanceof Function_
-				&& (
+			if ( $stmt instanceof Function_ ) {
+				if (
 					$this->findAny
 					|| (
 						$this->functionsToFindCount > 0 && \array_key_exists( $name, $this->functionsToFind )
 					)
-				)
-			) {
-				$this->functionIndex[ $name ] = $data;
-				$this->functionsToFindCount --;
+				) {
+					$this->functionIndex[ $name ] = $data;
+					$this->functionsToFindCount --;
+					if ( $this->withDependencies ) {
+						$this->dependencies[] = $this->parseDependenciesFor( $stmt );
+					};
+				} else {
+					$this->foundFunctionIndex[ $name ] = $data;
+				}
 			}
 
 			if (
-				(
-					$stmt instanceof Class_
-					|| $stmt instanceof Trait_
-					|| $stmt instanceof Interface_
-				) && (
+				$stmt instanceof Class_
+				|| $stmt instanceof Trait_
+				|| $stmt instanceof Interface_
+			) {
+				if (
 					$this->findAny
 					|| ( $this->classesToFindCount > 0 && \array_key_exists( $name, $this->classesToFind ) )
-				)
-			) {
-				$this->classIndex[ $name ] = $data;
-				$this->classesToFindCount --;
+				) {
+					$this->classIndex[ $name ] = $data;
+					$this->classesToFindCount --;
+					if ( $this->withDependencies ) {
+						$this->dependencies[] = $this->parseDependenciesFor( $stmt, $namespace );
+					}
+				} else {
+					$this->foundClassIndex[ $name ] = $data;
+				}
 			}
 
 
-			if ( $this->functionsToFindCount === 0 && $this->classesToFindCount === 0 ) {
+			if ( ! $this->withDependencies && $this->functionsToFindCount === 0 && $this->classesToFindCount === 0 ) {
 				throw BreakSignal::becauseThereAreNoMoreFunctionsOrClassesToFind();
 			}
 		}
+	}
+
+	protected function parseDependenciesFor( Stmt $stmt, Namespace_ $namespace = null ) {
+		// any function call that is not internal and any reference to a class/trait/interface is a dependency
+		foreach ( $this->findStmtDependencies( $stmt, $namespace ) as $dependency ) {
+			$this->dependencies[] = $dependency;
+		}
+	}
+
+	protected function findStmtDependencies( Node $node, Namespace_ $namespace = null, array &$dependencies = [] ) {
+		if (
+			$node instanceof Class_
+			|| $node instanceof Trait_
+			|| $node instanceof Interface_
+		) {
+			if ( $node->extends ) {
+				$dependencies[] = $this->resolveNamespace( $node->extends, $namespace );
+			}
+			if ( $node->implements ) {
+				$dependencies[] = $this->resolveNamespace( $node->implements, $namespace );
+			}
+		}
+
+		if (
+			$node instanceof Expr\FuncCall
+		) {
+			/**
+			 * Since we cannot know if this is a call to a global function or not
+			 * let's just look for the global version of the function too.
+			 * This covers calls to global functions in the context of a namespace
+			 * w/o the '\global_function` prefix.
+			 */
+			if ( ! $node->name instanceof Name\FullyQualified && \count( $node->name->parts ) === 1 ) {
+				$dependencies[] = $node->name->toString();
+			}
+			$dependencies[] = $this->resolveNamespace( $node->name, $namespace );
+		}
+
+		if ( $node instanceof Name ) {
+			$dependencies[] = $this->resolveNamespace( $node, $namespace );
+		}
+
+		if ( $node instanceof Function_ || $node instanceof Stmt\ClassMethod ) {
+			$params = array_map( function ( Node\Param $param ) use ( $namespace ) {
+				return $this->resolveNamespace( $param->type, $namespace );
+			}, array_filter( $node->getParams(), function ( Node\Param $param ) {
+				return $param->type instanceof Name
+					&& ! \in_array( $param->type->toString(), [ 'array', 'bool', 'int', 'float', 'string' ], true );
+			} ) );
+			$dependencies = array_merge( $dependencies, $params );
+		}
+
+		$subNodeNames = array_diff( $node->getSubNodeNames(), [ 'flags', 'parts', 'byRef' ] );
+		if ( ! empty( $subNodeNames ) ) {
+			foreach ( $subNodeNames as $subNodeName ) {
+				/** @var Node $subNode */
+				$subNode = $node->{$subNodeName};
+				$subNodeList = is_array( $subNode ) ? $subNode : [ $subNode ];
+
+				foreach ( $subNodeList as $subSubNode ) {
+					if ( ! $subSubNode instanceof Node ) {
+						continue;
+					}
+
+					$this->findStmtDependencies( $subSubNode, $namespace, $dependencies );
+				}
+			}
+		}
+
+		return $dependencies;
+	}
+
+	protected function resolveNamespace( Name $name, Namespace_ $namespace = null ) {
+		if ( $namespace === null ) {
+			return $name->toString();
+		}
+		if ( $name->isFullyQualified() ) {
+			return $name->toString();
+		}
+		// ['Acme', 'Company', 'Service', 'REST']
+		$namespaceFrags = array_filter( explode( '\\', $namespace->name->toString() ) );
+		// ['Service', 'REST', 'API']
+		$objectFrags = array_filter( explode( '\\', $name->toString() ) );
+		$common = array_values( array_intersect( $objectFrags, $namespaceFrags ) );
+		if ( count( $common ) > 0 ) {
+			$fullyQualified = implode( '\\', \array_slice( $namespaceFrags, 0, array_search( $common[0], $namespaceFrags, true ) + 1 ) );
+			$fullyQualified .= '\\' . implode( '\\', \array_slice( $objectFrags, array_search( $common[0], $objectFrags, true ) ) );
+
+			return $fullyQualified;
+		}
+
+		return implode( '\\', $namespaceFrags ) . '\\' . implode( '\\', $objectFrags );
 	}
 
 	/**

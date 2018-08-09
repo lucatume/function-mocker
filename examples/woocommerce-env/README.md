@@ -123,7 +123,7 @@ Fatal error:  Class 'WC_Abstract_Legacy_Product' not found in /Users/luca/Repos/
 
 The `WC_Product` class is, in fact, extending the `WC_Abstract_Legacy_Product` one and that's exactly what PHP is complaining about.  
 On that same note my testing environment will need the `WC_Data` class too.  
-Fixing the issue is just a matter of adding the missing classes to the `classes` section of the config file and running the environment generation command again including the folders where the required classes are defined:
+To fix the issue I can add the missing classes to the `classes` section of the config file and run the environment generation command again including the folders where the required classes are defined, like this:
 
 ```json
 {
@@ -198,6 +198,63 @@ I run the command again adding the folder that contains WooCommerce abstract cla
 
 The environment was updated and the code of the `WC_Abstract_Legacy_Product` and `WC_Data` classes has been copied into the `tests/envs/woocommerce/` folder.  
 Tests are now ready to run with a bare-bones, no real WordPress or WooCommerce needed, testing environment.  
+To avoid this manual process I can leverage, alternatively, the `--with-dependencies` command option.  
+
+### Automatically resolving and pulling in dependencies when generating environments
+Starting from the step before the last one of the example above I found out some of the environment code I'm trying to generate, requires more code.  
+Specifically the `WC_Product` class requires the `WC_Abstract_Legacy_Product` and `WC_Data` classes to be defined.  
+With attention I can have the environment generation command "resolve and pull" those dependencies for me using the `--with-dependencies` command option.  
+Given this configuration file:
+
+```json
+{
+    "_readme": [
+        "This file defines the woocommerce testing environment generation rules.",
+        "Read more about it at https://github.com/lucatume/function-mocker.",
+        "This file was automatically @generated."
+    ],
+    "timestamp": 1532613689,
+    "date": "2018-07-26 14:01:29 (UTC)",
+    "name": "woocommerce",
+    "source": [
+        "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php",
+        "../../../vendor/woocommerce/woocommerce/includes/abstracts/abstract-wc-product.php"
+    ],
+    "removeDocBlocks": false,
+    "wrapInIf": true,
+    "body": "copy",
+    "functions": {
+        "wc_get_dimension": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        },
+        "wc_get_weight": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../vendor/woocommerce/woocommerce/includes/wc-formatting-functions.php"
+        }
+    },
+    "classes": {
+        "WC_Product": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true
+        }
+    }
+}
+```
+
+I run the environment creation command again specifying, this time, that I would like dependencies to be resolved for me:
+
+```bash
+../../function-mocker generate:env woocommerce \
+	--config tests/envs/woocommerce/generation-config.json \
+	--with-dependencies
+```
 
 ## Using the testing environment and running the tests
 Now that my WooCommerce testing environment is ready it's time to load it in Function Mocker.  
