@@ -3,10 +3,8 @@
 namespace tad\FunctionMocker\CLI;
 
 
-use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
@@ -15,7 +13,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -26,14 +23,27 @@ use Symfony\Component\Console\Output\OutputInterface;
 use tad\FunctionMocker\CLI\Exceptions\BreakSignal;
 use tad\FunctionMocker\CLI\Exceptions\RuntimeException;
 use tad\FunctionMocker\Templates\EnvAutoloader;
+use function tad\FunctionMocker\checkMemoryUsage;
+use function tad\FunctionMocker\checkPhpVersion;
+use function tad\FunctionMocker\checkTime;
 use function tad\FunctionMocker\expandTildeIn;
 use function tad\FunctionMocker\findRelativePath;
+use function tad\FunctionMocker\findStmtDependencies;
+use function tad\FunctionMocker\getAllFileStmts;
 use function tad\FunctionMocker\getDirsPhpFiles;
+use function tad\FunctionMocker\getFunctionAndClassStmts;
+use function tad\FunctionMocker\getIfWrapppedFunctionAndClassStmts;
 use function tad\FunctionMocker\getMaxMemory;
+use function tad\FunctionMocker\getNamespaceStmts;
 use function tad\FunctionMocker\isInFiles;
+use function tad\FunctionMocker\openPrivateClassMethods;
+use function tad\FunctionMocker\orderAndFilterArray;
+use function tad\FunctionMocker\removeFinalFromClass;
+use function tad\FunctionMocker\removeFinalFromClassMethods;
 use function tad\FunctionMocker\slugify;
 use function tad\FunctionMocker\validateFileOrDir;
 use function tad\FunctionMocker\validateJsonFile;
+use function tad\FunctionMocker\wrapClassInIfBlock;
 
 class CreateEnv extends Command {
 
@@ -134,7 +144,7 @@ TEXT;
 		$this->input = $input;
 		$this->output = $output;
 
-		$this->checkPhpVersion();
+		checkPhpVersion( 70000 );
 		$this->startExecutionTimer();
 		$this->initRunConfiguration();
 		$this->readSourceFiles();
@@ -146,12 +156,6 @@ TEXT;
 
 		if ( $this->saveGenerationConfigFile ) {
 			$this->writeGenerationConfigJsonFile();
-		}
-	}
-
-	protected function checkPhpVersion() {
-		if ( PHP_VERSION_ID < 70000 ) {
-			throw RuntimeException::becauseMinimumRequiredPHPVersionIsNotMet();
 		}
 	}
 
@@ -271,8 +275,8 @@ TEXT;
 		$maxMemory = $this->getMemoryLimit();
 		$maxTime = $this->getTimeLimit();
 		foreach ( $this->sourceFiles as $file ) {
-			$this->checkMemoryUsage( $maxMemory );
-			$this->checkTime( $maxTime );
+			checkMemoryUsage( $maxMemory );
+			checkTime( $maxTime, $this->startTime );
 
 			$progressBar->advance();
 
@@ -282,20 +286,20 @@ TEXT;
 
 			try {
 				/** @var \PhpParser\Node\Stmt[] $allStmts */
-				$allStmts = $this->getAllFileStmts( $file );
+				$allStmts = getAllFileStmts( $file );
 
-				$stmts = $this->getFunctionAndClassStmts( $allStmts );
-				$wrappedStmts = $this->getIfWrapppedFunctionAndClassStmts( $allStmts );
+				$stmts = getFunctionAndClassStmts( $allStmts );
+				$wrappedStmts = getIfWrapppedFunctionAndClassStmts( $allStmts );
 
-				$namespaceStmts = $this->getNamespaceStmts( $allStmts );
+				$namespaceStmts = getNamespaceStmts( $allStmts );
 				if ( \count( $namespaceStmts ) ) {
 					/** @var Stmt $namespaceStmt */
 					foreach ( $namespaceStmts as $namespaceStmt ) {
 						if ( empty( $namespaceStmt->stmts ) ) {
 							continue;
 						}
-						$thisNamesapceStmts = $this->getFunctionAndClassStmts( $namespaceStmt->stmts );
-						$thisNamesapceWrappedStmts = $this->getIfWrapppedFunctionAndClassStmts( $namespaceStmt->stmts );
+						$thisNamesapceStmts = getFunctionAndClassStmts( $namespaceStmt->stmts );
+						$thisNamesapceWrappedStmts = getIfWrapppedFunctionAndClassStmts( $namespaceStmt->stmts );
 						$this->indexFileStmts( $file, $thisNamesapceStmts, $namespaceStmt );
 						$this->indexFileStmts( $file, $thisNamesapceWrappedStmts, $namespaceStmt );
 					}
@@ -318,7 +322,7 @@ TEXT;
 		$this->classIndex = array_unique( $this->classIndex, SORT_REGULAR );
 	}
 
-	/*nfin*
+	/**
 	 * @return int
 	 */
 	protected function getMemoryLimit(): int {
@@ -346,108 +350,6 @@ TEXT;
 		}
 
 		return $maxTime;
-	}
-
-	/**
-	 * @param $maxMemory
-	 */
-	protected function checkMemoryUsage( $maxMemory ) {
-		$peakMemoryUsage = memory_get_peak_usage();
-
-		if ( $maxMemory > 0 && $peakMemoryUsage > .9 * $maxMemory ) {
-			throw RuntimeException::becauseTheCommandAlmostReachedMemoryLimit();
-		}
-	}
-
-	/**
-	 * @param $maxTime
-	 */
-	protected function checkTime( $maxTime ) {
-		$runningTime = (int) ( microtime( true ) - $this->startTime );
-		if ( $maxTime > 0 && $runningTime >= .9 * $maxTime ) {
-			throw RuntimeException::becauseTheCommandAlmostReachedTimeLimit();
-		}
-	}
-
-	protected function getAllFileStmts( $file ) {
-		$files = (array) $file;
-		$parser = ( new ParserFactory )->create( ParserFactory::PREFER_PHP5 );
-
-		$allStmts = array_map( function ( $file ) use ( $parser ) {
-			return $parser->parse( file_get_contents( $file ) );
-		}, $files );
-
-		return array_merge( ...$allStmts );
-	}
-
-	/**
-	 * @param Stmt[] $allStmts
-	 *
-	 * @return array
-	 */
-	protected function getFunctionAndClassStmts( array $allStmts ): array {
-		$stmts = array_filter( $allStmts, function ( $stmt ) {
-			return $stmt instanceof Function_
-				|| $stmt instanceof Class_
-				|| $stmt instanceof Interface_
-				|| $stmt instanceof Stmt\Trait_;
-		} );
-
-		return $stmts;
-	}
-
-	/**
-	 * @param Stmt[] $allStmts
-	 *
-	 * @return array
-	 */
-	protected function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
-		$wrappedStmts = array_reduce( $allStmts, function ( array $found, $stmt ) {
-			/** @var \PhpParser\Node\Stmt\If_ $stmt */
-			if ( ! $stmt instanceof Stmt\If_ ) {
-				return $found;
-			}
-
-			$cond = $stmt->cond;
-
-			/** @var BooleanNot $first */
-			if ( ! $cond instanceof BooleanNot ) {
-				return $found;
-			}
-
-			/** @var \PhpParser\Node\Expr $negated */
-			$negated = $cond->expr;
-
-			if ( ! $negated instanceof Expr\FuncCall ) {
-				return $found;
-			}
-
-			/** @var \PhpParser\Node\Name $funcName */
-			$funcName = $negated->name;
-
-			$thisName = $funcName->toString();
-
-			if ( ! \in_array( $thisName, [
-				'class_exists',
-				'function_exists',
-				'interface_exists',
-				'trait_exists',
-			] ) ) {
-				return $found;
-			}
-
-			$found[] = $this->getFunctionAndClassStmts( $stmt->stmts );
-
-			return $found;
-		}, [] );
-
-		return empty( $wrappedStmts ) ? [] : array_merge( ...$wrappedStmts );
-	}
-
-	protected function getNamespaceStmts( array $allStmts ) {
-		return array_filter( $allStmts, function ( $stmt ) {
-			return $stmt instanceof Namespace_;
-		} );
 	}
 
 	protected function indexFileStmts( string $file, array $stmts, Namespace_ $namespace = null ) {
@@ -510,94 +412,9 @@ TEXT;
 
 	protected function parseDependenciesFor( Stmt $stmt, Namespace_ $namespace = null ) {
 		// any function call that is not internal and any reference to a class/trait/interface is a dependency
-		foreach ( $this->findStmtDependencies( $stmt, $namespace ) as $dependency ) {
+		foreach ( findStmtDependencies( $stmt, $namespace ) as $dependency ) {
 			$this->dependencies[] = $dependency;
 		}
-	}
-
-	protected function findStmtDependencies( Node $node, Namespace_ $namespace = null, array &$dependencies = [] ) {
-		if (
-			$node instanceof Class_
-			|| $node instanceof Trait_
-			|| $node instanceof Interface_
-		) {
-			if ( $node->extends ) {
-				$dependencies[] = $this->resolveNamespace( $node->extends, $namespace );
-			}
-			if ( $node->implements ) {
-				$dependencies[] = $this->resolveNamespace( $node->implements, $namespace );
-			}
-		}
-
-		if (
-			$node instanceof Expr\FuncCall
-		) {
-			/**
-			 * Since we cannot know if this is a call to a global function or not
-			 * let's just look for the global version of the function too.
-			 * This covers calls to global functions in the context of a namespace
-			 * w/o the '\global_function` prefix.
-			 */
-			if ( ! $node->name instanceof Name\FullyQualified && \count( $node->name->parts ) === 1 ) {
-				$dependencies[] = $node->name->toString();
-			}
-			$dependencies[] = $this->resolveNamespace( $node->name, $namespace );
-		}
-
-		if ( $node instanceof Name ) {
-			$dependencies[] = $this->resolveNamespace( $node, $namespace );
-		}
-
-		if ( $node instanceof Function_ || $node instanceof Stmt\ClassMethod ) {
-			$params = array_map( function ( Node\Param $param ) use ( $namespace ) {
-				return $this->resolveNamespace( $param->type, $namespace );
-			}, array_filter( $node->getParams(), function ( Node\Param $param ) {
-				return $param->type instanceof Name
-					&& ! \in_array( $param->type->toString(), [ 'array', 'bool', 'int', 'float', 'string' ], true );
-			} ) );
-			$dependencies = array_merge( $dependencies, $params );
-		}
-
-		$subNodeNames = array_diff( $node->getSubNodeNames(), [ 'flags', 'parts', 'byRef' ] );
-		if ( ! empty( $subNodeNames ) ) {
-			foreach ( $subNodeNames as $subNodeName ) {
-				/** @var Node $subNode */
-				$subNode = $node->{$subNodeName};
-				$subNodeList = is_array( $subNode ) ? $subNode : [ $subNode ];
-
-				foreach ( $subNodeList as $subSubNode ) {
-					if ( ! $subSubNode instanceof Node ) {
-						continue;
-					}
-
-					$this->findStmtDependencies( $subSubNode, $namespace, $dependencies );
-				}
-			}
-		}
-
-		return $dependencies;
-	}
-
-	protected function resolveNamespace( Name $name, Namespace_ $namespace = null ) {
-		if ( $namespace === null ) {
-			return $name->toString();
-		}
-		if ( $name->isFullyQualified() ) {
-			return $name->toString();
-		}
-		// ['Acme', 'Company', 'Service', 'REST']
-		$namespaceFrags = array_filter( explode( '\\', $namespace->name->toString() ) );
-		// ['Service', 'REST', 'API']
-		$objectFrags = array_filter( explode( '\\', $name->toString() ) );
-		$common = array_values( array_intersect( $objectFrags, $namespaceFrags ) );
-		if ( count( $common ) > 0 ) {
-			$fullyQualified = implode( '\\', \array_slice( $namespaceFrags, 0, array_search( $common[0], $namespaceFrags, true ) + 1 ) );
-			$fullyQualified .= '\\' . implode( '\\', \array_slice( $objectFrags, array_search( $common[0], $objectFrags, true ) ) );
-
-			return $fullyQualified;
-		}
-
-		return implode( '\\', $namespaceFrags ) . '\\' . implode( '\\', $objectFrags );
 	}
 
 	/**
@@ -694,7 +511,7 @@ TEXT;
 					? (bool) $generatedConfig->wrapInIf
 					: true;
 				if ( (bool) $thisConfig->wrapInIf ) {
-					$functionStmt = $this->wrapFunctionInIfBlock( $stmt, $name, $namespace );
+					$functionStmt = wrapFunctionInIfBlock( $stmt, $name, $namespace );
 				}
 
 				$functionCode = $codePrinter->prettyPrint( [ $functionStmt ] ) . "\n\n";
@@ -780,28 +597,6 @@ TEXT;
 		];
 	}
 
-	protected function wrapFunctionInIfBlock( Function_ $stmt, string $functionName, string $namespace = null ): \PhpParser\Node\Stmt\If_ {
-		$checkHow = empty( $namespace ) || $namespace === '\\' ?
-			'function_exists'
-			: '\function_exists';
-
-		return $this->wrapStmtInIfBlock( $stmt, $functionName, $checkHow );
-	}
-
-	protected function wrapStmtInIfBlock( Stmt $stmt, string $checkWhat, string $checkHow ): \PhpParser\Node\Stmt\If_ {
-		$functionStmt = new Stmt\If_(
-			new BooleanNot(
-				new Expr\FuncCall(
-					new Name( $checkHow ),
-					[ new Arg( new String_( $checkWhat ) ) ]
-				)
-			),
-			[ 'stmts' => [ $stmt ] ]
-		);
-
-		return $functionStmt;
-	}
-
 	protected function writeClassFiles() {
 		if ( empty( $this->classIndex ) ) {
 			return;
@@ -841,9 +636,9 @@ TEXT;
 				} );
 			}
 
-			$this->removeFinalFromClass( $stmt );
-			$this->removeFinalFromClassMethods( $stmt );
-			$this->openPrivateClassMethods( $stmt );
+			removeFinalFromClass( $stmt );
+			removeFinalFromClassMethods( $stmt );
+			openPrivateClassMethods( $stmt );
 
 			if ( $thisConfig->body === 'throw' ) {
 				$generatedConfig->body = 'throw';
@@ -868,7 +663,7 @@ TEXT;
 				: true;
 			if ( (bool) $thisConfig->wrapInIf ) {
 				$namespaceString = $namespace instanceof Namespace_ ? $namespace->name : null;
-				$stmt = $this->wrapClassInIfBlock( $stmt, $name, $namespaceString );
+				$stmt = wrapClassInIfBlock( $stmt, $name, $namespaceString );
 			}
 
 			$classCode = "\n" . $codePrinter->prettyPrint( [ $stmt ] );
@@ -886,55 +681,6 @@ TEXT;
 			fclose( $fileHandle );
 			$this->generationConfig['classes'][ $name ] = $generatedConfig;
 		}
-	}
-
-	protected function removeFinalFromClass( Stmt $stmt ) {
-		if ( ( $stmt instanceof Class_ ) && $stmt->isFinal() ) {
-			$stmt->flags -= Class_::MODIFIER_FINAL;
-		}
-	}
-
-	protected function removeFinalFromClassMethods( Stmt $stmt ) {
-		if ( ! $stmt instanceof Class_ ) {
-			return;
-		}
-
-		array_walk( $stmt->stmts, function ( Stmt &$stmt ) {
-			if ( $stmt instanceof Stmt\ClassMethod && $stmt->isFinal() ) {
-				$stmt->flags -= Class_::MODIFIER_FINAL;
-			}
-		} );
-	}
-
-	protected function openPrivateClassMethods( Stmt $stmt ) {
-		if ( ! ( $stmt instanceof Class_ || $stmt instanceof Stmt\Trait_ ) ) {
-			return;
-		}
-
-		array_walk( $stmt->stmts, function ( Stmt &$stmt ) {
-			if ( $stmt instanceof Stmt\ClassMethod && $stmt->isPrivate() ) {
-				$stmt->flags -= Class_::MODIFIER_PRIVATE;
-				$stmt->flags += Class_::MODIFIER_PROTECTED;
-			}
-		} );
-	}
-
-	protected function wrapClassInIfBlock( Stmt $stmt, string $fqClassName, string $namespace = null ): \PhpParser\Node\Stmt\If_ {
-		if ( $stmt instanceof Class_ ) {
-			$checkHow = empty( $namespace ) || $namespace === '\\' ?
-				'class_exists'
-				: '\class_exists';
-		} elseif ( $stmt instanceof Trait_ ) {
-			$checkHow = empty( $namespace ) || $namespace === '\\' ?
-				'trait_exists'
-				: '\trait_exists';
-		} else {
-			$checkHow = empty( $namespace ) || $namespace === '\\' ?
-				'interface_exists'
-				: '\interface_exists';
-		}
-
-		return $this->wrapStmtInIfBlock( $stmt, $fqClassName, $checkHow );
 	}
 
 	protected function writeEnvBootstrapFile() {
@@ -995,7 +741,7 @@ TEXT;
 			return findRelativePath( $this->destination, $source );
 		}, $this->source ) ) );
 		$this->generationConfig['bootstrap'] = findRelativePath( $this->destination, $this->bootstrapFile );
-		$orderedGenerationConfig = $this->orderAndFilterArray( [
+		$orderedGenerationConfig = orderAndFilterArray( [
 			'_readme',
 			'timestamp',
 			'date',
@@ -1012,16 +758,5 @@ TEXT;
 		], $this->generationConfig );
 		$saveConfigPath = $this->destination . '/generation-config.json';
 		file_put_contents( $saveConfigPath, json_encode( $orderedGenerationConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-	}
-
-	protected function orderAndFilterArray( array $order, array $toOrder ) {
-		uksort( $toOrder, function ( $a, $b ) use ( $order ) {
-			$posA = array_search( $a, $order, true );
-			$posB = array_search( $b, $order, true );
-
-			return $posA - $posB;
-		} );
-
-		return array_intersect_key( $toOrder, array_combine( $order, $order ) );
 	}
 }

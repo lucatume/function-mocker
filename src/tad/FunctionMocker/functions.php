@@ -3,6 +3,7 @@
 namespace tad\FunctionMocker;
 
 use InvalidArgumentException;
+use tad\FunctionMocker\CLI\Exceptions\RuntimeException;
 
 function filterPathListFrom( array $list, $rootDir ) {
 	if ( ! ( is_dir( $rootDir ) && is_readable( $rootDir ) ) ) {
@@ -391,3 +392,48 @@ function findRelativePath( $fromPath, $toPath ) {
 function realpath( $file ) {
 	return \realpath( $file ) ?: $file;
 }
+
+/**
+ * @param array $order
+ * @param array $toOrder
+ *
+ * @return array
+ */
+function orderAndFilterArray( array $order, array $toOrder ) {
+	uksort( $toOrder, function ( $a, $b ) use ( $order ) {
+		$posA = array_search( $a, $order, true );
+		$posB = array_search( $b, $order, true );
+
+		return $posA - $posB;
+	} );
+
+	return array_intersect_key( $toOrder, array_combine( $order, $order ) );
+}
+
+function checkPhpVersion( $phpVersion ) {
+	if ( PHP_VERSION_ID < $phpVersion ) {
+		throw RuntimeException::becauseMinimumRequiredPHPVersionIsNotMet();
+	}
+}
+
+/**
+ * @param $maxMemory
+ */
+function checkMemoryUsage( $maxMemory ) {
+	$peakMemoryUsage = memory_get_peak_usage();
+
+	if ( $maxMemory > 0 && $peakMemoryUsage > .9 * $maxMemory ) {
+		throw RuntimeException::becauseTheCommandAlmostReachedMemoryLimit();
+	}
+}
+
+/**
+ * @param $maxTime
+ */
+function checkTime( $maxTime,$startTime ) {
+	$runningTime = (int) ( microtime( true ) - $startTime );
+	if ( $maxTime > 0 && $runningTime >= .9 * $maxTime ) {
+		throw RuntimeException::becauseTheCommandAlmostReachedTimeLimit();
+	}
+}
+
