@@ -18,6 +18,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_create_a_global_namespace_functions_file() {
 		$noConfigCommand = new CreateEnv();
 		$noConfigCommand->_writeFileHeaders( false );
+		$noConfigCommand->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/global-functions.php' ),
@@ -31,6 +32,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 
 		$withConfigCommand = new CreateEnv();
 		$withConfigCommand->_writeFileHeaders( false );
+		$withConfigCommand->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/global-functions.php' ),
@@ -52,6 +54,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_create_a_global_class_file() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/GlobalNamespaceClass.php' ),
@@ -63,6 +66,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 
 		$withConfigCommand = new CreateEnv();
 		$withConfigCommand->_writeFileHeaders( false );
+		$withConfigCommand->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/GlobalNamespaceClass.php' ),
@@ -83,6 +87,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_open_up_final_classes() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination(false);
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/FinalClass.php' ),
@@ -103,6 +108,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_open_up_final_methods() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/ClassWFinalMethods.php' ),
@@ -123,6 +129,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_open_up_private_methods_to_protected() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => _data_dir( 'env/src/ClassWPrivateMethods.php' ),
@@ -142,6 +149,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function should_correctly_generate_env_for_namespaced_functions() {
 		$command = new CreateEnv();
+		$command->_writeFileHeaders( false );
 		$command->_writeFileHeaders( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
@@ -163,6 +171,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_correcly_parse_and_apply_configuration_parameters() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => [
@@ -189,6 +198,7 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_correctly_handle_interfaces_and_traits() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => [
@@ -216,11 +226,11 @@ class CreateEnvTest extends \PHPUnit_Framework_TestCase {
 	public function should_allow_resolving_dependencies() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
+		$command->_writeDestination( false );
 		$input = new ArrayInput( [
 			'name'          => 'test-env',
 			'source'        => [
-				_data_dir( 'env/src/DependingClass.php' ),
-				_data_dir( 'env/src/depending-functions.php' ),
+				_data_dir( 'env/src' ),
 			],
 			'--destination' => _output_dir( 'test-11' ),
 			'--with-dependencies' => true,

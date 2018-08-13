@@ -8,6 +8,7 @@
     "source": [
         "../../_data/env/src/namespaced-functions.php"
     ],
+    "destination": "/Users/luca/Repos/function-mocker/tests/_output/test-8",
     "bootstrap": "bootstrap.php",
     "removeDocBlocks": false,
     "wrapInIf": true,

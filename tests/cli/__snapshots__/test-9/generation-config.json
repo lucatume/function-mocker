@@ -47,13 +47,15 @@
             "removeDocBlocks": false,
             "body": "throw",
             "wrapInIf": true,
-            "autoload": true
+            "autoload": true,
+            "source": "../../_data/env/src/ClassWPrivateMethods.php"
         },
         "Acme\\Company\\ClassWFinalMethods": {
             "removeDocBlocks": false,
             "body": "empty",
             "wrapInIf": false,
-            "autoload": true
+            "autoload": true,
+            "source": "../../_data/env/src/ClassWFinalMethods.php"
         }
     }
 }

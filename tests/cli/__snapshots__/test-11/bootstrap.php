@@ -1,11 +1,24 @@
 <?php
 
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/Acme/Company/functions.php';
 
 class EnvAutoloader_test_env {
 
 	protected static $classMap = [
 		'Acme\Company\DependingClass' =>  __DIR__ . '/Acme/Company/DependingClass.php',
+		'GlobalAbstractClass' =>  __DIR__ . '/GlobalAbstractClass.php',
+		'Acme\Company\FinalClass' =>  __DIR__ . '/Acme/Company/FinalClass.php',
+		'Acme\Company\NamespacedAbstractClass' =>  __DIR__ . '/Acme/Company/NamespacedAbstractClass.php',
+		'SomeInputClass' =>  __DIR__ . '/SomeInputClass.php',
+		'GlobalInterface' =>  __DIR__ . '/GlobalInterface.php',
+		'Acme\Company\NamespacedInterface' =>  __DIR__ . '/Acme/Company/NamespacedInterface.php',
+		'Acme\Company\ParentClass' =>  __DIR__ . '/Acme/Company/ParentClass.php',
+		'Acme\Company\ClassWPrivateMethods' =>  __DIR__ . '/Acme/Company/ClassWPrivateMethods.php',
+		'Acme\Company\NamespacedTrait' =>  __DIR__ . '/Acme/Company/NamespacedTrait.php',
+		'GlobalTrait' =>  __DIR__ . '/GlobalTrait.php',
+		'Acme\Company\ClassWFinalMethods' =>  __DIR__ . '/Acme/Company/ClassWFinalMethods.php',
+		'GlobalNamespaceClass' =>  __DIR__ . '/GlobalNamespaceClass.php',
 	];
 
 	protected $rootDir;

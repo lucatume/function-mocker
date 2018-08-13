@@ -18,7 +18,8 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "autoload": true
+            "autoload": true,
+            "source": "../../_data/env/src/FinalClass.php"
         }
     }
 }

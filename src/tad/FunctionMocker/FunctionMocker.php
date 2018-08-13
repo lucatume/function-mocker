@@ -30,7 +30,7 @@ class FunctionMocker {
 	protected $didInit = false;
 
 	/**
-	 * @var object[]
+	 * @var \Prophecy\Prophecy\ObjectProphecy[]
 	 */
 	protected $revealed = [];
 

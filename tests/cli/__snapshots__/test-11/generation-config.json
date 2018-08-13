@@ -6,21 +6,67 @@
     ],
     "name": "test-env",
     "source": [
-        "../../_data/env/src/DependingClass.php",
-        "../../_data/env/src/depending-functions.php"
+        "../../_data/env/src"
     ],
-    "destination": "/Users/luca/Repos/function-mocker/tests/_output/test-11",
     "bootstrap": "bootstrap.php",
     "removeDocBlocks": false,
     "wrapInIf": true,
     "body": "copy",
     "autoload": true,
     "functions": {
+        "withoutComments": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/global-functions.php"
+        },
+        "withDocBlock": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/global-functions.php"
+        },
+        "withoutDocBlock": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/global-functions.php"
+        },
         "depending_function_one": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "source": "../../_data/env/src/depending-functions.php"
+        },
+        "depending_function_two": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/depending-functions.php"
+        },
+        "using_a_fully_qualified_class": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/depending-functions.php"
+        },
+        "using_global_class": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/depending-functions.php"
+        },
+        "Acme\\Company\\functionOne": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/namespaced-functions.php"
+        },
+        "Acme\\Company\\function_two": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../_data/env/src/namespaced-functions.php"
         }
     },
     "classes": {
@@ -28,7 +74,94 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "autoload": true
+            "autoload": true,
+            "source": "../../_data/env/src/DependingClass.php"
+        },
+        "GlobalAbstractClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/GlobalAbstractClass.php"
+        },
+        "Acme\\Company\\FinalClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/FinalClass.php"
+        },
+        "Acme\\Company\\NamespacedAbstractClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/NamespacedAbstractClass.php"
+        },
+        "SomeInputClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "0": "SomeInputClass",
+            "source": "../../_data/env/src/SomeInputClass.php"
+        },
+        "GlobalInterface": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/GlobalInterface.php"
+        },
+        "Acme\\Company\\NamespacedInterface": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/NamespacedInterface.php"
+        },
+        "Acme\\Company\\ParentClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "0": "Acme\\Company\\ParentClass",
+            "source": "../../_data/env/src/ParentClass.php"
+        },
+        "Acme\\Company\\ClassWPrivateMethods": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/ClassWPrivateMethods.php"
+        },
+        "Acme\\Company\\NamespacedTrait": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/NamespacedTrait.php"
+        },
+        "GlobalTrait": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/GlobalTrait.php"
+        },
+        "Acme\\Company\\ClassWFinalMethods": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/ClassWFinalMethods.php"
+        },
+        "GlobalNamespaceClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../_data/env/src/GlobalNamespaceClass.php"
         }
     }
 }
