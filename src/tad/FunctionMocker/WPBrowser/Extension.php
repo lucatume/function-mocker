@@ -18,15 +18,13 @@ class Extension extends \Codeception\Extension
 			throw new ExtensionException(__CLASS__, 'You must specify an `initFile` parameter.');
 		}
 
-		$initFile = file_exists($this->config['initFile']) ?
-		realpath($this->config['initFile'])
-		: realpath(getcwd() . '/' . trim($this->config['initFile'], '/\\'));
+		$initFile = file_exists($this->config['initFile']) ? realpath($this->config['initFile']) : realpath(getcwd() . '/' . trim($this->config['initFile'], '/\\'));
 
 		if (! is_readable($initFile) || ! is_file($initFile)) {
 			throw new ExtensionException(__CLASS__, "[{$initFile}] does not exist, is not a file or is not readable.");
 		}
 
-		$suites = ! empty($this->config['suites']) ? (array) $this->config['suites'] : [];
+		$suites = ! empty($this->config['suites']) ? (array)$this->config['suites'] : [];
 
 		if (! empty($suites) && ! in_array($event->getSuite()->getName(), $suites)) {
 			return false;
@@ -34,7 +32,7 @@ class Extension extends \Codeception\Extension
 
 		include $initFile;
 
-
 		return true;
+
 	}
 }

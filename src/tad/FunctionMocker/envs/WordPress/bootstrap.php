@@ -15,13 +15,14 @@ class EnvAutoloader_wordpress
 {
 
 	protected static $classMap = [
-	'WP_Hook' =>  __DIR__ . '/WP_Hook.php',
+	'WP_Hook' => __DIR__ . '/WP_Hook.php',
 	];
 
 	protected $rootDir;
 
 	public function __construct($rootDir) {
 		$this->rootDir = $rootDir;
+
 	}
 
 	public function autoload($class) {
@@ -32,6 +33,7 @@ class EnvAutoloader_wordpress
 		}
 
 		return false;
+
 	}
 }
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ddf8ddc35c8bbd7dfc0882a7e0afa4d4",
+    "content-hash": "e59e445cf754046d768a26dbe55633c4",
     "packages": [
         {
             "name": "antecedent/patchwork",
@@ -1345,6 +1345,35 @@
             "time": "2017-03-20T17:10:46+00:00"
         },
         {
+            "name": "lucatume/coding-standards",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "/Users/luca/Repos/coding-standards",
+                "reference": "8e8270e59b4934c72625201501588f67c6ce17f1"
+            },
+            "require": {
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "theAverageDev\\": "src/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "theAverageDev (Luca Tumedei)",
+                    "email": "luca@theaveragedev.com"
+                }
+            ],
+            "description": "A collection of my coding standards.",
+            "time": "2018-08-13T07:04:52+00:00"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.8.1",
             "source": {
@@ -2669,7 +2698,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "lucatume/coding-standards": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

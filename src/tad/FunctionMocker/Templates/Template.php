@@ -13,5 +13,6 @@ abstract class Template
 		$hb = new Handlebars();
 
 		return $hb->render(static::$template, $data);
+
 	}
 }

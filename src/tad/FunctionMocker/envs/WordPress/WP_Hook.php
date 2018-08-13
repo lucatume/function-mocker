@@ -26,6 +26,7 @@ if (!class_exists('WP_Hook')) {
 	 */
 	class WP_Hook implements Iterator, ArrayAccess
 	{
+
 		/**
 		 * Hook callbacks.
 		 *
@@ -33,6 +34,7 @@ if (!class_exists('WP_Hook')) {
 		 * @var   array
 		 */
 		public $callbacks = array();
+
 		/**
 		 * The priority keys of actively running iterations of a hook.
 		 *
@@ -40,6 +42,7 @@ if (!class_exists('WP_Hook')) {
 		 * @var   array
 		 */
 		private $iterations = array();
+
 		/**
 		 * The current priority of actively running iterations of a hook.
 		 *
@@ -47,6 +50,7 @@ if (!class_exists('WP_Hook')) {
 		 * @var   array
 		 */
 		private $current_priority = array();
+
 		/**
 		 * Number of levels this hook can be recursively called.
 		 *
@@ -54,6 +58,7 @@ if (!class_exists('WP_Hook')) {
 		 * @var   int
 		 */
 		private $nesting_level = 0;
+
 		/**
 		 * Flag for if we're current doing an action, rather than a filter.
 		 *
@@ -61,6 +66,7 @@ if (!class_exists('WP_Hook')) {
 		 * @var   bool
 		 */
 		private $doing_action = false;
+
 		/**
 		 * Hooks a function or method to a specific filter action.
 		 *
@@ -82,10 +88,12 @@ if (!class_exists('WP_Hook')) {
 			if (!$priority_existed && count($this->callbacks) > 1) {
 				ksort($this->callbacks, SORT_NUMERIC);
 			}
+
 			if ($this->nesting_level > 0) {
 				$this->resort_active_iterations($priority, $priority_existed);
 			}
 		}
+
 		/**
 		 * Handles reseting callback priority keys mid-iteration.
 		 *
@@ -103,8 +111,10 @@ if (!class_exists('WP_Hook')) {
 				foreach ($this->iterations as $index => $iteration) {
 					$this->iterations[$index] = $new_priorities;
 				}
+
 				return;
 			}
+
 			$min = min($new_priorities);
 			foreach ($this->iterations as $index => &$iteration) {
 				$current = current($iteration);
@@ -112,16 +122,19 @@ if (!class_exists('WP_Hook')) {
 				if (false === $current) {
 					continue;
 				}
+
 				$iteration = $new_priorities;
 				if ($current < $min) {
 					array_unshift($iteration, $current);
 					continue;
 				}
+
 				while (current($iteration) < $current) {
 					if (false === next($iteration)) {
 						break;
 					}
 				}
+
 				// If we have a new priority that didn't exist, but ::apply_filters() or ::do_action() thinks it's the current priority...
 				if ($new_priority === $this->current_priority[$index] && !$priority_existed) {
 					/*
@@ -135,6 +148,7 @@ if (!class_exists('WP_Hook')) {
 						// Otherwise, just go back to the previous element.
 						$prev = prev($iteration);
 					}
+
 					if (false === $prev) {
 						// Start of the array. Reset, and go about our day.
 						reset($iteration);
@@ -144,8 +158,10 @@ if (!class_exists('WP_Hook')) {
 					}
 				}
 			}
+
 			unset($iteration);
 		}
+
 		/**
 		 * Unhooks a function or method from a specific filter action.
 		 *
@@ -169,8 +185,10 @@ if (!class_exists('WP_Hook')) {
 					}
 				}
 			}
+
 			return $exists;
 		}
+
 		/**
 		 * Checks if a specific action has been registered for this hook.
 		 *
@@ -185,17 +203,21 @@ if (!class_exists('WP_Hook')) {
 			if (false === $function_to_check) {
 				return $this->has_filters();
 			}
+
 			$function_key = _wp_filter_build_unique_id($tag, $function_to_check, false);
 			if (!$function_key) {
 				return false;
 			}
+
 			foreach ($this->callbacks as $priority => $callbacks) {
 				if (isset($callbacks[$function_key])) {
 					return $priority;
 				}
 			}
+
 			return false;
 		}
+
 		/**
 		 * Checks if any callbacks have been registered for this hook.
 		 *
@@ -209,8 +231,10 @@ if (!class_exists('WP_Hook')) {
 					return true;
 				}
 			}
+
 			return false;
 		}
+
 		/**
 		 * Removes all callbacks from the current filter.
 		 *
@@ -222,15 +246,18 @@ if (!class_exists('WP_Hook')) {
 			if (!$this->callbacks) {
 				return;
 			}
+
 			if (false === $priority) {
 				$this->callbacks = array();
 			} elseif (isset($this->callbacks[$priority])) {
 				unset($this->callbacks[$priority]);
 			}
+
 			if ($this->nesting_level > 0) {
 				$this->resort_active_iterations();
 			}
 		}
+
 		/**
 		 * Calls the callback functions added to a filter hook.
 		 *
@@ -244,6 +271,7 @@ if (!class_exists('WP_Hook')) {
 			if (!$this->callbacks) {
 				return $value;
 			}
+
 			$nesting_level = $this->nesting_level++;
 			$this->iterations[$nesting_level] = array_keys($this->callbacks);
 			$num_args = count($args);
@@ -253,13 +281,14 @@ if (!class_exists('WP_Hook')) {
 					if (!$this->doing_action) {
 						$args[0] = $value;
 					}
+
 					// Avoid the array_slice if possible.
 					if ($the_['accepted_args'] == 0) {
 						$value = call_user_func_array($the_['function'], array());
 					} elseif ($the_['accepted_args'] >= $num_args) {
 						$value = call_user_func_array($the_['function'], $args);
 					} else {
-						$value = call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
+						$value = call_user_func_array($the_['function'], array_slice($args, 0, (int)$the_['accepted_args']));
 					}
 				}
 			} while (false !== next($this->iterations[$nesting_level]));
@@ -268,6 +297,7 @@ if (!class_exists('WP_Hook')) {
 			$this->nesting_level--;
 			return $value;
 		}
+
 		/**
 		 * Executes the callback functions hooked on a specific action hook.
 		 *
@@ -283,6 +313,7 @@ if (!class_exists('WP_Hook')) {
 				$this->doing_action = false;
 			}
 		}
+
 		/**
 		 * Processes the functions hooked into the 'all' hook.
 		 *
@@ -302,6 +333,7 @@ if (!class_exists('WP_Hook')) {
 			unset($this->iterations[$nesting_level]);
 			$this->nesting_level--;
 		}
+
 		/**
 		 * Return the current priority level of the currently running iteration of the hook.
 		 *
@@ -313,8 +345,10 @@ if (!class_exists('WP_Hook')) {
 			if (false === current($this->iterations)) {
 				return false;
 			}
+
 			return current(current($this->iterations));
 		}
+
 		/**
 		 * Normalizes filters set up before WordPress has initialized to WP_Hook objects.
 		 *
@@ -333,6 +367,7 @@ if (!class_exists('WP_Hook')) {
 					$normalized[$tag] = $callback_groups;
 					continue;
 				}
+
 				$hook = new WP_Hook();
 				// Loop through callback groups.
 				foreach ($callback_groups as $priority => $callbacks) {
@@ -341,10 +376,13 @@ if (!class_exists('WP_Hook')) {
 						$hook->add_filter($tag, $cb['function'], $priority, $cb['accepted_args']);
 					}
 				}
+
 				$normalized[$tag] = $hook;
 			}
+
 			return $normalized;
 		}
+
 		/**
 		 * Determines whether an offset value exists.
 		 *
@@ -358,6 +396,7 @@ if (!class_exists('WP_Hook')) {
 		public function offsetExists($offset) {
 			return isset($this->callbacks[$offset]);
 		}
+
 		/**
 		 * Retrieves a value at a specified offset.
 		 *
@@ -371,6 +410,7 @@ if (!class_exists('WP_Hook')) {
 		public function offsetGet($offset) {
 			return isset($this->callbacks[$offset]) ? $this->callbacks[$offset] : null;
 		}
+
 		/**
 		 * Sets a value at a specified offset.
 		 *
@@ -388,6 +428,7 @@ if (!class_exists('WP_Hook')) {
 				$this->callbacks[$offset] = $value;
 			}
 		}
+
 		/**
 		 * Unsets a specified offset.
 		 *
@@ -400,6 +441,7 @@ if (!class_exists('WP_Hook')) {
 		public function offsetUnset($offset) {
 			unset($this->callbacks[$offset]);
 		}
+
 		/**
 		 * Returns the current element.
 		 *
@@ -412,6 +454,7 @@ if (!class_exists('WP_Hook')) {
 		public function current() {
 			return current($this->callbacks);
 		}
+
 		/**
 		 * Moves forward to the next element.
 		 *
@@ -424,6 +467,7 @@ if (!class_exists('WP_Hook')) {
 		public function next() {
 			return next($this->callbacks);
 		}
+
 		/**
 		 * Returns the key of the current element.
 		 *
@@ -436,6 +480,7 @@ if (!class_exists('WP_Hook')) {
 		public function key() {
 			return key($this->callbacks);
 		}
+
 		/**
 		 * Checks if current position is valid.
 		 *
@@ -448,6 +493,7 @@ if (!class_exists('WP_Hook')) {
 		public function valid() {
 			return key($this->callbacks) !== null;
 		}
+
 		/**
 		 * Rewinds the Iterator to the first element.
 		 *

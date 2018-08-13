@@ -1,23 +1,67 @@
 <?php
+/**
+ * Represents a FunctionMocker CLI runtime exception.
+ *
+ * Any exception that is not about a wrong on incoherent user input
+ * is considered a runtime one.
+ *
+ * @package    FunctionMocker
+ * @subpackage CLI
+ * @author     Luca Tumedei <luca@theaveragedev.com>
+ * @copyright  2018 Luca Tumedei
+ */
 
 namespace tad\FunctionMocker\CLI\Exceptions;
 
-class RuntimeException extends \RuntimeException
-{
+class RuntimeException extends \RuntimeException {
 
+	/**
+	 * Returns an exception when the command that's currently running almost
+	 * reached the available memory limit.
+	 *
+	 * @return \tad\FunctionMocker\CLI\Exceptions\RuntimeException
+	 */
 	public static function becauseTheCommandAlmostReachedMemoryLimit() {
-		return new static('The command has consumed almost all the available PHP memory: use more stringent criteria for the source to avoid this.');
+		$message = 'Memory limit almost reached: use more stringent criteria for the source to avoid this.';
+
+		return new static($message);
 	}
 
+	/**
+	 * Returns an exception when the command that's currently running almost
+	 * reached the available time limit.
+	 *
+	 * @return \tad\FunctionMocker\CLI\Exceptions\RuntimeException
+	 */
 	public static function becauseTheCommandAlmostReachedTimeLimit() {
-		return new static('The command has almost reached the time limit: use more stringent criteria for the source to avoid this.');
+		$message = 'Time limit almost reached: use more stringent criteria for the source to avoid this.';
+
+		return new static($message);
 	}
 
-	public static function becauseMinimumRequiredPHPVersionIsNotMet() {
-		return new static('While Function Mocker has a minimum PHP requirement of PHP 5.6 this CLI tool requires PHP >=7.0');
+	/**
+	 * Returns an exception when the PHP version required by the component is not met.
+	 *
+	 * @param string $what         The name of the component to check the version for.
+	 * @param string $whichVersion The version of PHP to check.
+	 *
+	 * @return \tad\FunctionMocker\CLI\Exceptions\RuntimeException
+	 */
+	public static function becauseMinimumRequiredVersionIsNotMet( $what, $whichVersion ) {
+		$message = sprintf('%s requires PHP >=%s', $what, $whichVersion);
+
+		return new static($message);
 	}
 
-	public static function becasueNoSourcesWereSpecified() {
-		return new static('You need to specify at lease one source file or folder in the CLI arguments or the configuration file.');
+	/**
+	 * Returns an error to signal that no sources were specified in the command arguments
+	 * and found in a configuration file.
+	 *
+	 * @return \tad\FunctionMocker\CLI\Exceptions\RuntimeException
+	 */
+	public static function becauseNoSourcesWereSpecified() {
+		$message = 'Specify at least one source file or folder in the CLI arguments or the configuration file.';
+
+		return new static($message);
 	}
 }

@@ -1,4 +1,12 @@
 <?php
+/**
+ * The main Function Mocker class.
+ *
+ * @package    FunctionMocker
+ * @subpackage CLI
+ * @author     Luca Tumedei <luca@theaveragedev.com>
+ * @copyright  2018 Luca Tumedei
+ */
 
 namespace tad\FunctionMocker\CLI;
 
@@ -53,43 +61,73 @@ class CreateEnv extends Command
 	const NOTHING_TO_FIND = 'nothing-to-find';
 
 	protected $functionIndex = [];
+
 	protected $classIndex = [];
+
 	protected $functionsToFind = [];
+
 	protected $classesToFind = [];
+
 	protected $functionsToFindCount = false;
+
 	protected $classesToFindCount = false;
+
 	protected $startTime = 0;
+
 	protected $bootstrapFile;
+
 	protected $envName;
+
 	protected $source;
+
 	protected $generationConfig = [];
+
 	protected $skipped = [];
+
 	protected $excludedFiles = [];
+
 	protected $sourceFiles = [];
+
 	protected $destination;
+
 	protected $removeDocBlocks = false;
+
 	protected $saveGenerationConfigFile;
 
 	/**
 	 * @var \Symfony\Component\Console\Output\Output
 	 */
 	protected $output;
+
 	/**
 	 * @var \Symfony\Component\Console\Input\Input
 	 */
 	protected $input;
+
 	protected $filesToInclude = [];
+
 	protected $writeFileHeaders = true;
+
 	protected $configFileDir;
+
 	protected $findAny = false;
+
 	protected $autoloadClasses = [];
+
 	protected $bodyBehaviour;
+
 	protected $autoload;
+
 	protected $wrapInIf;
+
 	protected $openFunctionFiles = [];
+
 	protected $withDependencies;
+
 	protected $foundClassIndex = [];
+
 	protected $foundFunctionIndex = [];
+
 	protected $dependencies = [];
 
 	/**
@@ -118,42 +156,34 @@ option is set to `false`.
 When using a JSON configuration file the following optional parameters can be specified; read more in the README.
 TEXT;
 
-		$this->setName('generate:env')
-			->setDescription('Generates an environment file from a source folder or file.')
-			->setHelp($help)
-			->addArgument('name', InputArgument::REQUIRED, 'The environment name')
-			->addArgument(
-				'source',
-				InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-				'The environment source files of directories; separate them with a space'
-			)
-			->addOption(
-				'destination',
-				'd',
-				InputOption::VALUE_OPTIONAL,
-				'The destination directory in which the environment files should be generated.'
-			)
-			->addOption(
-				'config',
-				'c',
-				InputOption::VALUE_OPTIONAL,
-				'A configuration file that should be used to fine tune the behaviour of the environment generation.',
-				false
-			)
-			->addOption(
-				'save',
-				null,
-				InputOption::VALUE_OPTIONAL,
-				'If set to `true` a `generation-config.json` file will be generated in the current working directory.',
-				true
-			)
-			->addOption(
-				'with-dependencies',
-				null,
-				InputOption::VALUE_OPTIONAL,
-				'If this flag option is set than the command will try to find and pull in code dependencies of the target code automatically searchin the specified sources.',
-				false
-			);
+		$this->setName('generate:env')->setDescription('Generates an environment file from a source folder or file.')->setHelp($help)->addArgument('name', InputArgument::REQUIRED, 'The environment name')->addArgument(
+			'source',
+			InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+			'The environment source files of directories; separate them with a space'
+		)->addOption(
+			'destination',
+			'd',
+			InputOption::VALUE_OPTIONAL,
+			'The destination directory in which the environment files should be generated.'
+		)->addOption(
+			'config',
+			'c',
+			InputOption::VALUE_OPTIONAL,
+			'A configuration file that should be used to fine tune the behaviour of the environment generation.',
+			false
+		)->addOption(
+			'save',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'If set to `true` a `generation-config.json` file will be generated in the current working directory.',
+			true
+		)->addOption(
+			'with-dependencies',
+			null,
+			InputOption::VALUE_OPTIONAL,
+			'If this flag option is set than the command will try to find and pull in code dependencies of the target code automatically searchin the specified sources.',
+			false
+		);
 	}
 
 	/**
@@ -166,7 +196,7 @@ TEXT;
 		$this->input = $input;
 		$this->output = $output;
 
-		checkPhpVersion(70000);
+		checkPhpVersion('Function Mocker CLI tool', 70000);
 		$this->startExecutionTimer();
 		$this->initRunConfiguration();
 		$this->readSourceFiles();
@@ -191,17 +221,15 @@ TEXT;
 	protected function initRunConfiguration() {
 		$config = $this->generationConfig = $this->initConfig($this->input);
 		$this->envName = $this->input->getArgument('name');
-		$this->source = (array) validateFileOrDir($config['source'], 'Source file or directory', [ getcwd(), $this->configFileDir ]);
+		$this->source = (array)validateFileOrDir($config['source'], 'Source file or directory', [ getcwd(), $this->configFileDir ]);
 		$this->destination = findRelativePath(getcwd(), $config['destination'] ?? getcwd() . '/tests/envs/' . $this->envName);
-		$this->bootstrapFile = ! empty($config['bootstrap'])
-		? $this->destination . '/' . trim($config['bootstrap'], '\\/')
-		: $this->destination . '/bootstrap.php';
+		$this->bootstrapFile = ! empty($config['bootstrap']) ? $this->destination . '/' . trim($config['bootstrap'], '\\/') : $this->destination . '/bootstrap.php';
 		$this->excludedFiles = empty($config['exclude']) ? [] : $config['exclude'];
-		$this->removeDocBlocks = empty($config['remove-docblocks']) ? false : (bool) $config['remove-docblocks'];
+		$this->removeDocBlocks = empty($config['remove-docblocks']) ? false : (bool)$config['remove-docblocks'];
 		$this->bodyBehaviour = empty($config['body']) ? 'copy' : $config['body'];
-		$this->autoload = empty($config['autoload']) ? true : (bool) $config['autoload'];
-		$this->wrapInIf = empty($config['wrapInIf']) ? true : (bool) $config['wrapInIf'];
-		$this->saveGenerationConfigFile = empty($config['save']) ? false : (bool) $config['save'];
+		$this->autoload = empty($config['autoload']) ? true : (bool)$config['autoload'];
+		$this->wrapInIf = empty($config['wrapInIf']) ? true : (bool)$config['wrapInIf'];
+		$this->saveGenerationConfigFile = empty($config['save']) ? false : (bool)$config['save'];
 		$this->functionsToFind = $config['functions'] ?? [];
 		$this->classesToFind = $config['classes'] ?? [];
 		$this->functionsToFindCount = \count($this->functionsToFind) ?: static::NOTHING_TO_FIND;
@@ -209,6 +237,7 @@ TEXT;
 		if ($this->classesToFindCount === static::NOTHING_TO_FIND && $this->functionsToFindCount === static::NOTHING_TO_FIND) {
 			$this->findAny = true;
 		}
+
 		$this->withDependencies = empty($config['with-dependencies']) ? false : true;
 	}
 
@@ -262,9 +291,7 @@ TEXT;
 			unset($cliConfig['source']);
 		}
 
-		$configFileSources = ! empty($configFileConfig['source']) ?
-		(array) $configFileConfig['source']
-		: [];
+		$configFileSources = ! empty($configFileConfig['source']) ? (array)$configFileConfig['source'] : [];
 		unset($configFileConfig['source']);
 
 		$config = array_merge(
@@ -277,12 +304,10 @@ TEXT;
 			)
 		);
 
-		$config['source'] = ! empty($config['source']) ?
-		array_merge((array) $config['source'], $configFileSources)
-		: $configFileSources;
+		$config['source'] = ! empty($config['source']) ? array_merge((array)$config['source'], $configFileSources) : $configFileSources;
 
 		if (empty($config['source'])) {
-			throw RuntimeException::becasueNoSourcesWereSpecified();
+			throw RuntimeException::becauseNoSourcesWereSpecified();
 		}
 
 		$config['source'] = array_unique($config['source']);
@@ -330,6 +355,7 @@ TEXT;
 						if (empty($namespaceStmt->stmts)) {
 							continue;
 						}
+
 						$thisNamesapceStmts = getFunctionAndClassStmts($namespaceStmt->stmts);
 						$thisNamesapceWrappedStmts = getIfWrapppedFunctionAndClassStmts($namespaceStmt->stmts);
 						$this->indexFileStmts($file, $thisNamesapceStmts, $namespaceStmt);
@@ -430,7 +456,6 @@ TEXT;
 				}
 			}
 
-
 			if (! $this->withDependencies && $this->functionsToFindCount === 0 && $this->classesToFindCount === 0) {
 				throw BreakSignal::becauseThereAreNoMoreFunctionsOrClassesToFind();
 			}
@@ -474,9 +499,9 @@ TEXT;
 				$this->functionIndex,
 				function (array $acc, array $fEntry) {
 					$namespace = null === $fEntry['namespace'] ? '\\' : $fEntry['namespace']->name;
-				/**
-				* @var Function_ $stmt
-				*/
+					/**
+					* @var Function_ $stmt
+					*/
 					$stmt = $fEntry['stmt'];
 					$fName = $stmt->name instanceof Name ? $stmt->name->name : $stmt->name;
 					$fIndex = $namespace === '\\' ? $fName : $namespace . '\\' . $fName;
@@ -492,14 +517,12 @@ TEXT;
 		foreach ($namespaceOrderedFunctions as $namespace => $fEntries) {
 			foreach ($fEntries as $name => $data) {
 				list( $file, $stmt ) = array_values($data);
-				$thisConfig = $normalizedFunctionsEntries[ $name ] ?? (object) $defaultFunctionSettings;
+				$thisConfig = $normalizedFunctionsEntries[ $name ] ?? (object)$defaultFunctionSettings;
 				$generatedConfig = $thisConfig;
 
 				$functionsFileBasename = ! empty($thisConfig->fileName) ? trim($thisConfig->fileName) : 'functions.php';
 
-				$functionsFilePath = $namespace === '\\' ?
-				 $this->destination . '/' . $functionsFileBasename
-				 : $this->destination . '/' . str_replace('\\', '/', $namespace) . '/' . $functionsFileBasename;
+				$functionsFilePath = $namespace === '\\' ? $this->destination . '/' . $functionsFileBasename : $this->destination . '/' . str_replace('\\', '/', $namespace) . '/' . $functionsFileBasename;
 				$this->filesToInclude[] = $functionsFilePath;
 
 				$functionFileDirectory = \dirname($functionsFilePath);
@@ -522,11 +545,8 @@ TEXT;
 					$this->openFunctionFiles[] = $functionsFilePath;
 				}
 
-
-				$generatedConfig->removeDocBlocks = isset($thisConfig->removeDocBlocks)
-					? (bool) $thisConfig->removeDocBlocks
-					: false;
-				if ((bool) $thisConfig->removeDocBlocks) {
+				$generatedConfig->removeDocBlocks = isset($thisConfig->removeDocBlocks) ? (bool)$thisConfig->removeDocBlocks : false;
+				if ((bool)$thisConfig->removeDocBlocks) {
 					$stmt->setAttribute('comments', []);
 				}
 
@@ -542,10 +562,8 @@ TEXT;
 
 				$functionStmt = $stmt;
 
-				$generatedConfig->wrapInIf = isset($thisConfig->wrapInIf)
-					? (bool) $generatedConfig->wrapInIf
-					: true;
-				if ((bool) $thisConfig->wrapInIf) {
+				$generatedConfig->wrapInIf = isset($thisConfig->wrapInIf) ? (bool)$generatedConfig->wrapInIf : true;
+				if ((bool)$thisConfig->wrapInIf) {
 					   $functionStmt = wrapFunctionInIfBlock($stmt, $name, $namespace);
 				}
 
@@ -565,8 +583,8 @@ TEXT;
 		$normalized = [];
 		foreach ($entries as $index => $entry) {
 			$name = is_numeric($index) ? $entry : $index;
-			$normalizedEntry = array_merge($defaults, (array) $entry);
-			$normalized[ $name ] = (object) $normalizedEntry;
+			$normalizedEntry = array_merge($defaults, (array)$entry);
+			$normalized[ $name ] = (object)$normalizedEntry;
 		}
 
 		return $normalized;
@@ -594,6 +612,7 @@ TEXT;
 		if (! $this->writeFileHeaders) {
 			return;
 		}
+
 		fwrite($file, $this->getFileHeader($header));
 	}
 
@@ -620,6 +639,7 @@ TEXT;
 		if ($namespace === '\\' || empty($namespace)) {
 			return;
 		}
+
 		fwrite($fileHandle, "namespace {$namespace};\n\n");
 	}
 
@@ -662,7 +682,7 @@ TEXT;
 */
 			list( $file, $stmt, $namespace ) = array_values($classEntry);
 			$classFile = $this->destination . '/' . str_replace('\\', '/', $name) . '.php';
-			$thisConfig = $normalizedClassesEntries[ $name ] ?? (object) $defaultClassSetting;
+			$thisConfig = $normalizedClassesEntries[ $name ] ?? (object)$defaultClassSetting;
 			$generatedConfig = $thisConfig;
 
 			if (empty($thisConfig->autoload)) {
@@ -671,10 +691,8 @@ TEXT;
 				$this->autoloadClasses[] = $name;
 			}
 
-			$generatedConfig->removeDocBlocks = isset($thisConfig->removeDocBlocks)
-			? (bool) $thisConfig->removeDocBlocks
-			: false;
-			if ((bool) $thisConfig->removeDocBlocks) {
+			$generatedConfig->removeDocBlocks = isset($thisConfig->removeDocBlocks) ? (bool)$thisConfig->removeDocBlocks : false;
+			if ((bool)$thisConfig->removeDocBlocks) {
 				$stmt->setAttribute('comments', []);
 				array_walk(
 					$stmt->stmts,
@@ -712,10 +730,8 @@ TEXT;
 				$generatedConfig->body = 'copy';
 			}
 
-			$generatedConfig->wrapInIf = isset($thisConfig->wrapInIf)
-			? (bool) $generatedConfig->wrapInIf
-			: true;
-			if ((bool) $thisConfig->wrapInIf) {
+			$generatedConfig->wrapInIf = isset($thisConfig->wrapInIf) ? (bool)$generatedConfig->wrapInIf : true;
+			if ((bool)$thisConfig->wrapInIf) {
 				$namespaceString = $namespace instanceof Namespace_ ? $namespace->name : null;
 				$stmt = wrapClassInIfBlock($stmt, $name, $namespaceString);
 			}
@@ -772,6 +788,7 @@ TEXT;
 			);
 			$bootstrapCode .= "\n\n" . $autoloadCode;
 		}
+
 		file_put_contents($this->bootstrapFile, $bootstrapCode, LOCK_EX);
 	}
 
@@ -800,6 +817,7 @@ TEXT;
 			$this->generationConfig['timestamp'] = time();
 			$this->generationConfig['date'] = date('Y-m-d H:i:s (e)', $this->generationConfig['timestamp']);
 		}
+
 		$this->generationConfig['source'] = array_values(
 			array_unique(
 				array_map(

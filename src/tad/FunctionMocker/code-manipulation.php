@@ -26,9 +26,11 @@ function resolveNamespace(Name $name, Namespace_ $namespace = null) {
 	if ($namespace === null) {
 		return $name->toString();
 	}
+
 	if ($name->isFullyQualified()) {
 		return $name->toString();
 	}
+
 	// ['Acme', 'Company', 'Service', 'REST']
 	$namespaceFrags = array_filter(explode('\\', $namespace->name->toString()));
 	// ['Service', 'REST', 'API']
@@ -42,6 +44,7 @@ function resolveNamespace(Name $name, Namespace_ $namespace = null) {
 	}
 
 	return implode('\\', $namespaceFrags) . '\\' . implode('\\', $objectFrags);
+
 }
 
 /**
@@ -50,7 +53,7 @@ function resolveNamespace(Name $name, Namespace_ $namespace = null) {
  * @return \PhpParser\Node\Stmt[]
  */
 function getAllFileStmts($file) {
-	$files = (array) $file;
+	$files = (array)$file;
 	$parser = ( new ParserFactory )->create(ParserFactory::PREFER_PHP5);
 
 	$allStmts = array_map(
@@ -61,6 +64,7 @@ function getAllFileStmts($file) {
 	);
 
 	return array_merge(...$allStmts);
+
 }
 
 function wrapStmtInIfBlock(Stmt $stmt, string $checkWhat, string $checkHow) {
@@ -75,14 +79,14 @@ function wrapStmtInIfBlock(Stmt $stmt, string $checkWhat, string $checkHow) {
 	);
 
 	return $functionStmt;
+
 }
 
 function wrapFunctionInIfBlock(Function_ $stmt, string $functionName, string $namespace = null) {
-	$checkHow = empty($namespace) || $namespace === '\\' ?
-	'function_exists'
-	: '\function_exists';
+	$checkHow = empty($namespace) || $namespace === '\\' ? 'function_exists' : '\function_exists';
 
 	return wrapStmtInIfBlock($stmt, $functionName, $checkHow);
+
 }
 
 /**
@@ -94,20 +98,15 @@ function wrapFunctionInIfBlock(Function_ $stmt, string $functionName, string $na
  */
 function wrapClassInIfBlock(Stmt $stmt, string $fqClassName, string $namespace = null) {
 	if ($stmt instanceof Class_) {
-		$checkHow = empty($namespace) || $namespace === '\\' ?
-		'class_exists'
-		: '\class_exists';
+		$checkHow = empty($namespace) || $namespace === '\\' ? 'class_exists' : '\class_exists';
 	} elseif ($stmt instanceof Trait_) {
-		$checkHow = empty($namespace) || $namespace === '\\' ?
-		'trait_exists'
-		: '\trait_exists';
+		$checkHow = empty($namespace) || $namespace === '\\' ? 'trait_exists' : '\trait_exists';
 	} else {
-		$checkHow = empty($namespace) || $namespace === '\\' ?
-		'interface_exists'
-		: '\interface_exists';
+		$checkHow = empty($namespace) || $namespace === '\\' ? 'interface_exists' : '\interface_exists';
 	}
 
 	return wrapStmtInIfBlock($stmt, $fqClassName, $checkHow);
+
 }
 
 /**
@@ -127,6 +126,7 @@ function openPrivateClassMethods(Stmt $stmt) {
 			}
 		}
 	);
+
 }
 
 /**
@@ -146,6 +146,7 @@ function getFunctionAndClassStmts(array $allStmts) {
 	);
 
 	return $stmts;
+
 }
 
 /**
@@ -157,34 +158,34 @@ function getIfWrapppedFunctionAndClassStmts(array $allStmts): array {
 	$wrappedStmts = array_reduce(
 		$allStmts,
 		function (array $found, $stmt) {
-		/**
-		* @var \PhpParser\Node\Stmt\If_ $stmt
-		*/
+			/**
+			* @var \PhpParser\Node\Stmt\If_ $stmt
+			*/
 			if (! $stmt instanceof Stmt\If_) {
 				return $found;
 			}
 
 			$cond = $stmt->cond;
 
-		/**
-		* @var BooleanNot $first
-		*/
+			/**
+			* @var BooleanNot $first
+			*/
 			if (! $cond instanceof BooleanNot) {
 				return $found;
 			}
 
-		/**
-		* @var \PhpParser\Node\Expr $negated
-		*/
+			/**
+			* @var \PhpParser\Node\Expr $negated
+			*/
 			$negated = $cond->expr;
 
 			if (! $negated instanceof Expr\FuncCall) {
 				return $found;
 			}
 
-		/**
-		* @var \PhpParser\Node\Name $funcName
-		*/
+			/**
+			* @var \PhpParser\Node\Name $funcName
+			*/
 			$funcName = $negated->name;
 
 			$thisName = $funcName->toString();
@@ -210,6 +211,7 @@ function getIfWrapppedFunctionAndClassStmts(array $allStmts): array {
 	);
 
 	return empty($wrappedStmts) ? [] : array_merge(...$wrappedStmts);
+
 }
 
 /**
@@ -224,6 +226,7 @@ function getNamespaceStmts(array $allStmts) {
 			return $stmt instanceof Namespace_;
 		}
 	);
+
 }
 
 /**
@@ -241,6 +244,7 @@ function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$
 		if ($node->extends) {
 			$dependencies[] = resolveNamespace($node->extends, $namespace);
 		}
+
 		if ($node->implements) {
 			$dependencies[] = resolveNamespace($node->implements, $namespace);
 		}
@@ -260,6 +264,7 @@ function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$
 			 */
 			$dependencies[] = $node->name->toString();
 		}
+
 		$dependencies[] = resolveNamespace($node->name, $namespace);
 	}
 
@@ -303,6 +308,7 @@ function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$
 	}
 
 	return $dependencies;
+
 }
 
 /**
@@ -330,4 +336,25 @@ function removeFinalFromClassMethods(Stmt $stmt) {
 			}
 		}
 	);
+}
+
+/**
+ * Extracts a function namespace and name from its fully-qualified name.
+ *
+ * @param string $function The function fully-qualified name.
+ *
+ * @return array An array containing the original function input, its namespace and its name.
+ */
+function extractFunctionAndNamespace( $function ) {
+	$function = '\\' . ltrim($function, '\\');
+	$namespaceFrags = array_filter(explode('\\', $function));
+	$function = array_pop($namespaceFrags);
+	$namespace = implode('\\', $namespaceFrags);
+	$functionFQN = $namespace . '\\' . $function;
+
+	if ($function === ltrim($functionFQN, '\\')) {
+		$functionFQN = $function;
+	}
+
+	return array( $function, $namespace, $functionFQN );
 }

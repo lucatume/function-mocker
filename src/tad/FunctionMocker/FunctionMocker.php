@@ -1,4 +1,12 @@
 <?php
+/**
+ * The main Function Mocker class.
+ *
+ * @package    FunctionMocker
+ * @subpackage API
+ * @author     Luca Tumedei <luca@theaveragedev.com>
+ * @copyright  2018 Luca Tumedei
+ */
 
 namespace tad\FunctionMocker;
 
@@ -8,11 +16,8 @@ use Prophecy\Prophet;
 
 /**
  * Class FunctionMocker
- *
- * @package tad\FunctionMocker
  */
-class FunctionMocker
-{
+class FunctionMocker {
 
 	/**
 	 * @var \tad\FunctionMocker\FunctionMocker
@@ -57,9 +62,9 @@ class FunctionMocker
 	/**
 	 * FunctionMocker constructor.
 	 *
-	 * @param \Prophecy\Prophet $prophet
+	 * @param \Prophecy\Prophet $prophet A Prophet instance that will be used to mock, stub and spy functions.
 	 */
-	protected function __construct(Prophet $prophet) {
+	protected function __construct( Prophet $prophet ) {
 		$this->prophet = $prophet;
 	}
 
@@ -87,14 +92,22 @@ class FunctionMocker
 	 *      }
 	 *
 	 * @see \tad\FunctionMocker\FunctionMocker::tearDown()
+	 *
+	 * @return void
 	 */
 	public static function setUp() {
 		if (! self::instance()->didInit) {
 			self::init();
 		}
+
 		static::instance()->prophet = new Prophet();
 	}
 
+	/**
+	 * Singleton accessor for the class.
+	 *
+	 * @return \tad\FunctionMocker\FunctionMocker
+	 */
 	protected static function instance() {
 		if (static::$instance === null) {
 			static::$instance = new static(new Prophet());
@@ -108,19 +121,21 @@ class FunctionMocker
 	 *
 	 * @param array|null $options An array of options to init the Patchwork library.
 	 *                            ['include'|'whitelist']     array|string A list of absolute paths that should be
-	 *                                                        included in the patching.
+	 *                            included in the patching.
 	 *                            ['exclude'|'blacklist']     array|string A list of absolute paths that should be
-	 *                                                        excluded in the patching.
+	 *                            excluded in the patching.
 	 *                            ['cache-path']              string The absolute path to the folder where Patchwork
-	 *                                                        should cache the wrapped files.
+	 *                            should cache the wrapped files.
 	 *                            ['redefinable-internals']   array A list of internal PHP functions that are available
-	 *                                                        for replacement.
+	 *                            for replacement.
 	 *                            ['env']                     array|string|bool Specifies one or more environment setup
-	 *                                                        files to load immediately after including Patchwork.
+	 *                            files to load immediately after including Patchwork.
+	 *
+	 * @return void
 	 *
 	 * @see \Patchwork\configure()
 	 */
-	public static function init(array $options = null) {
+	public static function init( array $options = null ) {
 		$function_mocker = static::instance();
 
 		if ($function_mocker->didInit) {
@@ -131,9 +146,6 @@ class FunctionMocker
 		$options = whitelistEnvs($options, $envs);
 		writePatchworkConfig($options);
 
-		/**
-	* @noinspection PhpIncludeInspection
-*/
 		includePatchwork();
 
 		include_once __DIR__ . '/utils.php';
@@ -165,14 +177,16 @@ class FunctionMocker
 	 *          }
 	 *      }
 	 *
-	 * @see \tad\FunctionMocker\FunctionMocker::setUp()
-	 *
 	 * @param null|\PHPUnit\Framework\TestCase $testCase If the method is running in
 	 *                                                   the context of a PHPUnit `tearDown`
 	 *                                                   method then the the current test case should
 	 *                                                   be passed to this method.
+	 *
+	 * @return void
+	 *
+	 * @see \tad\FunctionMocker\FunctionMocker::setUp()
 	 */
-	public static function tearDown($testCase = null) {
+	public static function tearDown( $testCase = null ) {
 		\Patchwork\restoreAll();
 
 		$instance = static::instance();
@@ -182,9 +196,18 @@ class FunctionMocker
 		}
 
 		$instance->resetProperties();
+
 	}
 
-	protected function checkPredictions($testCase = null) {
+	/**
+	 * Checks the current predictions.
+	 *
+	 * @param null $testCase A PHPUnit-like testcase instance; if running in the context of PHPUnit-like
+	 *                       tests then predictions will be added to the test case expectations.
+	 *
+	 * @return void
+	 */
+	protected function checkPredictions( $testCase = null ) {
 		if ($this->prophet === null) {
 			return;
 		}
@@ -196,14 +219,19 @@ class FunctionMocker
 			$testCase->addToAssertionCount(count($prophet->getProphecies()));
 		} elseif (class_exists('PHPUnit_Framework_TestCase') && $testCase instanceof PHPUnit_Framework_TestCase) {
 			/**
-	   * @noinspection PhpUndefinedMethodInspection
-*/
+			 * @noinspection PhpUndefinedMethodInspection
+			 */
 			$testCase->addToAssertionCount(count($prophet->getProphecies()));
 		} else {
 			$prophet->checkPredictions();
 		}
 	}
 
+	/**
+	 * Resets the object properties to their initial state.
+	 *
+	 * @return void
+	 */
 	protected function resetProperties() {
 		unset($this->prophet);
 		$this->prophecies = [];
@@ -245,8 +273,9 @@ class FunctionMocker
 	 * @return \Prophecy\Prophecy\MethodProphecy
 	 * @throws \Exception If the function could not be created.
 	 */
-	public static function __callStatic($function, array $arguments) {
+	public static function __callStatic( $function, array $arguments ) {
 		return self::replace($function, ...$arguments);
+
 	}
 
 	/**
@@ -287,13 +316,16 @@ class FunctionMocker
 	 * @return \Prophecy\Prophecy\MethodProphecy
 	 * @throws \Exception If the function could not be created.
 	 */
-	public static function replace($function, ...$arguments) {
+	public static function replace( $function, ...$arguments ) {
 		$instance = self::instance();
 
-		list( $function, $namespace, $functionFQN ) = $instance->extractFunctionAndNamespace($function);
+		list( $function, $namespace, $functionFQN ) = extractFunctionAndNamespace($function);
 
 		if ($instance->currentReplacementNamespace !== null) {
-			$namespace = rtrim('\\' . $instance->currentReplacementNamespace . '\\' . ltrim($namespace, '\\'), '\\');
+			$namespace = rtrim(
+				'\\' . $instance->currentReplacementNamespace . '\\' . ltrim($namespace, '\\'),
+				'\\'
+			);
 			$functionFQN = $namespace . '\\' . trim($function, '\\');
 		}
 
@@ -306,23 +338,18 @@ class FunctionMocker
 		}
 
 		return $instance->buildMethodProphecy($function, $arguments, $instance->prophecies[ $functionFQN ]);
+
 	}
 
-	protected function extractFunctionAndNamespace($function) {
-		$function = '\\' . ltrim($function, '\\');
-		$namespaceFrags = array_filter(explode('\\', $function));
-		$function = array_pop($namespaceFrags);
-		$namespace = implode('\\', $namespaceFrags);
-		$functionFQN = $namespace . '\\' . $function;
-
-		if ($function === ltrim($functionFQN, '\\')) {
-			$functionFQN = $function;
-		}
-
-		return array( $function, $namespace, $functionFQN );
-	}
-
-	protected function buildNewProphecyFor($function, $functionFQN) {
+	/**
+	 * Builds a prophecy for a function or returns an already built one.
+	 *
+	 * @param string $function    The function name.
+	 * @param string $functionFQN The function fully-qualified name.
+	 *
+	 * @return bool|\Prophecy\Prophecy\ObjectProphecy
+	 */
+	protected function buildNewProphecyFor( $function, $functionFQN ) {
 		if (array_key_exists($functionFQN, $this->prophecies)) {
 			return false;
 		}
@@ -334,20 +361,40 @@ class FunctionMocker
 		return $prophecy;
 	}
 
-	protected function createClassForFunction($function, $functionFQN) {
+	/**
+	 * Creates a class to be prophesized for the function.
+	 *
+	 * This method is based on `eval` to be PHP 5.6 compatible. The created class
+	 * will be one defining only one public method named like the function.
+	 *
+	 * @param string $function    The function name.
+	 * @param string $functionFQN The function fully-qualified name.
+	 *
+	 * @return string
+	 */
+	protected function createClassForFunction( $function, $functionFQN ) {
 		$uniqid = md5(uniqid('function-', true));
 		$functionSlug = str_replace('\\', '_', $functionFQN);
 		$className = "_{$functionSlug}_{$uniqid}";
 
+		//phpcs:ignore
 		eval("class {$className}{ public function {$function}(){}}");
 
 		return $className;
 	}
 
-	protected function redefineFunctionWithPatchwork($function, $functionFQN) {
+	/**
+	 * Invokes the Patchwork `redefine` function and attaches a prophecy to it.
+	 *
+	 * @param string $function    The function name.
+	 * @param string $functionFQN The function fully-qualified name.
+	 *
+	 * @return void
+	 */
+	protected function redefineFunctionWithPatchwork( $function, $functionFQN ) {
 		\Patchwork\redefine(
 			$functionFQN,
-			function () use ($functionFQN, $function) {
+			function () use ( $functionFQN, $function ) {
 				$prophecy = FunctionMocker::instance()->getRevealedProphecyFor($functionFQN);
 				$args = func_get_args();
 
@@ -360,7 +407,14 @@ class FunctionMocker
 		);
 	}
 
-	protected function getRevealedProphecyFor($function) {
+	/**
+	 * Returns a revealed function prophecy, or reveals and returns it if required.
+	 *
+	 * @param string $function The function fully-qualified name.
+	 *
+	 * @return \Prophecy\Prophecy\ObjectProphecy
+	 */
+	protected function getRevealedProphecyFor( $function ) {
 		if (! array_key_exists($function, $this->revealed)) {
 			$this->revealed[ $function ] = $this->prophecies[ $function ]->reveal();
 		}
@@ -368,7 +422,19 @@ class FunctionMocker
 		return $this->revealed[ $function ];
 	}
 
-	protected function buildMethodProphecy($function, array $arguments, ProphecyInterface $prophecy) {
+	/**
+	 * Builds a method prophecy for the function.
+	 *
+	 * The prophecy is built on the public method of the prophesized class created for the function.
+	 *
+	 * @param string                               $function  The function fully-qualified name.
+	 * @param array                                $arguments The function call arguments.
+	 * @param \Prophecy\Prophecy\ProphecyInterface $prophecy  The class prophecy built on the class created
+	 *                                                        for the function.
+	 *
+	 * @return MethodProphecy
+	 */
+	protected function buildMethodProphecy( $function, array $arguments, ProphecyInterface $prophecy ) {
 		if (empty($arguments)) {
 			$methodProphecy = $prophecy->$function();
 		} else {
@@ -376,6 +442,7 @@ class FunctionMocker
 		}
 
 		return $methodProphecy;
+
 	}
 
 	/**
@@ -408,31 +475,38 @@ class FunctionMocker
 	 * @param string   $namespace     The namespace the redefinitions should happen into.
 	 * @param callable $redefinitions A closure detailing the redefinitions that should happen
 	 *                                in the namespace.
+	 *
+	 * @return void
 	 */
-	public static function inNamespace($namespace, callable $redefinitions) {
+	public static function inNamespace( $namespace, callable $redefinitions ) {
 		self::instance()->currentReplacementNamespace = trim($namespace, '\\');
 
 		$redefinitions();
 
 		self::instance()->currentReplacementNamespace = null;
+
 	}
 
 	/**
 	 * Starts spying a function for its calls.
 	 *
-	 * @param $function
+	 * @param string $function The function name.
 	 *
 	 * @return \Prophecy\Prophecy\MethodProphecy
 	 * @throws \Exception If the function could not be created.
 	 */
-	public static function spy($function) {
+	public static function spy( $function ) {
 		return static::replace($function);
+
 	}
 
 	/**
 	 * Avoids checks on predictions from being performed at `tearDown` time
+	 *
+	 * @return void
 	 */
 	public static function skipChecks() {
 		static::instance()->skipChecks = true;
+
 	}
 }

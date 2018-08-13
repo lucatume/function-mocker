@@ -327,8 +327,10 @@ function getMaxMemory(): int {
 	switch ($last) {
 		case 'g':
 			$val *= 1024;
+			// go on to MBs
 		case 'm':
 			$val *= 1024;
+			// go on to KBs
 		case 'k':
 			$val *= 1024;
 	}
@@ -437,9 +439,9 @@ function orderAndFilterArray(array $order, array $toOrder) {
 	return array_intersect_key($toOrder, array_combine($order, $order));
 }
 
-function checkPhpVersion($phpVersion) {
+function checkPhpVersion($what, $phpVersion) {
 	if (PHP_VERSION_ID < $phpVersion) {
-		throw RuntimeException::becauseMinimumRequiredPHPVersionIsNotMet();
+		throw RuntimeException::becauseMinimumRequiredVersionIsNotMet($what, $phpVersion);
 	}
 }
 
