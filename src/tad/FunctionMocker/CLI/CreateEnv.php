@@ -129,6 +129,7 @@ class CreateEnv extends Command {
 
 	protected $dependencies = [];
 	protected $writeDestination = true;
+	protected $backup = [];
 
 	/**
 	 * @param bool $writeFileHeaders
@@ -340,7 +341,7 @@ TEXT;
 	}
 
 	protected function parseSourceFilesForFunctionsAndClasses( $message ) {
-		$this->output->writeln( '<info>' . $message . '</info>' );
+		$this->output->writeln( "\n<info>{$message}</info>" );
 
 		$progressBar = new ProgressBar( $this->output, \count( $this->sourceFiles ) );
 		$maxMemory = $this->getMemoryLimit();
@@ -416,8 +417,7 @@ TEXT;
 	protected function getTimeLimit(): int {
 		$maxTime = ini_get( 'max_execution_time' );
 
-		if ( $maxTime <= 0 ) {
-			$this->output->writeln( '<error>PHP time limit is not set: this command has the potential of running for a lot of time and will auto-limit itself to 60 seconds.</error>' );
+		if ( empty( $maxTime ) || $maxTime <= 0 ) {
 			$maxTime = - 1;
 		}
 
@@ -448,7 +448,7 @@ TEXT;
 					$this->functionIndex[ $name ] = $data;
 					$this->functionsToFindCount --;
 					if ( $this->withDependencies ) {
-						$this->dependencies[] = $this->parseDependenciesFor( $stmt );
+						$this->addDependenciesFor( $stmt, $namespace );
 					};
 				} else {
 					$this->foundFunctionIndex[ $name ] = $data;
@@ -465,7 +465,7 @@ TEXT;
 					$this->classIndex[ $name ] = $data;
 					$this->classesToFindCount --;
 					if ( $this->withDependencies ) {
-						$this->dependencies[] = $this->parseDependenciesFor( $stmt, $namespace );
+						$this->addDependenciesFor( $stmt, $namespace );
 					}
 				} else {
 					$this->foundClassIndex[ $name ] = $data;
@@ -478,25 +478,35 @@ TEXT;
 		}
 	}
 
-	protected function parseDependenciesFor( Stmt $stmt, Namespace_ $namespace = null ) {
-		// any function call that is not internal and any reference to a class/trait/interface is a dependency
-		foreach ( findStmtDependencies( $stmt, $namespace ) as $dependency ) {
-			$this->dependencies[] = $dependency;
-		}
+	protected function addDependenciesFor( Stmt $stmt, Namespace_ $namespace = null ) {
+		$found = findStmtDependencies( $stmt, $namespace );
+		$this->dependencies = array_merge( $this->dependencies, $found );
 	}
 
 	protected function findDependencies() {
 		if ( $this->withDependencies && ! empty( $this->dependencies ) ) {
+			$this->backupFound();
 			$this->classesToFind = $this->dependencies;
 			$this->functionsToFind = $this->dependencies;
 			$this->classesToFindCount = $this->functionsToFindCount = count( $this->dependencies );
 			// shallow dependency resolution
 			$this->withDependencies = false;
 			$this->parseSourceFilesForFunctionsAndClasses( 'Parsing source files for dependencies...' );
+			$this->restoreAndMergeFound();
 		}
 	}
 
-	protected function indexFoundStmts(): void {
+	protected function backupFound() {
+		$this->backup['functionsToFind'] = $this->functionsToFind;
+		$this->backup['classesToFind'] = $this->classesToFind;
+	}
+
+	protected function restoreAndMergeFound() {
+		$this->functionsToFind = array_merge( $this->backup['functionsToFind'], $this->functionsToFind );
+		$this->classesToFind = array_merge( $this->backup['classesToFind'], $this->classesToFind );
+	}
+
+	protected function indexFoundStmts() {
 		$this->functionIndex = array_unique( $this->functionIndex, SORT_REGULAR );
 		$this->classIndex = array_unique( $this->classIndex, SORT_REGULAR );
 	}
