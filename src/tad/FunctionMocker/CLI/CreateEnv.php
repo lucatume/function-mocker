@@ -486,8 +486,10 @@ TEXT;
 	protected function findDependencies() {
 		if ( $this->withDependencies && ! empty( $this->dependencies ) ) {
 			$this->backupFound();
-			$this->classesToFind = $this->dependencies;
-			$this->functionsToFind = $this->dependencies;
+			$this->classesToFind = array_combine( $this->dependencies,
+				array_fill( 0, count( $this->dependencies ), [] ) );
+			$this->functionsToFind = array_combine( $this->dependencies,
+				array_fill( 0, count( $this->dependencies ), [] ) );
 			$this->classesToFindCount = $this->functionsToFindCount = count( $this->dependencies );
 			// shallow dependency resolution
 			$this->withDependencies = false;
@@ -618,7 +620,13 @@ TEXT;
 
 				fwrite( $functionsFile, $functionCode );
 
-				$this->generationConfig['functions'][ $name ] = $generatedConfig;
+				$this->generationConfig['functions'][ $name ] = orderAndFilterArray( [
+					'removeDocBlocks',
+					'body',
+					'wrapInIf',
+					'source',
+					'fileName',
+				], (array)$generatedConfig );
 
 				fclose( $functionsFile );
 			}
@@ -797,7 +805,13 @@ TEXT;
 			$this->writeFileHeaderToFile( $fileHandle, "{$name} class." );
 			fwrite( $fileHandle, $classCode );
 			fclose( $fileHandle );
-			$this->generationConfig['classes'][ $name ] = $generatedConfig;
+			$this->generationConfig['classes'][ $name ] = orderAndFilterArray( [
+				'removeDocBlocks',
+				'body',
+				'wrapInIf',
+				'autoload',
+				'source',
+			], (array)$generatedConfig );
 		}
 	}
 

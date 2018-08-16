@@ -4,8 +4,8 @@
         "Read more about it at https://github.com/lucatume/function-mocker.",
         "This file was automatically @generated."
     ],
-    "timestamp": 1533630578,
-    "date": "2018-08-07 08:29:38 (UTC)",
+    "timestamp": 1534436085,
+    "date": "2018-08-16 16:14:45 (UTC)",
     "name": "wordpress",
     "source": [
         "../../../../../vendor/wordpress/src/wp-includes"
@@ -68,8 +68,7 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php",
-            "fileName": "filters.php"
+            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php"
         },
         "apply_filters": {
             "removeDocBlocks": false,
@@ -89,31 +88,21 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php",
-            "fileName": "filters.php"
+            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php"
         },
         "has_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php",
-            "fileName": "filters.php"
+            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php"
         },
         "remove_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php",
-            "fileName": "filters.php"
+            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php"
         },
         "current_filter": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php",
-            "fileName": "filters.php"
-        },
-        "_wp_filter_build_unique_id": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
@@ -166,8 +155,7 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../vendor/wordpress/src/wp-includes/formatting.php",
-            "fileName": "utils.php"
+            "source": "../../../../../vendor/wordpress/src/wp-includes/formatting.php"
         },
         "trailingslashit": {
             "removeDocBlocks": false,
@@ -175,6 +163,25 @@
             "wrapInIf": true,
             "source": "../../../../../vendor/wordpress/src/wp-includes/formatting.php",
             "fileName": "utils.php"
+        },
+        "wp_list_pluck": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "_wp_call_all_hook": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+        },
+        "_wp_filter_build_unique_id": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/plugin.php"
         }
     },
     "classes": {
@@ -182,7 +189,15 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "autoload": true
+            "autoload": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/class-wp-hook.php"
+        },
+        "WP_List_Util": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/class-wp-list-util.php"
         }
     }
 }
