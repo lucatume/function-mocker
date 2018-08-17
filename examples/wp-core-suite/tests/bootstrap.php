@@ -7,13 +7,13 @@ require_once( __DIR__ . '/../vendor/autoload.php' );
 	'whitelist'             => [
 		__DIR__,
 		dirname( __DIR__ ) . '/src',
-		dirname( __DIR__ ) . '/vendor/wordpress/src',
+		dirname( __DIR__ ) . '/vendor/wordpress/wordpress/src',
 	],
 	'redefinable-internals' => [ 'time' ],
 ] );
 
 // set some paths to get the things we need from the WordPress folder installed with Composer
-$wp_dir = dirname( __DIR__ ) . '/vendor/wordpress';
+$wp_dir = dirname( __DIR__ ) . '/vendor/wordpress/wordpress';
 $tests_dir = $wp_dir . '/tests/phpunit';
 $wp_tests_config_file = $wp_dir . '/wp-tests-config.php';
 

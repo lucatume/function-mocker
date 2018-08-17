@@ -16,9 +16,9 @@
                 "name": "wordpress",
                 "version": "4.9.6",
                 "source": {
-                    "url": "https://develop.svn.wordpress.org",
-                    "type": "svn",
-                    "reference": "trunk"
+                    "url": "https://github.com/WordPress/WordPress",
+                    "type": "git",
+                    "reference": "master"
                 }
             }
         },
