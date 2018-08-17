@@ -360,7 +360,7 @@ function parseImplementsDependencies( Node $node, Namespace_ $namespace = null )
 }
 
 function parseFunctionCallDependencies( Node $node, Namespace_ $namespace = null ): array {
-	if ( ! $node instanceof FuncCall ) {
+	if ( ! $node instanceof FuncCall || $node->name instanceof Node\Expr\Variable) {
 		return [];
 	}
 
@@ -415,8 +415,8 @@ function parseFunctionParameterDependencies( Node $node, Namespace_ $namespace =
 			function ( Node\Param $param ) use ( $namespace ) {
 				return $param->type instanceof Name
 					&& ! (
-						isInternalClass( resolveNamespace( $param, $namespace ) )
-						|| isInternalFunction( resolveNamespace( $param, $namespace ) )
+						isInternalClass( resolveNamespace( $param->type, $namespace ) )
+						|| isInternalFunction( resolveNamespace( $param->type, $namespace ) )
 					)
 					&& ! \in_array( $param->type->toString(), [ 'array', 'bool', 'int', 'float', 'string' ], true );
 			}
@@ -439,7 +439,7 @@ function parseSubNodeDependencies( Node $node, Namespace_ $namespace = null ): a
 		 * @var Node $subNode
 		 */
 		$subNode = $node->{$subNodeName};
-		$subNodeList = is_array( $subNode ) ? $subNode : [ $subNode ];
+		$subNodeList = \is_array( $subNode ) ? $subNode : [ $subNode ];
 
 		foreach ( $subNodeList as $subSubNode ) {
 			if ( ! $subSubNode instanceof Node ) {

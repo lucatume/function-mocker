@@ -28,32 +28,30 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use tad\FunctionMocker\CLI\Exceptions\BreakSignal;
-use tad\FunctionMocker\CLI\Exceptions\RuntimeException;
 use tad\FunctionMocker\Templates\EnvAutoloader;
-use function tad\FunctionMocker\checkMemoryUsage;
-use function tad\FunctionMocker\checkPhpVersion;
-use function tad\FunctionMocker\checkTime;
-use function tad\FunctionMocker\expandTildeIn;
+use function tad\FunctionMocker\capitalPDangIt;
 use function tad\FunctionMocker\findRelativePath;
 use function tad\FunctionMocker\findStmtDependencies;
+use function tad\FunctionMocker\fullStopIt;
 use function tad\FunctionMocker\getAllFileStmts;
 use function tad\FunctionMocker\getDirsPhpFiles;
 use function tad\FunctionMocker\getFunctionAndClassStmts;
 use function tad\FunctionMocker\getIfWrapppedFunctionAndClassStmts;
-use function tad\FunctionMocker\getMaxMemory;
 use function tad\FunctionMocker\getNamespaceStmts;
 use function tad\FunctionMocker\isInFiles;
 use function tad\FunctionMocker\openPrivateClassMethods;
 use function tad\FunctionMocker\orderAndFilterArray;
+use function tad\FunctionMocker\prettyLowercase;
 use function tad\FunctionMocker\removeFinalFromClass;
 use function tad\FunctionMocker\removeFinalFromClassMethods;
 use function tad\FunctionMocker\slugify;
 use function tad\FunctionMocker\validateFileOrDir;
-use function tad\FunctionMocker\validateJsonFile;
 use function tad\FunctionMocker\wrapClassInIfBlock;
 use function tad\FunctionMocker\wrapFunctionInIfBlock;
 
 class CreateEnv extends Command {
+
+	use VersionChecker;
 
 	// @todo update the helper text
 
@@ -71,14 +69,15 @@ class CreateEnv extends Command {
 
 	protected $classesToFindCount = false;
 
-	protected $startTime = 0;
-
 	protected $bootstrapFile;
 
 	protected $envName;
 
 	protected $source;
 
+	/**
+	 * @var \tad\FunctionMocker\CLI\RunConfiguration
+	 */
 	protected $generationConfig = [];
 
 	protected $skipped = [];
@@ -107,8 +106,6 @@ class CreateEnv extends Command {
 
 	protected $writeFileHeaders = true;
 
-	protected $configFileDir;
-
 	protected $findAny = false;
 
 	protected $autoloadClasses = [];
@@ -123,13 +120,27 @@ class CreateEnv extends Command {
 
 	protected $withDependencies;
 
-	protected $foundClassIndex = [];
-
-	protected $foundFunctionIndex = [];
-
 	protected $dependencies = [];
 	protected $writeDestination = true;
 	protected $backup = [];
+	/**
+	 * @var Standard
+	 */
+	protected $codePrinter;
+	protected $normalizedFunctionsEntries = [];
+	protected $defaultFunctionSettings = [];
+	protected $defaultClassSetting = [];
+	protected $normalizedClassesEntries = [];
+
+	/**
+	 * @var \tad\FunctionMocker\CLI\MemoryChecker
+	 */
+	protected $memory;
+
+	/**
+	 * @var \tad\FunctionMocker\CLI\ExecutionTimeChecker
+	 */
+	protected $timer;
 
 	/**
 	 * @param bool $writeFileHeaders
@@ -196,7 +207,13 @@ TEXT;
 			     InputOption::VALUE_OPTIONAL,
 			     'If this flag option is set than the command will try to find and pull in code dependencies of the target code automatically searchin the specified sources.',
 			     false
-		     );
+		     )
+		     ->addOption( 'author', null, InputOption::VALUE_OPTIONAL,
+			     'The string that should be use in the @author tags, e.g. "JD <jd@foo.com>"',
+			     'Luca Tumedei <luca@theaveragedev.com>' )
+		     ->addOption( 'copyright', null, InputOption::VALUE_OPTIONAL,
+			     'The string that should be use in the @copyright tags, e.g. "2018 JD"',
+			     date( 'Y' ) . ' Luca Tumedei' );
 	}
 
 	/**
@@ -208,14 +225,18 @@ TEXT;
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$this->input = $input;
 		$this->output = $output;
+		$this->codePrinter = new Standard();
 
-		checkPhpVersion( 'Function Mocker CLI tool', 70000 );
-		$this->startExecutionTimer();
+		$this->memory = new MemoryChecker();
+		$this->timer = new ExecutionTimeChecker();
+
+		$this->checkPhpVersion( 70000 );
+		$this->timer->start();
 		$this->initRunConfiguration();
 		$this->readSourceFiles();
 		$this->parseSourceFilesForFunctionsAndClasses( 'Parsing source files for classes and functions...' );
 		$this->findDependencies();
-		$this->indexFoundStmts();
+		$this->cleanFoundStmts();
 		$this->createDestinationDirectory();
 		$this->writeFunctionFiles();
 		$this->writeClassFiles();
@@ -226,112 +247,31 @@ TEXT;
 		}
 	}
 
-	protected function startExecutionTimer() {
-		$this->startTime = microtime( true );
-	}
-
 	/**
 	 * @param \Symfony\Component\Console\Input\InputInterface $input
 	 */
 	protected function initRunConfiguration() {
-		$config = $this->generationConfig = $this->initConfig( $this->input );
-		$this->envName = $this->input->getArgument( 'name' );
-		$this->source = (array) validateFileOrDir( $config['source'], 'Source file or directory',
-			[ getcwd(), $this->configFileDir ] );
+		$this->generationConfig = RunConfiguration::fromInput( $this->input );
+		$this->source = (array) validateFileOrDir( $this->generationConfig['source'], 'Source file or directory',
+			[ getcwd(), $this->generationConfig['configFileDir'] ] );
 		$this->destination = findRelativePath( getcwd(),
-			$config['destination'] ?? getcwd() . '/tests/envs/' . $this->envName );
-		$this->bootstrapFile = ! empty( $config['bootstrap'] ) ? $this->destination . '/' . trim( $config['bootstrap'],
+			$this->generationConfig['destination'] ?? getcwd() . '/tests/envs/' . $this->generationConfig['name'] );
+		$this->bootstrapFile = ! empty( $this->generationConfig['bootstrap'] ) ? $this->destination . '/' . trim( $this->generationConfig['bootstrap'],
 				'\\/' ) : $this->destination . '/bootstrap.php';
-		$this->excludedFiles = empty( $config['exclude'] ) ? [] : $config['exclude'];
-		$this->removeDocBlocks = empty( $config['remove-docblocks'] ) ? false : (bool) $config['remove-docblocks'];
-		$this->bodyBehaviour = empty( $config['body'] ) ? 'copy' : $config['body'];
-		$this->autoload = empty( $config['autoload'] ) ? true : (bool) $config['autoload'];
-		$this->wrapInIf = empty( $config['wrapInIf'] ) ? true : (bool) $config['wrapInIf'];
-		$this->saveGenerationConfigFile = empty( $config['save'] ) ? false : (bool) $config['save'];
-		$this->functionsToFind = $config['functions'] ?? [];
-		$this->classesToFind = $config['classes'] ?? [];
+		$this->excludedFiles = empty( $this->generationConfig['exclude'] ) ? [] : $this->generationConfig['exclude'];
+		$this->removeDocBlocks = empty( $this->generationConfig['remove-docblocks'] ) ? false : (bool) $this->generationConfig['remove-docblocks'];
+		$this->bodyBehaviour = empty( $this->generationConfig['body'] ) ? 'copy' : $this->generationConfig['body'];
+		$this->autoload = empty( $this->generationConfig['autoload'] ) ? true : (bool) $this->generationConfig['autoload'];
+		$this->wrapInIf = empty( $this->generationConfig['wrapInIf'] ) ? true : (bool) $this->generationConfig['wrapInIf'];
+		$this->saveGenerationConfigFile = empty( $this->generationConfig['save'] ) ? false : (bool) $this->generationConfig['save'];
+		$this->functionsToFind = $this->generationConfig['functions'] ?? [];
+		$this->classesToFind = $this->generationConfig['classes'] ?? [];
 		$this->functionsToFindCount = \count( $this->functionsToFind ) ?: static::NOTHING_TO_FIND;
 		$this->classesToFindCount = \count( $this->classesToFind ) ?: static::NOTHING_TO_FIND;
 		if ( $this->classesToFindCount === static::NOTHING_TO_FIND && $this->functionsToFindCount === static::NOTHING_TO_FIND ) {
 			$this->findAny = true;
 		}
-
-		$this->withDependencies = empty( $config['with-dependencies'] ) ? false : true;
-	}
-
-	/**
-	 * @param \Symfony\Component\Console\Input\InputInterface $input
-	 *
-	 * @return array
-	 */
-	protected function initConfig( InputInterface $input ): array {
-		$name = $input->getArgument( 'name' );
-		$inputDestination = $input->hasOption( 'destination' ) ? $input->getOption( 'destination' ) : '/tests/envs';
-
-		$cliConfig = [
-			'name'              => $name,
-			'source'            => $input->getArgument( 'source' ),
-			'destination'       => $inputDestination,
-			'save'              => $input->hasOption( 'save' ) ? $input->getOption( 'save' ) : null,
-			'with-dependencies' => $input->hasOption( 'with-dependencies' ),
-		];
-
-		foreach ( [ 'source', 'destination' ] as $key ) {
-			if ( ! isset( $cliConfig[ $key ] ) ) {
-				continue;
-			}
-
-			$cliConfig[ $key ] = expandTildeIn( $cliConfig[ $key ] );
-		}
-
-		$configFile = $input->getOption( 'config' );
-
-		$configFileConfig = [
-			'removeDocBlocks' => false,
-			'wrapInIf'        => true,
-			'body'            => 'copy',
-			'autoload'        => true,
-		];
-
-		if ( $configFile ) {
-			$configFile = validateFileOrDir( $configFile, "JSON configuration file" );
-			$configFileConfig = validateJsonFile( $configFile );
-			$this->configFileDir = \tad\FunctionMocker\realpath( \dirname( $configFile ) );
-		}
-
-		$configFileConfig['_readme'] = [
-			"This file defines the {$name} testing environment generation rules.",
-			'Read more about it at https://github.com/lucatume/function-mocker.',
-			'This file was automatically @generated.',
-		];
-
-		if ( empty( $cliConfig['source'] ) ) {
-			unset( $cliConfig['source'] );
-		}
-
-		$configFileSources = ! empty( $configFileConfig['source'] ) ? (array) $configFileConfig['source'] : [];
-		unset( $configFileConfig['source'] );
-
-		$config = array_merge(
-			$configFileConfig,
-			array_filter(
-				$cliConfig,
-				function ( $v ) {
-					return null !== $v;
-				}
-			)
-		);
-
-		$config['source'] = ! empty( $config['source'] ) ? array_merge( (array) $config['source'],
-			$configFileSources ) : $configFileSources;
-
-		if ( empty( $config['source'] ) ) {
-			throw RuntimeException::becauseNoSourcesWereSpecified();
-		}
-
-		$config['source'] = array_unique( $config['source'] );
-
-		return $config;
+		$this->withDependencies = empty( $this->generationConfig['with-dependencies'] ) ? false : true;
 	}
 
 	protected function readSourceFiles() {
@@ -344,12 +284,10 @@ TEXT;
 		$this->output->writeln( "\n<info>{$message}</info>" );
 
 		$progressBar = new ProgressBar( $this->output, \count( $this->sourceFiles ) );
-		$maxMemory = $this->getMemoryLimit();
-		$maxTime = $this->getTimeLimit();
-		foreach ( $this->sourceFiles as $file ) {
-			checkMemoryUsage( $maxMemory );
-			checkTime( $maxTime, $this->startTime );
 
+		foreach ( $this->sourceFiles as $file ) {
+			$this->memory->check();
+			$this->timer->check();
 			$progressBar->advance();
 
 			if ( isInFiles( $file, $this->excludedFiles ) ) {
@@ -357,38 +295,9 @@ TEXT;
 			}
 
 			try {
-				/**
-				 * @var \PhpParser\Node\Stmt[] $allStmts
-				 */
-				$allStmts = getAllFileStmts( $file );
-
-				$stmts = getFunctionAndClassStmts( $allStmts );
-				$wrappedStmts = getIfWrapppedFunctionAndClassStmts( $allStmts );
-
-				$namespaceStmts = getNamespaceStmts( $allStmts );
-				if ( \count( $namespaceStmts ) ) {
-					/**
-					 * @var Stmt $namespaceStmt
-					 */
-					foreach ( $namespaceStmts as $namespaceStmt ) {
-						if ( empty( $namespaceStmt->stmts ) ) {
-							continue;
-						}
-
-						$thisNamesapceStmts = getFunctionAndClassStmts( $namespaceStmt->stmts );
-						$thisNamesapceWrappedStmts = getIfWrapppedFunctionAndClassStmts( $namespaceStmt->stmts );
-						$this->indexFileStmts( $file, $thisNamesapceStmts, $namespaceStmt );
-						$this->indexFileStmts( $file, $thisNamesapceWrappedStmts, $namespaceStmt );
-					}
-				}
-
-				$this->indexFileStmts( $file, $stmts );
-				$this->indexFileStmts( $file, $wrappedStmts );
-			} catch ( BreakSignal $signal ) {
+				$this->parseSourceFile( $file );
+			} catch ( BreakSignal $e ) {
 				break;
-			} catch ( \Exception $e ) {
-				$this->skipped[] = $file;
-				continue;
 			}
 		}
 
@@ -397,31 +306,42 @@ TEXT;
 		$this->dependencies = array_unique( array_filter( $this->dependencies ) );
 	}
 
-	/**
-	 * @return int
-	 */
-	protected function getMemoryLimit(): int {
-		$maxMemory = getMaxMemory();
+	protected function parseSourceFile( string $file ) {
+		try {
+			/**
+			 * @var \PhpParser\Node\Stmt[] $allStmts
+			 */
+			$allStmts = getAllFileStmts( $file );
 
-		if ( $maxMemory <= 0 ) {
-			$this->output->writeln( '<error>PHP memory limit is set to -1: this command has the potential of consuming a lot of memory and will auto-limit itself to 128M.</error>' );
-			$maxMemory = - 1;
+			$stmts = getFunctionAndClassStmts( $allStmts );
+			$wrappedStmts = getIfWrapppedFunctionAndClassStmts( $allStmts );
+
+			$namespaceStmts = getNamespaceStmts( $allStmts );
+			if ( \count( $namespaceStmts ) ) {
+				/**
+				 * @var Stmt $namespaceStmt
+				 */
+				foreach ( $namespaceStmts as $namespaceStmt ) {
+					if ( empty( $namespaceStmt->stmts ) ) {
+						continue;
+					}
+
+					$thisNamesapceStmts = getFunctionAndClassStmts( $namespaceStmt->stmts );
+					$thisNamesapceWrappedStmts = getIfWrapppedFunctionAndClassStmts( $namespaceStmt->stmts );
+					$this->indexFileStmts( $file, $thisNamesapceStmts, $namespaceStmt );
+					$this->indexFileStmts( $file, $thisNamesapceWrappedStmts, $namespaceStmt );
+				}
+			}
+
+			$this->indexFileStmts( $file, $stmts );
+			$this->indexFileStmts( $file, $wrappedStmts );
+		} catch ( BreakSignal $signal ) {
+			throw $signal;
+		} catch ( \Exception $e ) {
+			$this->skipped[] = $file;
+
+			return;
 		}
-
-		return $maxMemory;
-	}
-
-	/**
-	 * @return int
-	 */
-	protected function getTimeLimit(): int {
-		$maxTime = ini_get( 'max_execution_time' );
-
-		if ( empty( $maxTime ) || $maxTime <= 0 ) {
-			$maxTime = - 1;
-		}
-
-		return $maxTime;
 	}
 
 	protected function indexFileStmts( string $file, array $stmts, Namespace_ $namespace = null ) {
@@ -442,16 +362,17 @@ TEXT;
 			];
 
 			if ( $stmt instanceof Function_ ) {
-				if ( $this->findAny
-					|| ( $this->functionsToFindCount > 0 && \array_key_exists( $name, $this->functionsToFind ) )
+				if ( ! array_key_exists( $name, $this->functionIndex )
+					&& (
+						$this->findAny
+						|| ( $this->functionsToFindCount > 0 && \array_key_exists( $name, $this->functionsToFind ) )
+					)
 				) {
 					$this->functionIndex[ $name ] = $data;
 					$this->functionsToFindCount --;
 					if ( $this->withDependencies ) {
 						$this->addDependenciesFor( $stmt, $namespace );
-					};
-				} else {
-					$this->foundFunctionIndex[ $name ] = $data;
+					}
 				}
 			}
 
@@ -459,16 +380,18 @@ TEXT;
 				|| $stmt instanceof Trait_
 				|| $stmt instanceof Interface_
 			) {
-				if ( $this->findAny
-					|| ( $this->classesToFindCount > 0 && \array_key_exists( $name, $this->classesToFind ) )
+				if (
+					! array_key_exists( $name, $this->functionIndex )
+					&& (
+						$this->findAny
+						|| ( $this->classesToFindCount > 0 && \array_key_exists( $name, $this->classesToFind ) )
+					)
 				) {
 					$this->classIndex[ $name ] = $data;
 					$this->classesToFindCount --;
 					if ( $this->withDependencies ) {
 						$this->addDependenciesFor( $stmt, $namespace );
 					}
-				} else {
-					$this->foundClassIndex[ $name ] = $data;
 				}
 			}
 
@@ -484,18 +407,24 @@ TEXT;
 	}
 
 	protected function findDependencies() {
-		if ( $this->withDependencies && ! empty( $this->dependencies ) ) {
-			$this->backupFound();
-			$this->classesToFind = array_combine( $this->dependencies,
-				array_fill( 0, count( $this->dependencies ), [] ) );
-			$this->functionsToFind = array_combine( $this->dependencies,
-				array_fill( 0, count( $this->dependencies ), [] ) );
-			$this->classesToFindCount = $this->functionsToFindCount = count( $this->dependencies );
-			// shallow dependency resolution
-			$this->withDependencies = false;
-			$this->parseSourceFilesForFunctionsAndClasses( 'Parsing source files for dependencies...' );
-			$this->restoreAndMergeFound();
+		if ( ! $this->withDependencies ) {
+			return;
 		}
+
+		if ( empty( $this->dependencies ) ) {
+			$this->output->writeln( '<info>No dependencies found.</info>' );
+		}
+
+		$this->backupFound();
+		$this->classesToFind = array_combine( $this->dependencies,
+			array_fill( 0, count( $this->dependencies ), [] ) );
+		$this->functionsToFind = array_combine( $this->dependencies,
+			array_fill( 0, count( $this->dependencies ), [] ) );
+		$this->classesToFindCount = $this->functionsToFindCount = count( $this->dependencies );
+		// shallow dependency resolution
+		$this->withDependencies = false;
+		$this->parseSourceFilesForFunctionsAndClasses( 'Parsing source files for dependencies...' );
+		$this->restoreAndMergeFound();
 	}
 
 	protected function backupFound() {
@@ -508,7 +437,7 @@ TEXT;
 		$this->classesToFind = array_merge( $this->backup['classesToFind'], $this->classesToFind );
 	}
 
-	protected function indexFoundStmts() {
+	protected function cleanFoundStmts() {
 		$this->functionIndex = array_unique( $this->functionIndex, SORT_REGULAR );
 		$this->classIndex = array_unique( $this->classIndex, SORT_REGULAR );
 	}
@@ -530,15 +459,36 @@ TEXT;
 			return;
 		}
 
-		$defaultFunctionSettings = [
+		$this->defaultFunctionSettings = [
 			'removeDocBlocks' => $this->removeDocBlocks,
 			'body'            => $this->bodyBehaviour,
 			'wrapInIf'        => $this->wrapInIf,
 		];
-		$normalizedFunctionsEntries = $this->normalizeEntries( $this->functionsToFind, $defaultFunctionSettings );
+		$this->normalizedFunctionsEntries = $this->normalizeEntries( $this->functionsToFind,
+			$this->defaultFunctionSettings );
 
-		$codePrinter = new Standard;
+		foreach ( $this->orderFunctionsByNamespace() as $namespace => $fEntries ) {
+			foreach ( $fEntries as $name => $data ) {
+				$this->writeFunctionFile( $data, $name, $namespace );
+			}
+		}
+	}
 
+	protected function normalizeEntries( array $entries, array $defaults ): array {
+		$normalized = [];
+		foreach ( $entries as $index => $entry ) {
+			$name = is_numeric( $index ) ? $entry : $index;
+			$normalizedEntry = array_merge( $defaults, (array) $entry );
+			$normalized[ $name ] = (object) $normalizedEntry;
+		}
+
+		return $normalized;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function orderFunctionsByNamespace(): array {
 		$namespaceOrderedFunctions = array_filter(
 			array_reduce(
 				$this->functionIndex,
@@ -559,89 +509,80 @@ TEXT;
 			)
 		);
 
-		foreach ( $namespaceOrderedFunctions as $namespace => $fEntries ) {
-			foreach ( $fEntries as $name => $data ) {
-				list( $file, $stmt ) = array_values( $data );
-				$thisConfig = $normalizedFunctionsEntries[ $name ] ?? (object) $defaultFunctionSettings;
-				$generatedConfig = $thisConfig;
-
-				$functionsFileBasename = ! empty( $thisConfig->fileName ) ? trim( $thisConfig->fileName ) : 'functions.php';
-
-				$functionsFilePath = $namespace === '\\' ? $this->destination . '/' . $functionsFileBasename : $this->destination . '/' . str_replace( '\\',
-						'/', $namespace ) . '/' . $functionsFileBasename;
-				$this->filesToInclude[] = $functionsFilePath;
-
-				$functionFileDirectory = \dirname( $functionsFilePath );
-				if ( ! is_dir( $functionFileDirectory ) ) {
-					if ( ! mkdir( $functionFileDirectory ) && ! is_dir( $functionFileDirectory ) ) {
-						throw new \RuntimeException( sprintf( 'Directory "%s" was not created',
-							$functionFileDirectory ) );
-					}
-				}
-
-				if ( ! \in_array( $functionsFilePath, $this->openFunctionFiles,
-						true ) && file_exists( $functionsFilePath ) ) {
-					unlink( $functionsFilePath );
-				}
-
-				$functionsFile = $this->openFileForWriting( $functionsFilePath );
-
-				if ( ! \in_array( $functionsFilePath, $this->openFunctionFiles, true ) ) {
-					$this->writePhpOpeningTagToFile( $functionsFile );
-					$this->writeFileHeaderToFile( $functionsFile, "{$this->envName} environment functions" );
-					$this->writeNamespaceToFile( $functionsFile, $namespace );
-					$this->openFunctionFiles[] = $functionsFilePath;
-				}
-
-				$generatedConfig->removeDocBlocks = isset( $thisConfig->removeDocBlocks ) ? (bool) $thisConfig->removeDocBlocks : false;
-				if ( (bool) $thisConfig->removeDocBlocks ) {
-					$stmt->setAttribute( 'comments', [] );
-				}
-
-				if ( $thisConfig->body === 'throw' ) {
-					$generatedConfig->body = 'throw';
-					$stmt->stmts = $this->throwNotImplementedException();
-				} elseif ( $thisConfig->body === 'empty' ) {
-					$generatedConfig->body = 'empty';
-					$stmt->stmts = [];
-				} else {
-					$generatedConfig->body = 'copy';
-				}
-
-				$functionStmt = $stmt;
-
-				$generatedConfig->wrapInIf = isset( $thisConfig->wrapInIf ) ? (bool) $generatedConfig->wrapInIf : true;
-				if ( (bool) $thisConfig->wrapInIf ) {
-					$functionStmt = wrapFunctionInIfBlock( $stmt, $name, $namespace );
-				}
-
-				$functionCode = $codePrinter->prettyPrint( [ $functionStmt ] ) . "\n\n";
-				$generatedConfig->source = findRelativePath( $this->destination, $file );
-
-				fwrite( $functionsFile, $functionCode );
-
-				$this->generationConfig['functions'][ $name ] = orderAndFilterArray( [
-					'removeDocBlocks',
-					'body',
-					'wrapInIf',
-					'source',
-					'fileName',
-				], (array)$generatedConfig );
-
-				fclose( $functionsFile );
-			}
-		}
+		return $namespaceOrderedFunctions;
 	}
 
-	protected function normalizeEntries( array $entries, array $defaults ): array {
-		$normalized = [];
-		foreach ( $entries as $index => $entry ) {
-			$name = is_numeric( $index ) ? $entry : $index;
-			$normalizedEntry = array_merge( $defaults, (array) $entry );
-			$normalized[ $name ] = (object) $normalizedEntry;
+	protected function writeFunctionFile( $data, $name, $namespace ) {
+		list( $file, $stmt ) = array_values( $data );
+		$thisConfig = $this->normalizedFunctionsEntries[ $name ] ?? (object) $this->defaultFunctionSettings;
+		$generatedConfig = $thisConfig;
+
+		$functionsFileBasename = ! empty( $thisConfig->fileName ) ? trim( $thisConfig->fileName ) : 'functions.php';
+
+		$functionsFilePath = $namespace === '\\' ? $this->destination . '/' . $functionsFileBasename : $this->destination . '/' . str_replace( '\\',
+				'/', $namespace ) . '/' . $functionsFileBasename;
+		$this->filesToInclude[] = $functionsFilePath;
+
+		$functionFileDirectory = \dirname( $functionsFilePath );
+		if ( ! is_dir( $functionFileDirectory ) ) {
+			if ( ! mkdir( $functionFileDirectory ) && ! is_dir( $functionFileDirectory ) ) {
+				throw new \RuntimeException( sprintf( 'Directory "%s" was not created',
+					$functionFileDirectory ) );
+			}
 		}
 
-		return $normalized;
+		if ( ! \in_array( $functionsFilePath, $this->openFunctionFiles,
+				true ) && file_exists( $functionsFilePath ) ) {
+			unlink( $functionsFilePath );
+		}
+
+		$functionsFile = $this->openFileForWriting( $functionsFilePath );
+
+		if ( ! \in_array( $functionsFilePath, $this->openFunctionFiles, true ) ) {
+			$this->writePhpOpeningTagToFile( $functionsFile );
+			$this->writeFileHeaderToFile( $functionsFile, capitalPDangIt( $this->generationConfig['name'] )
+				. ' environment '
+				. prettyLowercase( basename( $functionsFilePath, '.php' ) ) );
+			$this->writeNamespaceToFile( $functionsFile, $namespace );
+			$this->openFunctionFiles[] = $functionsFilePath;
+		}
+
+		$generatedConfig->removeDocBlocks = isset( $thisConfig->removeDocBlocks ) ? (bool) $thisConfig->removeDocBlocks : false;
+		if ( (bool) $thisConfig->removeDocBlocks ) {
+			$stmt->setAttribute( 'comments', [] );
+		}
+
+		if ( $thisConfig->body === 'throw' ) {
+			$generatedConfig->body = 'throw';
+			$stmt->stmts = $this->throwNotImplementedException();
+		} elseif ( $thisConfig->body === 'empty' ) {
+			$generatedConfig->body = 'empty';
+			$stmt->stmts = [];
+		} else {
+			$generatedConfig->body = 'copy';
+		}
+
+		$functionStmt = $stmt;
+
+		$generatedConfig->wrapInIf = isset( $thisConfig->wrapInIf ) ? (bool) $generatedConfig->wrapInIf : true;
+		if ( (bool) $thisConfig->wrapInIf ) {
+			$functionStmt = wrapFunctionInIfBlock( $stmt, $name, $namespace );
+		}
+
+		$functionCode = $this->codePrinter->prettyPrint( [ $functionStmt ] ) . "\n\n";
+		$generatedConfig->source = findRelativePath( $this->destination, $file );
+
+		fwrite( $functionsFile, $functionCode );
+
+		$this->generationConfig->addFunctionConfig( $name, orderAndFilterArray( [
+			'removeDocBlocks',
+			'body',
+			'wrapInIf',
+			'source',
+			'fileName',
+		], (array) $generatedConfig ) );
+
+		fclose( $functionsFile );
 	}
 
 	/**
@@ -659,7 +600,7 @@ TEXT;
 	 * @param $functionsFile
 	 */
 	protected function writePhpOpeningTagToFile( $functionsFile ) {
-		fwrite( $functionsFile, "<?php\n\n" );
+		fwrite( $functionsFile, "<?php\n" );
 	}
 
 	protected function writeFileHeaderToFile( $file, $header ) {
@@ -676,11 +617,22 @@ TEXT;
 	 * @return string
 	 */
 	protected function getFileHeader( $header ): string {
+		$package = 'Test\Environments';
+		$subpackage = capitalPDangIt( $this->generationConfig['name'] );
+		$author = $this->generationConfig['author'];
+		$copyright = $this->generationConfig['copyright'];
+		$header = fullStopIt( $header );
+
 		return implode(
 				"\n",
 				[
 					'/**',
 					" * {$header}",
+					' *',
+					" * @package {$package}",
+					" * @subpackage {$subpackage}",
+					" * @author {$author}",
+					" * @copyright {$copyright}",
 					' *',
 					' * @generated by function-mocker environment generation tool on ' . date( 'Y-m-d H:i:s (e)' ),
 					' * @link https://github.com/lucatume/function-mocker',
@@ -717,139 +669,142 @@ TEXT;
 			return;
 		}
 
-		$defaultClassSetting = [
+		$this->defaultClassSetting = [
 			'removeDocBlocks' => $this->removeDocBlocks,
 			'body'            => $this->bodyBehaviour,
 			'wrapInIf'        => $this->wrapInIf,
 			'autoload'        => $this->autoload,
 		];
-		$normalizedClassesEntries = $this->normalizeEntries( $this->classesToFind, $defaultClassSetting );
-
-		$codePrinter = new Standard;
+		$this->normalizedClassesEntries = $this->normalizeEntries( $this->classesToFind, $this->defaultClassSetting );
 
 		foreach ( $this->classIndex as $name => $classEntry ) {
-			/**
-			 * @var Stmt $stmt
-			 */
-			/**
-			 * @var Namespace_ $namespace
-			 */
-			list( $file, $stmt, $namespace ) = array_values( $classEntry );
-			$classFile = $this->destination . '/' . str_replace( '\\', '/', $name ) . '.php';
-			$thisConfig = $normalizedClassesEntries[ $name ] ?? (object) $defaultClassSetting;
-			$generatedConfig = $thisConfig;
-
-			if ( empty( $thisConfig->autoload ) ) {
-				$this->filesToInclude[] = $classFile;
-			} else {
-				$this->autoloadClasses[] = $name;
-			}
-
-			$generatedConfig->removeDocBlocks = isset( $thisConfig->removeDocBlocks ) ? (bool) $thisConfig->removeDocBlocks : false;
-			if ( (bool) $thisConfig->removeDocBlocks ) {
-				$stmt->setAttribute( 'comments', [] );
-				array_walk(
-					$stmt->stmts,
-					function ( Stmt &$stmt ) {
-						$stmt->setAttribute( 'comments', [] );
-					}
-				);
-			}
-
-			removeFinalFromClass( $stmt );
-			removeFinalFromClassMethods( $stmt );
-			openPrivateClassMethods( $stmt );
-
-			if ( $thisConfig->body === 'throw' ) {
-				$generatedConfig->body = 'throw';
-				array_walk(
-					$stmt->stmts,
-					function ( Stmt &$stmt ) {
-						if ( $stmt instanceof Stmt\ClassMethod ) {
-							$stmt->stmts = $this->throwNotImplementedException();
-						}
-					}
-				);
-			} elseif ( $thisConfig->body === 'empty' ) {
-				$generatedConfig->body = 'empty';
-				array_walk(
-					$stmt->stmts,
-					function ( Stmt &$stmt ) {
-						if ( $stmt instanceof Stmt\ClassMethod ) {
-							$stmt->stmts = [];
-						}
-					}
-				);
-			} else {
-				$generatedConfig->body = 'copy';
-			}
-
-			$generatedConfig->wrapInIf = isset( $thisConfig->wrapInIf ) ? (bool) $generatedConfig->wrapInIf : true;
-			if ( (bool) $thisConfig->wrapInIf ) {
-				$namespaceString = $namespace instanceof Namespace_ ? $namespace->name : null;
-				$stmt = wrapClassInIfBlock( $stmt, $name, $namespaceString );
-			}
-
-			$classCode = "\n" . $codePrinter->prettyPrint( [ $stmt ] );
-
-			if ( ! is_dir( \dirname( $classFile ) ) ) {
-				if ( ! mkdir( \dirname( $classFile ), 0777, true ) && ! is_dir( \dirname( $classFile ) ) ) {
-					throw new \RuntimeException( sprintf( 'Directory "%s" was not created', \dirname( $classFile ) ) );
-				}
-			}
-
-			$generatedConfig->source = findRelativePath( $this->destination, $file );
-
-			$fileHandle = fopen( $classFile, 'wb' );
-			$this->writePhpOpeningTagToFile( $fileHandle );
-			$this->writeFileHeaderToFile( $fileHandle, "{$name} class." );
-			fwrite( $fileHandle, $classCode );
-			fclose( $fileHandle );
-			$this->generationConfig['classes'][ $name ] = orderAndFilterArray( [
-				'removeDocBlocks',
-				'body',
-				'wrapInIf',
-				'autoload',
-				'source',
-			], (array)$generatedConfig );
+			$this->writeClassFile( $classEntry, $name );
 		}
 	}
 
+	protected function writeClassFile( $classEntry, $name ) {
+		/**
+		 * @var Stmt       $stmt
+		 * @var Namespace_ $namespace
+		 */
+		list( $file, $stmt, $namespace ) = array_values( $classEntry );
+		$classFile = $this->destination . '/' . str_replace( '\\', '/', $name ) . '.php';
+		$thisConfig = $this->normalizedClassesEntries[ $name ] ?? (object) $this->defaultClassSetting;
+		$generatedConfig = $thisConfig;
+
+		if ( empty( $thisConfig->autoload ) ) {
+			$this->filesToInclude[] = $classFile;
+		} else {
+			$this->autoloadClasses[] = $name;
+		}
+
+		$generatedConfig->removeDocBlocks = isset( $thisConfig->removeDocBlocks ) ? (bool) $thisConfig->removeDocBlocks : false;
+		if ( (bool) $thisConfig->removeDocBlocks ) {
+			$stmt->setAttribute( 'comments', [] );
+			array_walk(
+				$stmt->stmts,
+				function ( Stmt &$stmt ) {
+					$stmt->setAttribute( 'comments', [] );
+				}
+			);
+		}
+
+		removeFinalFromClass( $stmt );
+		removeFinalFromClassMethods( $stmt );
+		openPrivateClassMethods( $stmt );
+
+		if ( $thisConfig->body === 'throw' ) {
+			$generatedConfig->body = 'throw';
+			array_walk(
+				$stmt->stmts,
+				function ( Stmt &$stmt ) {
+					if ( $stmt instanceof Stmt\ClassMethod ) {
+						$stmt->stmts = $this->throwNotImplementedException();
+					}
+				}
+			);
+		} elseif ( $thisConfig->body === 'empty' ) {
+			$generatedConfig->body = 'empty';
+			array_walk(
+				$stmt->stmts,
+				function ( Stmt &$stmt ) {
+					if ( $stmt instanceof Stmt\ClassMethod ) {
+						$stmt->stmts = [];
+					}
+				}
+			);
+		} else {
+			$generatedConfig->body = 'copy';
+		}
+
+		$generatedConfig->wrapInIf = isset( $thisConfig->wrapInIf ) ? (bool) $generatedConfig->wrapInIf : true;
+		if ( (bool) $thisConfig->wrapInIf ) {
+			$namespaceString = $namespace instanceof Namespace_ ? $namespace->name : null;
+			$stmt = wrapClassInIfBlock( $stmt, $name, $namespaceString );
+		}
+
+		$classCode = "\n" . $this->codePrinter->prettyPrint( [ $stmt ] );
+
+		if ( ! is_dir( \dirname( $classFile ) ) ) {
+			if ( ! mkdir( \dirname( $classFile ), 0777, true ) && ! is_dir( \dirname( $classFile ) ) ) {
+				throw new \RuntimeException( sprintf( 'Directory "%s" was not created', \dirname( $classFile ) ) );
+			}
+		}
+
+		$generatedConfig->source = findRelativePath( $this->destination, $file );
+
+		$fileHandle = fopen( $classFile, 'wb' );
+		$this->writePhpOpeningTagToFile( $fileHandle );
+		$this->writeFileHeaderToFile( $fileHandle, "{$name} class." );
+		fwrite( $fileHandle, $classCode );
+		fclose( $fileHandle );
+		$this->generationConfig->addClassConfig( $name, orderAndFilterArray( [
+			'removeDocBlocks',
+			'body',
+			'wrapInIf',
+			'autoload',
+			'source',
+		], (array) $generatedConfig ) );
+	}
+
 	protected function writeEnvBootstrapFile() {
+		$openingPhpTag = "<?php\n";
+		$extraLines = [];
+		$name = capitalPDangIt( $this->generationConfig['name'] );
+
+		if ( ! empty( $this->autoloadClasses ) ) {
+			$autoloaderName = capitalPDangIt( slugify( $this->generationConfig['name'], '_' ) ) . 'EnvAutoloader';
+			$autoloaderFile = \dirname( $this->bootstrapFile ) . '/' . $autoloaderName . '.php';
+			$this->filesToInclude[] = $autoloaderFile;
+			$template = new EnvAutoloader();
+			$classMap = array_combine(
+				$this->autoloadClasses,
+				array_map(
+					function ( string $class ) {
+						return trim( str_replace( '\\', '/', $class ), '/' );
+					},
+					$this->autoloadClasses
+				)
+			);
+			$autoloadCode = $template
+				-> set('header', $this->getFileHeader($name . ' environment autoloader.'))
+				->set( 'id', $autoloaderName )
+				->set( 'classMap', $classMap )
+				->render();
+			$extraLines[] = $template->getExtraLines();
+			file_put_contents( $autoloaderFile, $openingPhpTag . $autoloadCode, LOCK_EX );
+		}
+
 		$requireLines = $this->compileIncludePaths( $this->bootstrapFile, array_unique( $this->filesToInclude ) );
-		$bootstrapCode = "<?php\n\n";
+		$bootstrapCode = $openingPhpTag;
 
 		if ( $this->writeFileHeaders ) {
-			$headerLines = [
-				'/**',
-				" * {$this->envName} environment bootstrap file",
-				' *',
-				' * @generated by function-mocker environment generation tool on ' . date( 'Y-m-d H:i:s (e)' ),
-				' * @link https://github.com/lucatume/function-mocker',
-				' */',
-				"\n",
-			];
+			$headerLines = explode( "\n", $this->getFileHeader( $name . ' environment bootstrap file.' ) );
 			$requireLines = array_merge( $headerLines, $requireLines );
 		}
 
 		$bootstrapCode .= implode( "\n", $requireLines );
-		if ( ! empty( $this->autoloadClasses ) ) {
-			$autoloadCode = ( new EnvAutoloader() )->render(
-				[
-					'id'       => slugify( $this->envName, '_' ),
-					'classMap' => array_combine(
-						$this->autoloadClasses,
-						array_map(
-							function ( string $class ) {
-								return trim( str_replace( '\\', '/', $class ), '/' );
-							},
-							$this->autoloadClasses
-						)
-					),
-				]
-			);
-			$bootstrapCode .= "\n\n" . $autoloadCode;
-		}
+		$bootstrapCode .= "\n\n" . implode( "\n", $extraLines );
 
 		file_put_contents( $this->bootstrapFile, $bootstrapCode, LOCK_EX );
 	}
@@ -896,26 +851,24 @@ TEXT;
 			unset( $this->generationConfig['destination'] );
 		}
 
-		$orderedGenerationConfig = orderAndFilterArray(
-			[
-				'_readme',
-				'timestamp',
-				'date',
-				'name',
-				'source',
-				'destination',
-				'bootstrap',
-				'removeDocBlocks',
-				'wrapInIf',
-				'body',
-				'autoload',
-				'functions',
-				'classes',
-			],
-			$this->generationConfig
-		);
+		$orderedGenerationConfig = orderAndFilterArray( [
+			'_readme',
+			'timestamp',
+			'date',
+			'name',
+			'source',
+			'destination',
+			'bootstrap',
+			'removeDocBlocks',
+			'wrapInIf',
+			'body',
+			'autoload',
+			'functions',
+			'classes',
+		], $this->generationConfig->toArray() );
 		$saveConfigPath = $this->destination . '/generation-config.json';
 		file_put_contents( $saveConfigPath,
 			json_encode( $orderedGenerationConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	}
 }
+

@@ -4,8 +4,8 @@
         "Read more about it at https://github.com/lucatume/function-mocker.",
         "This file was automatically @generated."
     ],
-    "timestamp": 1534436085,
-    "date": "2018-08-16 16:14:45 (UTC)",
+    "timestamp": 1534503740,
+    "date": "2018-08-17 11:02:20 (UTC)",
     "name": "wordpress",
     "source": [
         "../../../../../vendor/wordpress/src/wp-includes"
@@ -165,6 +165,20 @@
             "fileName": "utils.php"
         },
         "wp_list_pluck": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "wp_list_filter": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "fileName": "utils.php"
+        },
+        "wp_list_sort": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,

@@ -32,7 +32,8 @@
         "phpspec/prophecy": "~1.0",
         "antecedent/patchwork": "^2.0",
         "symfony/console": "~3.0",
-        "xamin/handlebars.php": "^0.10.4"
+        "xamin/handlebars.php": "^0.10.4",
+        "ext-json": "^1.6"
     },
     "autoload": {
         "psr-0": {
