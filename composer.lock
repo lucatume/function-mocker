@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "8d6eac4474f5dddcb43d219455c8387c",
@@ -2689,9 +2689,9 @@
             "name": "wordpress",
             "version": "4.9.6",
             "source": {
-                "type": "git",
-                "url": "https://github.com/WordPress/WordPress",
-                "reference": "master"
+                "type": "svn",
+                "url": "https://develop.svn.wordpress.org",
+                "reference": "trunk"
             },
             "type": "library"
         }
