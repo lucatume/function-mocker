@@ -24,7 +24,7 @@
         },
         {
             "type": "git",
-            "url": "/Users/luca/Repos/coding-standards"
+            "url": "https://github.com/lucatume/coding-standards.git"
         }
     ],
     "require": {
