@@ -6,6 +6,11 @@ class EnvAutoloader extends Template {
 
 	protected static $template = <<< PHP
 {{{header}}}
+/**
+ * Class {{id}}
+ *
+ * Handles the autoloading of the {{name}} test environment classes.
+ */
 class {{id}} {
 
 	/**

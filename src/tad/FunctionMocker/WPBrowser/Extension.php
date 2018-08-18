@@ -1,4 +1,12 @@
 <?php
+/**
+ * Function Mocker extension class to integrate with wp-browser.
+ *
+ * @package FunctionMocker
+ * @subpackage Integrations\wp-browser
+ * @author Luca Tumedei <luca@theaveragedev.com>
+ * @copyright 2018 Luca Tumedei
+ */
 
 namespace tad\FunctionMocker\WPBrowser;
 

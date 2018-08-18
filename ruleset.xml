@@ -10,4 +10,41 @@
             <property name="authorEmail" value="luca@theaveragedev.com"/>
         </properties>
     </rule>
+
+    <!--exclude rules for generated WordPress environment files-->
+    <rule ref="Squiz.PHP.GlobalKeyword">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress</exclude-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/bootstrap.php</include-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/WordPressEnvAutoloader.php</include-pattern>
+    </rule>
+    <rule ref="Generic.NamingConventions.CamelCapsFunctionName">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress</exclude-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/bootstrap.php</include-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/WordPressEnvAutoloader.php</include-pattern>
+    </rule>
+    <rule ref="PEAR.Commenting.FunctionComment">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress</exclude-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/bootstrap.php</include-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/WordPressEnvAutoloader.php</include-pattern>
+    </rule>
+    <rule ref="Squiz.PHP.CommentedOutCode">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress</exclude-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/bootstrap.php</include-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/WordPressEnvAutoloader.php</include-pattern>
+    </rule>
+    <rule ref="Generic.Metrics.CyclomaticComplexity">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress</exclude-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/bootstrap.php</include-pattern>
+        <include-pattern>src/tad/FunctionMocker/envs/WordPress/WordPressEnvAutoloader.php</include-pattern>
+    </rule>
+
+    <!--the WordPress environment bootstrap file will include files that might not have a file doc comment-->
+    <rule ref="theAverageDev.Commenting.FileComment">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress/bootstrap.php</exclude-pattern>
+    </rule>
+
+    <!--since we get lines and code from WordPress source code let's ignore line length infractions-->
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>src/tad/FunctionMocker/envs/WordPress</exclude-pattern>
+    </rule>
 </ruleset>

@@ -2,7 +2,6 @@
 
 namespace tad\FunctionMocker\CLI;
 
-
 use Symfony\Component\Console\Input\InputInterface;
 use tad\FunctionMocker\CLI\Exceptions\RuntimeException;
 use function tad\FunctionMocker\expandTildeIn;
@@ -15,7 +14,7 @@ class RunConfiguration implements \ArrayAccess {
 
 	public static function fromInput( InputInterface $input ) {
 		$instance = new static();
-		$instance->config = $instance->initFromInput( $input );
+		$instance->config = $instance->initFromInput($input);
 		$instance->config['functions'] = $instance->config['functions'] ?? [];
 		$instance->config['classes'] = $instance->config['classes'] ?? [];
 
@@ -23,28 +22,28 @@ class RunConfiguration implements \ArrayAccess {
 	}
 
 	protected function initFromInput( InputInterface $input ): array {
-		$name = $input->getArgument( 'name' );
-		$inputDestination = $input->hasOption( 'destination' ) ? $input->getOption( 'destination' ) : '/tests/envs';
+		$name = $input->getArgument('name');
+		$inputDestination = $input->hasOption('destination') ? $input->getOption('destination') : '/tests/envs';
 
 		$cliConfig = [
-			'name'              => $input->getArgument( 'name' ),
-			'source'            => $input->getArgument( 'source' ),
+			'name'              => $input->getArgument('name'),
+			'source'            => $input->getArgument('source'),
 			'destination'       => $inputDestination,
-			'save'              => $input->hasOption( 'save' ) ? $input->getOption( 'save' ) : null,
-			'with-dependencies' => null === $input->getOption( 'with-dependencies' ),
-			'author'            => $input->getOption( 'author' ),
-			'copyright'         => $input->getOption( 'copyright' ),
+			'save'              => $input->hasOption('save') ? $input->getOption('save') : null,
+			'with-dependencies' => null === $input->getOption('with-dependencies'),
+			'author'            => $input->getOption('author'),
+			'copyright'         => $input->getOption('copyright'),
 		];
 
-		foreach ( [ 'source', 'destination' ] as $key ) {
-			if ( ! isset( $cliConfig[ $key ] ) ) {
+		foreach ([ 'source', 'destination' ] as $key) {
+			if (! isset($cliConfig[ $key ])) {
 				continue;
 			}
 
-			$cliConfig[ $key ] = expandTildeIn( $cliConfig[ $key ] );
+			$cliConfig[ $key ] = expandTildeIn($cliConfig[ $key ]);
 		}
 
-		$configFile = $input->getOption( 'config' );
+		$configFile = $input->getOption('config');
 
 		$configFileConfig = [
 			'removeDocBlocks' => false,
@@ -53,10 +52,10 @@ class RunConfiguration implements \ArrayAccess {
 			'autoload'        => true,
 		];
 
-		if ( $configFile ) {
-			$configFile = validateFileOrDir( $configFile, "JSON configuration file" );
-			$configFileConfig = validateJsonFile( $configFile );
-			$configFileConfig['configFileDir'] = \tad\FunctionMocker\realpath( \dirname( $configFile ) );
+		if ($configFile) {
+			$configFile = validateFileOrDir($configFile, "JSON configuration file");
+			$configFileConfig = validateJsonFile($configFile);
+			$configFileConfig['configFileDir'] = \tad\FunctionMocker\realpath(\dirname($configFile));
 		}
 
 		$configFileConfig['_readme'] = [
@@ -65,12 +64,12 @@ class RunConfiguration implements \ArrayAccess {
 			'This file was automatically @generated.',
 		];
 
-		if ( empty( $cliConfig['source'] ) ) {
-			unset( $cliConfig['source'] );
+		if (empty($cliConfig['source'])) {
+			unset($cliConfig['source']);
 		}
 
-		$configFileSources = ! empty( $configFileConfig['source'] ) ? (array) $configFileConfig['source'] : [];
-		unset( $configFileConfig['source'] );
+		$configFileSources = ! empty($configFileConfig['source']) ? (array)$configFileConfig['source'] : [];
+		unset($configFileConfig['source']);
 
 		$config = array_merge(
 			$configFileConfig,
@@ -82,14 +81,16 @@ class RunConfiguration implements \ArrayAccess {
 			)
 		);
 
-		$config['source'] = ! empty( $config['source'] ) ? array_merge( (array) $config['source'],
-			$configFileSources ) : $configFileSources;
+		$config['source'] = ! empty($config['source']) ? array_merge(
+			(array)$config['source'],
+			$configFileSources
+		) : $configFileSources;
 
-		if ( empty( $config['source'] ) ) {
+		if (empty($config['source'])) {
 			throw RuntimeException::becauseNoSourcesWereSpecified();
 		}
 
-		$config['source'] = array_unique( $config['source'] );
+		$config['source'] = array_unique($config['source']);
 
 		return $config;
 	}
@@ -110,7 +111,7 @@ class RunConfiguration implements \ArrayAccess {
 	 * @since 5.0.0
 	 */
 	public function offsetExists( $offset ) {
-		return isset( $this->config[ $offset ] );
+		return isset($this->config[ $offset ]);
 	}
 
 	/**
@@ -161,7 +162,7 @@ class RunConfiguration implements \ArrayAccess {
 	 * @since 5.0.0
 	 */
 	public function offsetUnset( $offset ) {
-		unset( $this->config[ $offset ] );
+		unset($this->config[ $offset ]);
 	}
 
 	public function addFunctionConfig( string $name, $functionConfig ) {

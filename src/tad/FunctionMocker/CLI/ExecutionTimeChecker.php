@@ -2,14 +2,13 @@
 
 namespace tad\FunctionMocker\CLI;
 
-
 use tad\FunctionMocker\CLI\Exceptions\RuntimeException;
 
 class ExecutionTimeChecker {
 
 	protected $maxTime = - 1;
-	protected $startTime = 0;
 
+	protected $startTime = 0;
 
 	public function __construct() {
 		$this->maxTime = $this->getLimit();
@@ -19,9 +18,9 @@ class ExecutionTimeChecker {
 	 * @return int
 	 */
 	public function getLimit(): int {
-		$maxTime = ini_get( 'max_execution_time' );
+		$maxTime = ini_get('max_execution_time');
 
-		if ( empty( $maxTime ) || $maxTime <= 0 ) {
+		if (empty($maxTime) || $maxTime <= 0) {
 			$maxTime = - 1;
 		}
 
@@ -29,13 +28,13 @@ class ExecutionTimeChecker {
 	}
 
 	public function check() {
-		$runningTime = ( microtime( true ) - $this->startTime );
-		if ( $this->maxTime > 0 && $runningTime >= .9 * $this->maxTime ) {
+		$runningTime = ( microtime(true) - $this->startTime );
+		if ($this->maxTime > 0 && $runningTime >= .9 * $this->maxTime) {
 			throw RuntimeException::becauseTheCommandAlmostReachedTimeLimit();
 		}
 	}
 
 	public function start() {
-		$this->startTime = microtime( true );
+		$this->startTime = microtime(true);
 	}
 }
