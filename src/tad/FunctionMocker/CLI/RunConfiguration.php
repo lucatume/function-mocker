@@ -98,7 +98,7 @@ class RunConfiguration implements \ArrayAccess {
 	/**
 	 * Whether a offset exists
 	 *
-	 * @link  http://php.net/manual/en/arrayaccess.offsetexists.php
+	 * @link http://php.net/manual/en/arrayaccess.offsetexists.php
 	 *
 	 * @param mixed $offset <p>
 	 *                      An offset to check for.
@@ -108,7 +108,7 @@ class RunConfiguration implements \ArrayAccess {
 	 * </p>
 	 * <p>
 	 * The return value will be casted to boolean if non-boolean was returned.
-	 * @since 5.0.0
+	 * @since  5.0.0
 	 */
 	public function offsetExists( $offset ) {
 		return isset($this->config[ $offset ]);
@@ -117,14 +117,14 @@ class RunConfiguration implements \ArrayAccess {
 	/**
 	 * Offset to retrieve
 	 *
-	 * @link  http://php.net/manual/en/arrayaccess.offsetget.php
+	 * @link http://php.net/manual/en/arrayaccess.offsetget.php
 	 *
 	 * @param mixed $offset <p>
 	 *                      The offset to retrieve.
 	 *                      </p>
 	 *
 	 * @return mixed Can return all value types.
-	 * @since 5.0.0
+	 * @since  5.0.0
 	 */
 	public function offsetGet( $offset ) {
 		return $this->config[ $offset ];
@@ -133,7 +133,7 @@ class RunConfiguration implements \ArrayAccess {
 	/**
 	 * Offset to set
 	 *
-	 * @link  http://php.net/manual/en/arrayaccess.offsetset.php
+	 * @link http://php.net/manual/en/arrayaccess.offsetset.php
 	 *
 	 * @param mixed $offset <p>
 	 *                      The offset to assign the value to.
@@ -143,7 +143,7 @@ class RunConfiguration implements \ArrayAccess {
 	 *                      </p>
 	 *
 	 * @return void
-	 * @since 5.0.0
+	 * @since  5.0.0
 	 */
 	public function offsetSet( $offset, $value ) {
 		$this->config[ $offset ] = $value;
@@ -152,14 +152,14 @@ class RunConfiguration implements \ArrayAccess {
 	/**
 	 * Offset to unset
 	 *
-	 * @link  http://php.net/manual/en/arrayaccess.offsetunset.php
+	 * @link http://php.net/manual/en/arrayaccess.offsetunset.php
 	 *
 	 * @param mixed $offset <p>
 	 *                      The offset to unset.
 	 *                      </p>
 	 *
 	 * @return void
-	 * @since 5.0.0
+	 * @since  5.0.0
 	 */
 	public function offsetUnset( $offset ) {
 		unset($this->config[ $offset ]);

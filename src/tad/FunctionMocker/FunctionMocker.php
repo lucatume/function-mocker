@@ -20,12 +20,13 @@ use Prophecy\Prophet;
 class FunctionMocker {
 
 	/**
+	 * The instance of the class that will be returned for singleton calls.
 	 * @var \tad\FunctionMocker\FunctionMocker
 	 */
 	protected static $instance;
 
 	/**
-	 * @var bool
+	 * @var boolean
 	 */
 	protected $didInit = false;
 
@@ -218,7 +219,7 @@ class FunctionMocker {
 		if (class_exists('\PHPUnit\Framework\TestCase') && $testCase instanceof \PHPUnit\Framework\TestCase) {
 			$testCase->addToAssertionCount(count($prophet->getProphecies()));
 		} elseif (class_exists('PHPUnit_Framework_TestCase') && $testCase instanceof PHPUnit_Framework_TestCase) {
-			/**
+			/*
 			 * @noinspection PhpUndefinedMethodInspection
 			 */
 			$testCase->addToAssertionCount(count($prophet->getProphecies()));
@@ -347,7 +348,7 @@ class FunctionMocker {
 	 * @param string $function    The function name.
 	 * @param string $functionFQN The function fully-qualified name.
 	 *
-	 * @return bool|\Prophecy\Prophecy\ObjectProphecy
+	 * @return boolean|\Prophecy\Prophecy\ObjectProphecy
 	 */
 	protected function buildNewProphecyFor( $function, $functionFQN ) {
 		if (array_key_exists($functionFQN, $this->prophecies)) {

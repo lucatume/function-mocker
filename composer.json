@@ -49,6 +49,7 @@
         "codeception/codeception": "^2.4",
         "nikic/php-parser": "~3.0",
         "wordpress": "4.9.6",
-        "lucatume/coding-standards": "dev-master"
+        "lucatume/coding-standards": "dev-master",
+        "friendsofphp/php-cs-fixer": "^2.12"
     }
 }

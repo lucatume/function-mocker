@@ -1,12 +1,14 @@
+SRC?=src
+
 sniff:
-	vendor/bin/phpcs --colors -p --standard=ruleset.xml src
+	vendor/bin/phpcs --colors -p --standard=ruleset.xml $(SRC)
 
 fix:
-	vendor/bin/phpcbf --colors -p --standard=ruleset.xml src
+	vendor/bin/phpcbf --colors -p --standard=ruleset.xml $(SRC)
 
 fix_n_sniff:
-	vendor/bin/phpcbf --colors -p --standard=ruleset.xml src
-	vendor/bin/phpcs --colors -p --standard=ruleset.xml src
+	vendor/bin/phpcbf --colors -p --standard=ruleset.xml $(SRC)
+	vendor/bin/phpcs --colors -p --standard=ruleset.xml $(SRC)
 
 install:
 	composer install
@@ -28,5 +30,5 @@ update:
 
 wpenv:
 	./function-mocker generate:env WordPress \
-		--config=src/tad/FunctionMocker/envs/WordPress/generation-config.json \
+		--config=$(SRC)/tad/FunctionMocker/envs/WordPress/generation-config.json \
 		--with-dependencies

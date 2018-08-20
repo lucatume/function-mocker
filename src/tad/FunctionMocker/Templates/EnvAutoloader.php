@@ -1,4 +1,12 @@
 <?php
+/**
+ * Code template for the environment autoloader class.
+ *
+ * @package    FunctionMocker
+ * @subpackage CLI
+ * @author     Luca Tumedei <luca@theaveragedev.com>
+ * @copyright  2018 Luca Tumedei
+ */
 
 namespace tad\FunctionMocker\Templates;
 

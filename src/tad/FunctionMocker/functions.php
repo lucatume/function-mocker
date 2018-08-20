@@ -42,7 +42,7 @@ function includePatchwork() {
 		return;
 	}
 
-	/**
+	/*
 	 * @noinspection PhpIncludeInspection
 	 */
 	include_once getVendorDir('antecedent/patchwork/Patchwork.php');
@@ -92,7 +92,7 @@ function findParentContainingFolder( $children, $cwd ) {
  *
  * @param array $userOptions An array of options as those supported by Patchwork configuration.
  *
- * @return bool Whether the configuration file was written or not.
+ * @return boolean Whether the configuration file was written or not.
  *
  * @throws \RuntimeException If the Patchwork configuration file or the checksum file could not be written.
  */
@@ -323,7 +323,7 @@ function getDirPhpFiles( $dir, array &$results = [] ) {
 	}
 
 	$iterator = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
-	/**
+	/*
 	 * @var \SplFileInfo $f
 	 */
 	foreach ($iterator as $f) {
@@ -359,8 +359,10 @@ function fullStopIt( $string ) {
 function findRelativePath( $fromPath, $toPath ) {
 	$fromPath = realpath($fromPath) ?: $fromPath;
 	$toPath = realpath($toPath) ?: $toPath;
-	$from = explode(DIRECTORY_SEPARATOR, $fromPath); // Folders/File
-	$to = explode(DIRECTORY_SEPARATOR, $toPath); // Folders/File
+	$from = explode(DIRECTORY_SEPARATOR, $fromPath);
+	// Folders/File
+	$to = explode(DIRECTORY_SEPARATOR, $toPath);
+	// Folders/File
 	$relpath = '';
 
 	$i = 0;

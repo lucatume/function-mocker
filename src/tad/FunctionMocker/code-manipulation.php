@@ -164,7 +164,7 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
 	$wrappedStmts = array_reduce(
 		$allStmts,
 		function ( array $found, $stmt ) {
-			/**
+			/*
 			 * @var \PhpParser\Node\Stmt\If_ $stmt
 			 */
 			if (! $stmt instanceof Stmt\If_) {
@@ -173,14 +173,14 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
 
 			$cond = $stmt->cond;
 
-			/**
+			/*
 			 * @var BooleanNot $first
 			 */
 			if (! $cond instanceof BooleanNot) {
 				return $found;
 			}
 
-			/**
+			/*
 			 * @var \PhpParser\Node\Expr $negated
 			 */
 			$negated = $cond->expr;
@@ -189,7 +189,7 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
 				return $found;
 			}
 
-			/**
+			/*
 			 * @var \PhpParser\Node\Name $funcName
 			 */
 			$funcName = $negated->name;
@@ -380,7 +380,7 @@ function parseFunctionCallDependencies( Node $node, Namespace_ $namespace = null
 		|| $node->name instanceof Name\Relative )
 		&& \count($node->name->parts) === 1
 	) {
-		/**
+		/*
 		 * Since we cannot know if this is a call to a global function or not
 		 * let's just look for the global version of the function too.
 		 * This covers calls to global functions in the context of a namespace
@@ -440,7 +440,7 @@ function parseSubNodeDependencies( Node $node, Namespace_ $namespace = null ): a
 	$dependencies = array();
 
 	foreach ($subNodeNames as $subNodeName) {
-		/**
+		/*
 		 * @var Node $subNode
 		 */
 		$subNode = $node->{$subNodeName};

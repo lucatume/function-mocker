@@ -54,7 +54,6 @@ class CreateEnv extends Command {
 	use VersionChecker;
 
 	// @todo update the helper text
-
 	const NOTHING_TO_FIND = 'nothing-to-find';
 
 	protected $functionIndex = [];
@@ -150,7 +149,17 @@ class CreateEnv extends Command {
 	protected $timer;
 
 	/**
-	 * @param bool $writeFileHeaders
+	 * The path to the environment destination source folder.
+	 *
+	 * The autoloader class file and bootstrap files will be written to the destination
+	 * while the rest of the generated files will be written to a `/src` folder.
+	 *
+	 * @var string
+	 */
+	protected $destinationSrc;
+
+	/**
+	 * @param boolean $writeFileHeaders
 	 *
 	 * @return CreateEnv
 	 */
@@ -218,10 +227,10 @@ TEXT;
 	}
 
 	/**
-	 * @param \Symfony\Component\Console\Input\InputInterface $input
+	 * @param \Symfony\Component\Console\Input\InputInterface   $input
 	 * @param \Symfony\Component\Console\Output\OutputInterface $output
 	 *
-	 * @return int|null|void
+	 * @return integer|null|void
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$this->input = $input;
@@ -261,6 +270,7 @@ TEXT;
 			getcwd(),
 			$this->generationConfig['destination'] ?? getcwd() . '/tests/envs/' . $this->generationConfig['name']
 		);
+		$this->destinationSrc = $this->destination. '/src';
 		$this->bootstrapFile = !empty($this->generationConfig['bootstrap']) ? $this->destination . '/' . trim(
 			$this->generationConfig['bootstrap'],
 			'\\/'
@@ -316,7 +326,7 @@ TEXT;
 
 	protected function parseSourceFile(string $file) {
 		try {
-			/**
+			/*
 			 * @var \PhpParser\Node\Stmt[] $allStmts
 			 */
 			$allStmts = getAllFileStmts($file);
@@ -326,7 +336,7 @@ TEXT;
 
 			$namespaceStmts = getNamespaceStmts($allStmts);
 			if (\count($namespaceStmts)) {
-				/**
+				/*
 				 * @var Stmt $namespaceStmt
 				 */
 				foreach ($namespaceStmts as $namespaceStmt) {
@@ -353,7 +363,7 @@ TEXT;
 	}
 
 	protected function indexFileStmts(string $file, array $stmts, Namespace_ $namespace = null) {
-		/**
+		/*
 		 * @var Stmt $stmt
 		 */
 		foreach ($stmts as $stmt) {
@@ -453,12 +463,13 @@ TEXT;
 	 * @param $destination
 	 */
 	protected function createDestinationDirectory() {
-		if (!is_dir($this->destination)) {
-			if (!mkdir($this->destination, 0777, true) && !is_dir($this->destination)) {
+		$destinationSrc = $this->destination . '/src';
+		if (!is_dir($destinationSrc)) {
+			if (!mkdir($destinationSrc, 0777, true) && !is_dir($destinationSrc)) {
 				throw new \RuntimeException(
 					sprintf(
 						'Could not create destination directory "%s"',
-						$this->destination
+						$destinationSrc
 					)
 				);
 			}
@@ -507,7 +518,7 @@ TEXT;
 				$this->functionIndex,
 				function (array $acc, array $fEntry) {
 					$namespace = null === $fEntry['namespace'] ? '\\' : $fEntry['namespace']->name;
-					/**
+					/*
 					 * @var Function_ $stmt
 					 */
 					$stmt = $fEntry['stmt'];
@@ -532,10 +543,12 @@ TEXT;
 
 		$functionsFileBasename = !empty($thisConfig->fileName) ? trim($thisConfig->fileName) : 'functions.php';
 
-		$functionsFilePath = $namespace === '\\' ? $this->destination . '/' . $functionsFileBasename : $this->destination . '/' . str_replace(
-			'\\',
-			'/', $namespace
-		) . '/' . $functionsFileBasename;
+		$functionsFilePath = $namespace === '\\'
+			? $this->destinationSrc . '/' . $functionsFileBasename
+			: $this->destinationSrc . '/' . str_replace(
+				'\\',
+				'/', $namespace
+			) . '/' . $functionsFileBasename;
 		$this->filesToInclude[] = $functionsFilePath;
 
 		$functionFileDirectory = \dirname($functionsFilePath);
@@ -594,7 +607,7 @@ TEXT;
 		}
 
 		$functionCode = $this->codePrinter->prettyPrint([$functionStmt]) . "\n\n";
-		$generatedConfig->source = findRelativePath($this->destination, $file);
+		$generatedConfig->source = findRelativePath($this->destinationSrc, $file);
 
 		fwrite($functionsFile, $functionCode);
 
@@ -616,7 +629,7 @@ TEXT;
 	/**
 	 * @param $path
 	 *
-	 * @return bool|resource
+	 * @return boolean|resource
 	 */
 	protected function openFileForWriting($path) {
 		$functionsFile = fopen($path, 'ab');
@@ -706,13 +719,13 @@ TEXT;
 	}
 
 	protected function writeClassFile($classEntry, $name) {
-		/**
+		/*
 		 * @var Stmt $stmt
 		 * @var Namespace_ $namespace
 		 */
 		list($file, $stmt, $namespace) = array_values($classEntry);
-		$classFile = $this->destination . '/' . str_replace('\\', '/', $name) . '.php';
-		$thisConfig = $this->normalizedClassesEntries[$name] ?? (object)$this->defaultClassSetting;
+		$classFile = $this->destinationSrc . '/' . str_replace('\\', '/', $name) . '.php';
+		$thisConfig = $this->normalizedClassesEntries[$name] ?: (object)$this->defaultClassSetting;
 		$generatedConfig = $thisConfig;
 
 		if (empty($thisConfig->autoload)) {
@@ -766,7 +779,7 @@ TEXT;
 			$stmt = wrapClassInIfBlock($stmt, $name, $namespaceString);
 		}
 
-		$classCode = "\n" . $this->codePrinter->prettyPrint([$stmt]);
+		$classCode = $this->codePrinter->prettyPrint([$stmt]);
 
 		if (!is_dir(\dirname($classFile))) {
 			if (!mkdir(\dirname($classFile), 0777, true) && !is_dir(\dirname($classFile))) {
@@ -774,7 +787,7 @@ TEXT;
 			}
 		}
 
-		$generatedConfig->source = findRelativePath($this->destination, $file);
+		$generatedConfig->source = findRelativePath($this->destinationSrc, $file);
 
 		$fileHandle = fopen($classFile, 'wb');
 		$this->writePhpOpeningTagToFile($fileHandle);
