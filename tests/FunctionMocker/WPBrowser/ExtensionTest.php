@@ -15,13 +15,13 @@ class ExtensionTest extends TestCase {
 	 * @test
 	 */
 	public function should_throw_if_the_init_file_parameter_is_not_specified() {
-		$event = $this->prophesize( SuiteEvent::class );
+		$event = $this->prophesize(SuiteEvent::class);
 
-		$extension = new Extension( [], [] );
+		$extension = new Extension([], []);
 
-		$this->expectException( ExtensionException::class );
+		$this->expectException(ExtensionException::class);
 
-		$extension->onModuleInit( $event->reveal() );
+		$extension->onModuleInit($event->reveal());
 	}
 
 	/**
@@ -30,13 +30,13 @@ class ExtensionTest extends TestCase {
 	 * @test
 	 */
 	public function should_throw_if_the_init_file_does_not_exist() {
-		$event = $this->prophesize( SuiteEvent::class );
+		$event = $this->prophesize(SuiteEvent::class);
 
-		$extension = new Extension( [ 'initFile' => __DIR__ . 'foo.php' ], [] );
+		$extension = new Extension(['initFile' => __DIR__ . 'foo.php'], []);
 
-		$this->expectException( ExtensionException::class );
+		$this->expectException(ExtensionException::class);
 
-		$extension->onModuleInit( $event->reveal() );
+		$extension->onModuleInit($event->reveal());
 	}
 
 	/**
@@ -45,13 +45,13 @@ class ExtensionTest extends TestCase {
 	 * @test
 	 */
 	public function should_throw_if_the_init_file_is_not_a_file() {
-		$event = $this->prophesize( SuiteEvent::class );
+		$event = $this->prophesize(SuiteEvent::class);
 
-		$extension = new Extension( [ 'initFile' => __DIR__ ], [] );
+		$extension = new Extension(['initFile' => __DIR__], []);
 
-		$this->expectException( ExtensionException::class );
+		$this->expectException(ExtensionException::class);
 
-		$extension->onModuleInit( $event->reveal() );
+		$extension->onModuleInit($event->reveal());
 	}
 
 	/**
@@ -60,11 +60,11 @@ class ExtensionTest extends TestCase {
 	 * @test
 	 */
 	public function should_resolve_the_init_file_from_current_working_directory() {
-		$event = $this->prophesize( SuiteEvent::class );
+		$event = $this->prophesize(SuiteEvent::class);
 
-		$extension = new Extension( [ 'initFile' => 'tests/_data/some-file.php' ], [] );
+		$extension = new Extension(['initFile' => 'tests/_data/some-file.php'], []);
 
-		$extension->onModuleInit( $event->reveal() );
+		$extension->onModuleInit($event->reveal());
 	}
 
 	/**
@@ -74,14 +74,14 @@ class ExtensionTest extends TestCase {
 	 */
 	public function should_not_include_the_init_file_if_the_current_suite_is_not_enabled() {
 		/** @var Suite $suite */
-		$suite = $this->prophesize( Suite::class );
-		$suite->getName()->willReturn( 'bar' );
-		$event = $this->prophesize( SuiteEvent::class );
-		$event->getSuite()->willReturn( $suite->reveal() );
+		$suite = $this->prophesize(Suite::class);
+		$suite->getName()->willReturn('bar');
+		$event = $this->prophesize(SuiteEvent::class);
+		$event->getSuite()->willReturn($suite->reveal());
 
-		$extension = new Extension( [ 'initFile' => 'tests/_data/some-file.php', 'suites' => [ 'foo' ] ], [] );
+		$extension = new Extension(['initFile' => 'tests/_data/some-file.php', 'suites' => ['foo']], []);
 
-		$this->assertFalse( $extension->onModuleInit( $event->reveal() ) );
+		$this->assertFalse($extension->onModuleInit($event->reveal()));
 	}
 
 	/**
@@ -91,14 +91,14 @@ class ExtensionTest extends TestCase {
 	 */
 	public function should_include_the_init_file_if_the_current_suite_is_enabled() {
 		/** @var Suite $suite */
-		$suite = $this->prophesize( Suite::class );
-		$suite->getName()->willReturn( 'foo' );
-		$event = $this->prophesize( SuiteEvent::class );
-		$event->getSuite()->willReturn( $suite->reveal() );
+		$suite = $this->prophesize(Suite::class);
+		$suite->getName()->willReturn('foo');
+		$event = $this->prophesize(SuiteEvent::class);
+		$event->getSuite()->willReturn($suite->reveal());
 
-		$extension = new Extension( [ 'initFile' => 'tests/_data/some-file.php', 'suites' => [ 'foo' ] ], [] );
+		$extension = new Extension(['initFile' => 'tests/_data/some-file.php', 'suites' => ['foo']], []);
 
-		$this->assertTrue( $extension->onModuleInit( $event->reveal() ) );
+		$this->assertTrue($extension->onModuleInit($event->reveal()));
 	}
 
 	/**
@@ -108,13 +108,13 @@ class ExtensionTest extends TestCase {
 	 */
 	public function should_accept_the_suites_parameter_in_string_format() {
 		/** @var Suite $suite */
-		$suite = $this->prophesize( Suite::class );
-		$suite->getName()->willReturn( 'foo' );
-		$event = $this->prophesize( SuiteEvent::class );
-		$event->getSuite()->willReturn( $suite->reveal() );
+		$suite = $this->prophesize(Suite::class);
+		$suite->getName()->willReturn('foo');
+		$event = $this->prophesize(SuiteEvent::class);
+		$event->getSuite()->willReturn($suite->reveal());
 
-		$extension = new Extension( [ 'initFile' => 'tests/_data/some-file.php', 'suites' => 'foo' ], [] );
+		$extension = new Extension(['initFile' => 'tests/_data/some-file.php', 'suites' => 'foo'], []);
 
-		$this->assertTrue( $extension->onModuleInit( $event->reveal() ) );
+		$this->assertTrue($extension->onModuleInit($event->reveal()));
 	}
 }
