@@ -20,7 +20,7 @@ function testFunctionTwo() {
 /**
  * FunctionThree
  *
- * @return stringF
+ * @return string
  */
 function testFunctionThree() {
 	return 'foo';

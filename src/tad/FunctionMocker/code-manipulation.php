@@ -1,4 +1,12 @@
 <?php
+/**
+ * A collection of functions dedicated to code reading, manipulation and writing.
+ *
+ * @package    FunctionMocker
+ * @subpackage functions
+ * @author     Luca Tumedei <luca@theaveragedev.com>
+ * @copyright  2018 Luca Tumedei
+ */
 
 namespace tad\FunctionMocker;
 
@@ -17,23 +25,24 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\ParserFactory;
 
 /**
- * @param \PhpParser\Node\Name                 $name
- * @param \PhpParser\Node\Stmt\Namespace_|null $namespace
+ * Resolves a function, class, trait or interface fully qualified name given its name and namespace.
  *
- * @return string The class/function fully qualified name.
+ * @param \PhpParser\Node\Name                 $name      The function, class, interface or trait name.
+ * @param \PhpParser\Node\Stmt\Namespace_|null $namespace The namespace the resolution is happening in.
+ *
+ * @return string The class/function fully qualified name; the fully qualified name, even for global
+ *                components, wil be prepended with the namespace separator, `\`.
  */
-function resolveNamespace( Name $name, Namespace_ $namespace = null ) {
+function resolveNamespace(Name $name, Namespace_ $namespace = null) {
 	if ($namespace === null) {
-		return $name->toString();
+		return '\\' . ltrim($name->toString(), '\\');
 	}
 
 	if ($name->isFullyQualified()) {
 		return $name->toString();
 	}
 
-	// ['Acme', 'Company', 'Service', 'REST']
 	$namespaceFrags = array_filter(explode('\\', $namespace->name->toString()));
-	// ['Service', 'REST', 'API']
 	$objectFrags = array_filter(explode('\\', $name->toString()));
 	$common = array_values(array_intersect($objectFrags, $namespaceFrags));
 	if (\count($common) > 0) {
@@ -42,57 +51,94 @@ function resolveNamespace( Name $name, Namespace_ $namespace = null ) {
 			\array_slice($namespaceFrags, 0, array_search($common[0], $namespaceFrags, true) + 1)
 		);
 		$fullyQualified .= '\\' . implode(
-			'\\',
-			\array_slice($objectFrags, array_search($common[0], $objectFrags, true))
-		);
+				'\\',
+				\array_slice($objectFrags, array_search($common[0], $objectFrags, true) + 1)
+			);
 
-		return $fullyQualified;
+		return '\\' . ltrim($fullyQualified, '\\');
 	}
 
 	return implode('\\', $namespaceFrags) . '\\' . implode('\\', $objectFrags);
-
 }
 
 /**
- * @param string|array $file
+ * Returns all the statement nodes found in a file or in a list of files.
  *
- * @return \PhpParser\Node\Stmt[]
+ * Files that define a namespace will return only that as the single node found in the file.
+ *
+ * @param string|array $file The absolute path to a the file to parse or a list of absolute paths
+ *                           to file to parse.
+ *
+ * @return \PhpParser\Node\Stmt[] An array of statements found in the file or files.
  */
-function getAllFileStmts( $file ) {
+function getAllFileStmts($file) {
 	$files = (array)$file;
-	$parser = ( new ParserFactory )->create(ParserFactory::PREFER_PHP5);
+
+	$valid = array_filter($files, function ($file) {
+		return is_file($file) && is_readable($file);
+	});
+
+	if (count($files) !== count($valid)) {
+		throw new \InvalidArgumentException('Not all items are files or are readable.');
+	}
+
+	$parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP5);
 
 	$allStmts = array_map(
-		function ( $file ) use ( $parser ) {
+		function ($file) use ($parser) {
 			return $parser->parse(file_get_contents($file));
 		},
 		$files
 	);
 
 	return array_merge(...$allStmts);
-
 }
 
-function wrapStmtInIfBlock( Stmt $stmt, string $checkWhat, string $checkHow ) {
+/**
+ * Wrap a function, class, interface, or trait class in a negative `if` statement.
+ *
+ * Ths function, as an example, will wrap a `someFunction` statement to produce a block
+ * like `if(!function_exists('someFunction)){}`.
+ *
+ * @param Stmt   $stmt      The statement that should be wrapped in the `if not` statement.
+ *
+ * @param string $checkWhat The fully qualified name of the function, class, trait or interface that
+ *                          should be checked using the `checkHow` parameter.
+ * @param string $checkHow  The fully qualified name of the function, either PHP internal or not,
+ *                          that should be used to perform the negative check on the function, class,
+ *                          interface or trait.
+ *
+ * @return Stmt\If_ The `if not` statement wrapping the input statement.
+ */
+function wrapStmtInIfNotBlock(Stmt $stmt, string $checkWhat, string $checkHow) {
 	$functionStmt = new Stmt\If_(
 		new BooleanNot(
 			new FuncCall(
 				new Name($checkHow),
-				[ new Arg(new String_($checkWhat)) ]
+				[new Arg(new String_($checkWhat))]
 			)
 		),
-		[ 'stmts' => [ $stmt ] ]
+		['stmts' => [$stmt]]
 	);
 
 	return $functionStmt;
-
 }
 
-function wrapFunctionInIfBlock( Function_ $stmt, string $functionName, string $namespace = null ) {
+/**
+ * Wraps a function statement in an if-not-function-exists block with awareness of the namespace context.
+ *
+ * @param Function_   $stmt         The function statement that should be wrapped.
+ * @param string      $functionName The fully-qualified function name.
+ * @param string|null $namespace    The namespace context the if-not-function-exists will happen into.
+ *
+ * @return Stmt\If_ The if-not-function-exists statement wrapping the input function for the specified namespace.
+ */
+function wrapFunctionInIfBlock(Function_ $stmt, string $functionName, string $namespace = null) {
 	$checkHow = empty($namespace) || $namespace === '\\' ? 'function_exists' : '\function_exists';
+	$stmtNameFrags = explode('\\', $stmt->name);
+	$stmt->name = end($stmtNameFrags);
 
-	return wrapStmtInIfBlock($stmt, $functionName, $checkHow);
-
+	return wrapStmtInIfNotBlock($stmt, $functionName, $checkHow);
 }
 
 /**
@@ -102,7 +148,7 @@ function wrapFunctionInIfBlock( Function_ $stmt, string $functionName, string $n
  *
  * @return \PhpParser\Node\Stmt\If_
  */
-function wrapClassInIfBlock( Stmt $stmt, string $fqClassName, string $namespace = null ) {
+function wrapClassInIfBlock(Stmt $stmt, string $fqClassName, string $namespace = null) {
 	if ($stmt instanceof Class_) {
 		$checkHow = empty($namespace) || $namespace === '\\' ? 'class_exists' : '\class_exists';
 	} elseif ($stmt instanceof Trait_) {
@@ -111,21 +157,21 @@ function wrapClassInIfBlock( Stmt $stmt, string $fqClassName, string $namespace 
 		$checkHow = empty($namespace) || $namespace === '\\' ? 'interface_exists' : '\interface_exists';
 	}
 
-	return wrapStmtInIfBlock($stmt, $fqClassName, $checkHow);
+	return wrapStmtInIfNotBlock($stmt, $fqClassName, $checkHow);
 
 }
 
 /**
  * @param \PhpParser\Node\Stmt $stmt
  */
-function openPrivateClassMethods( Stmt $stmt ) {
-	if (! ( $stmt instanceof Class_ || $stmt instanceof Stmt\Trait_ )) {
+function openPrivateClassMethods(Stmt $stmt) {
+	if (!($stmt instanceof Class_ || $stmt instanceof Stmt\Trait_)) {
 		return;
 	}
 
 	array_walk(
 		$stmt->stmts,
-		function ( Stmt &$stmt ) {
+		function (Stmt &$stmt) {
 			if ($stmt instanceof Stmt\ClassMethod && $stmt->isPrivate()) {
 				$stmt->flags -= Class_::MODIFIER_PRIVATE;
 				$stmt->flags += Class_::MODIFIER_PROTECTED;
@@ -140,10 +186,10 @@ function openPrivateClassMethods( Stmt $stmt ) {
  *
  * @return array
  */
-function getFunctionAndClassStmts( array $allStmts ) {
+function getFunctionAndClassStmts(array $allStmts) {
 	$stmts = array_filter(
 		$allStmts,
-		function ( $stmt ) {
+		function ($stmt) {
 			return $stmt instanceof Function_
 				|| $stmt instanceof Class_
 				|| $stmt instanceof Interface_
@@ -160,14 +206,14 @@ function getFunctionAndClassStmts( array $allStmts ) {
  *
  * @return array
  */
-function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
+function getIfWrapppedFunctionAndClassStmts(array $allStmts): array {
 	$wrappedStmts = array_reduce(
 		$allStmts,
-		function ( array $found, $stmt ) {
+		function (array $found, $stmt) {
 			/*
 			 * @var \PhpParser\Node\Stmt\If_ $stmt
 			 */
-			if (! $stmt instanceof Stmt\If_) {
+			if (!$stmt instanceof Stmt\If_) {
 				return $found;
 			}
 
@@ -176,7 +222,7 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
 			/*
 			 * @var BooleanNot $first
 			 */
-			if (! $cond instanceof BooleanNot) {
+			if (!$cond instanceof BooleanNot) {
 				return $found;
 			}
 
@@ -185,7 +231,7 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
 			 */
 			$negated = $cond->expr;
 
-			if (! $negated instanceof Expr\FuncCall) {
+			if (!$negated instanceof Expr\FuncCall) {
 				return $found;
 			}
 
@@ -196,7 +242,7 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
 
 			$thisName = $funcName->toString();
 
-			if (! \in_array(
+			if (!\in_array(
 				$thisName,
 				[
 					'class_exists',
@@ -225,10 +271,10 @@ function getIfWrapppedFunctionAndClassStmts( array $allStmts ): array {
  *
  * @return array
  */
-function getNamespaceStmts( array $allStmts ) {
+function getNamespaceStmts(array $allStmts) {
 	return array_filter(
 		$allStmts,
-		function ( $stmt ) {
+		function ($stmt) {
 			return $stmt instanceof Namespace_;
 		}
 	);
@@ -242,7 +288,7 @@ function getNamespaceStmts( array $allStmts ) {
  *
  * @return array
  */
-function findStmtDependencies( Node $node, Namespace_ $namespace = null, array &$dependencies = [] ): array {
+function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$dependencies = []): array {
 	$thisDependencies = [];
 	$thisDependencies[] = parseExtendsDependencies($node, $namespace);
 	$thisDependencies[] = parseImplementsDependencies($node, $namespace);
@@ -257,7 +303,7 @@ function findStmtDependencies( Node $node, Namespace_ $namespace = null, array &
 	return array_unique($thisDependencies);
 }
 
-function parseExtendsDependencies( Node $node, Namespace_ $namespace = null ): array {
+function parseExtendsDependencies(Node $node, Namespace_ $namespace = null): array {
 	if (empty($node->extends)) {
 		return [];
 	}
@@ -266,7 +312,7 @@ function parseExtendsDependencies( Node $node, Namespace_ $namespace = null ): a
 
 	$classFQN = resolveNamespace($node->extends, $namespace);
 
-	if (! isInternalClass($classFQN)) {
+	if (!isInternalClass($classFQN)) {
 		$dependencies[] = $classFQN;
 	}
 
@@ -276,8 +322,8 @@ function parseExtendsDependencies( Node $node, Namespace_ $namespace = null ): a
 /**
  * @param \PhpParser\Node\Stmt $stmt
  */
-function removeFinalFromClass( Stmt $stmt ) {
-	if (( $stmt instanceof Class_ ) && $stmt->isFinal()) {
+function removeFinalFromClass(Stmt $stmt) {
+	if (($stmt instanceof Class_) && $stmt->isFinal()) {
 		$stmt->flags -= Class_::MODIFIER_FINAL;
 	}
 }
@@ -285,14 +331,14 @@ function removeFinalFromClass( Stmt $stmt ) {
 /**
  * @param \PhpParser\Node\Stmt $stmt
  */
-function removeFinalFromClassMethods( Stmt $stmt ) {
-	if (! $stmt instanceof Class_) {
+function removeFinalFromClassMethods(Stmt $stmt) {
+	if (!$stmt instanceof Class_) {
 		return;
 	}
 
 	array_walk(
 		$stmt->stmts,
-		function ( Stmt &$stmt ) {
+		function (Stmt &$stmt) {
 			if ($stmt instanceof Stmt\ClassMethod && $stmt->isFinal()) {
 				$stmt->flags -= Class_::MODIFIER_FINAL;
 			}
@@ -307,7 +353,7 @@ function removeFinalFromClassMethods( Stmt $stmt ) {
  *
  * @return array An array containing the original function input, its namespace and its name.
  */
-function extractFunctionAndNamespace( $function ) {
+function extractFunctionAndNamespace($function) {
 	$function = '\\' . ltrim($function, '\\');
 	$namespaceFrags = array_filter(explode('\\', $function));
 	$function = array_pop($namespaceFrags);
@@ -318,10 +364,10 @@ function extractFunctionAndNamespace( $function ) {
 		$functionFQN = $function;
 	}
 
-	return array( $function, $namespace, $functionFQN );
+	return array($function, $namespace, $functionFQN);
 }
 
-function isInternalClass( string $classFQN ): bool {
+function isInternalClass(string $classFQN): bool {
 	try {
 		$classReflection = new \ReflectionClass($classFQN);
 
@@ -331,7 +377,7 @@ function isInternalClass( string $classFQN ): bool {
 	}
 }
 
-function isInternalFunction( string $functionFQN ): bool {
+function isInternalFunction(string $functionFQN): bool {
 	try {
 		$functionReflection = new \ReflectionFunction($functionFQN);
 
@@ -341,14 +387,14 @@ function isInternalFunction( string $functionFQN ): bool {
 	}
 }
 
-function parseImplementsDependencies( Node $node, Namespace_ $namespace = null ): array {
+function parseImplementsDependencies(Node $node, Namespace_ $namespace = null): array {
 	if (empty($node->implements)) {
 		return [];
 	}
 
 	$dependencies = [];
 
-	$implements = is_array($node->implements) ? $node->implements : [ $node->implements ];
+	$implements = is_array($node->implements) ? $node->implements : [$node->implements];
 
 	foreach ($implements as $implemented) {
 		$classFQN = resolveNamespace($implemented, $namespace);
@@ -363,8 +409,8 @@ function parseImplementsDependencies( Node $node, Namespace_ $namespace = null )
 	return $dependencies;
 }
 
-function parseFunctionCallDependencies( Node $node, Namespace_ $namespace = null ): array {
-	if (! $node instanceof FuncCall || $node->name instanceof Node\Expr\Variable) {
+function parseFunctionCallDependencies(Node $node, Namespace_ $namespace = null): array {
+	if (!$node instanceof FuncCall || $node->name instanceof Node\Expr\Variable) {
 		return [];
 	}
 
@@ -376,8 +422,8 @@ function parseFunctionCallDependencies( Node $node, Namespace_ $namespace = null
 
 	$dependencies = [];
 
-	if (! ( $node->name instanceof Name\FullyQualified
-		|| $node->name instanceof Name\Relative )
+	if (!($node->name instanceof Name\FullyQualified
+			|| $node->name instanceof Name\Relative)
 		&& \count($node->name->parts) === 1
 	) {
 		/*
@@ -394,36 +440,36 @@ function parseFunctionCallDependencies( Node $node, Namespace_ $namespace = null
 	return $dependencies;
 }
 
-function parseNameDependencies( Node $node, Namespace_ $namespace = null ): array {
+function parseNameDependencies(Node $node, Namespace_ $namespace = null): array {
 	if ($node instanceof Name) {
 		if (isInternal($node->toString())) {
 			return [];
 		}
 
-		return [ resolveNamespace($node, $namespace) ];
+		return [resolveNamespace($node, $namespace)];
 	}
 
 	return [];
 }
 
-function parseFunctionParameterDependencies( Node $node, Namespace_ $namespace = null ): array {
-	if (! ( $node instanceof Function_ || $node instanceof Stmt\ClassMethod )) {
+function parseFunctionParameterDependencies(Node $node, Namespace_ $namespace = null): array {
+	if (!($node instanceof Function_ || $node instanceof Stmt\ClassMethod)) {
 		return [];
 	}
 
 	$params = array_map(
-		function ( Node\Param $param ) use ( $namespace ) {
+		function (Node\Param $param) use ($namespace) {
 			return resolveNamespace($param->type, $namespace);
 		},
 		array_filter(
 			$node->getParams(),
-			function ( Node\Param $param ) use ( $namespace ) {
+			function (Node\Param $param) use ($namespace) {
 				return $param->type instanceof Name
-					&& ! (
+					&& !(
 						isInternalClass(resolveNamespace($param->type, $namespace))
 						|| isInternalFunction(resolveNamespace($param->type, $namespace))
 					)
-					&& ! \in_array($param->type->toString(), [ 'array', 'bool', 'int', 'float', 'string' ], true);
+					&& !\in_array($param->type->toString(), ['array', 'bool', 'int', 'float', 'string'], true);
 			}
 		)
 	);
@@ -431,8 +477,8 @@ function parseFunctionParameterDependencies( Node $node, Namespace_ $namespace =
 	return $params;
 }
 
-function parseSubNodeDependencies( Node $node, Namespace_ $namespace = null ): array {
-	$subNodeNames = array_diff($node->getSubNodeNames(), [ 'flags', 'parts', 'byRef' ]);
+function parseSubNodeDependencies(Node $node, Namespace_ $namespace = null): array {
+	$subNodeNames = array_diff($node->getSubNodeNames(), ['flags', 'parts', 'byRef']);
 	if (empty($subNodeNames)) {
 		return [];
 	}
@@ -444,10 +490,10 @@ function parseSubNodeDependencies( Node $node, Namespace_ $namespace = null ): a
 		 * @var Node $subNode
 		 */
 		$subNode = $node->{$subNodeName};
-		$subNodeList = \is_array($subNode) ? $subNode : [ $subNode ];
+		$subNodeList = \is_array($subNode) ? $subNode : [$subNode];
 
 		foreach ($subNodeList as $subSubNode) {
-			if (! $subSubNode instanceof Node) {
+			if (!$subSubNode instanceof Node) {
 				continue;
 			}
 
@@ -458,8 +504,8 @@ function parseSubNodeDependencies( Node $node, Namespace_ $namespace = null ): a
 	return $dependencies;
 }
 
-function isInternal( string $name ): bool {
-	$internals = [ 'true', 'false', 'null' ];
+function isInternal(string $name): bool {
+	$internals = ['true', 'false', 'null'];
 
 	return \in_array($name, $internals, true) || isInternalFunction($name) || isInternalClass($name);
 }
