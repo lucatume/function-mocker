@@ -3,8 +3,11 @@
 namespace tad\FunctionMocker;
 
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 
@@ -162,5 +165,53 @@ PHP;
 		$printer = new Standard();
 		$block = wrapFunctionInIfBlock($stmt, '\\Acme\\someFunction', '\\Acme');
 		$this->assertEquals($expected, $printer->prettyPrint([$block]));
+	}
+
+	public function classTypesAndChecks() {
+		return [
+			'global-class' => [Class_::class, 'SomeClass', "class_exists('SomeClass')", ''],
+			'fq-global-class' => [Class_::class, '\\SomeClass', "class_exists('\\\\SomeClass')", ''],
+			'namespaced-class' => [Class_::class, '\\Acme\\SomeClass', "\\class_exists('\\\\Acme\\\\SomeClass')", '\\Acme'],
+			'global-interface' => [Interface_::class, 'SomeInterface', "interface_exists('SomeInterface')", ''],
+			'fq-global-interface' => [Interface_::class, '\\SomeInterface', "\\interface_exists('\\\\SomeInterface')", '\\Acme'],
+			'namespaced-interface' => [Interface_::class, '\\Acme\\SomeInterface', '\\interface_exists(\'\\\\Acme\\\\SomeInterface\')', '\\Acme'],
+			'global-trait' => [Trait_::class, 'SomeTrait', "trait_exists('SomeTrait')", ''],
+			'fq-global-trait' => [Trait_::class, '\\SomeTrait', '\trait_exists(\'\\\\SomeTrait\')', '\\Acme'],
+			'namespaced-trait' => [Trait_::class, '\\Acme\\SomeTrait', '\trait_exists(\'\\\\Acme\\\\SomeTrait\')', '\\Acme'],
+		];
+	}
+
+	/**
+	 * Should correctly wrap class statements
+	 *
+	 * @test
+	 *
+	 * @dataProvider classTypesAndChecks
+	 */
+	public function should_correctly_wrap_class_statements($class, $fqName, $check, $namespace) {
+		switch ($class) {
+			case Class_::class:
+				$type = 'class';
+				break;
+			case Interface_::class:
+				$type = 'interface';
+				break;
+			case Trait_::class:
+				$type = 'trait';
+				break;
 		}
+		$stmt = new $class($fqName);
+		$nameFrags = explode('\\', $fqName);
+		$name = end($nameFrags);
+		$expected = <<< PHP
+if (!$check) {
+    $type $name
+    {
+    }
+}
+PHP;
+		$printer = new Standard();
+		$block = wrapClassInIfBlock($stmt, $fqName, $namespace);
+		$this->assertEquals($expected, $printer->prettyPrint([$block]));
+	}
 }

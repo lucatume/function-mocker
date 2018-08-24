@@ -127,26 +127,30 @@ function wrapStmtInIfNotBlock(Stmt $stmt, string $checkWhat, string $checkHow) {
 /**
  * Wraps a function statement in an if-not-function-exists block with awareness of the namespace context.
  *
- * @param Function_   $stmt         The function statement that should be wrapped.
- * @param string      $functionName The fully-qualified function name.
- * @param string|null $namespace    The namespace context the if-not-function-exists will happen into.
+ * @param Function_   $stmt           The function statement that should be wrapped.
+ * @param string      $fqFunctionName The fully-qualified function name.
+ * @param string|null $namespace      The namespace context the if-not-function-exists will happen into.
  *
  * @return Stmt\If_ The if-not-function-exists statement wrapping the input function for the specified namespace.
  */
-function wrapFunctionInIfBlock(Function_ $stmt, string $functionName, string $namespace = null) {
+function wrapFunctionInIfBlock(Function_ $stmt, string $fqFunctionName, string $namespace = null) {
 	$checkHow = empty($namespace) || $namespace === '\\' ? 'function_exists' : '\function_exists';
-	$stmtNameFrags = explode('\\', $stmt->name);
-	$stmt->name = end($stmtNameFrags);
+	$functionStmt = clone $stmt;
+	$frags = explode('\\', $stmt->name);
+	$functionStmt->name = end($frags);
 
-	return wrapStmtInIfNotBlock($stmt, $functionName, $checkHow);
+	return wrapStmtInIfNotBlock($functionStmt, $fqFunctionName, $checkHow);
 }
 
 /**
- * @param \PhpParser\Node\Stmt $stmt
- * @param string               $fqClassName
- * @param string|null          $namespace
+ * Wraps a class, interface or trait statement in an if-not-class-exists block with awareness of the namespace context.
  *
- * @return \PhpParser\Node\Stmt\If_
+ * @param Class_|Interface_|Trait_ $stmt        The class/interface/trait statement that should be wrapped.
+ * @param string                   $fqClassName The fully-qualified class/interface/trait name.
+ * @param string|null              $namespace   The namespace context the if-not-class-exists will happen into.
+ *
+ * @return Stmt\If_ The if-not-class-exists statement wrapping the input class, interface, trait for the specified
+ *                  namespace.
  */
 function wrapClassInIfBlock(Stmt $stmt, string $fqClassName, string $namespace = null) {
 	if ($stmt instanceof Class_) {
@@ -157,8 +161,11 @@ function wrapClassInIfBlock(Stmt $stmt, string $fqClassName, string $namespace =
 		$checkHow = empty($namespace) || $namespace === '\\' ? 'interface_exists' : '\interface_exists';
 	}
 
-	return wrapStmtInIfNotBlock($stmt, $fqClassName, $checkHow);
+	$classStmt = clone $stmt;
+	$frags = explode('\\', $classStmt->name);
+	$classStmt->name = end($frags);
 
+	return wrapStmtInIfNotBlock($classStmt, $fqClassName, $checkHow);
 }
 
 /**
