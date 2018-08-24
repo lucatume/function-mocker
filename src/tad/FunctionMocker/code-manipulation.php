@@ -169,7 +169,12 @@ function wrapClassInIfBlock(Stmt $stmt, string $fqClassName, string $namespace =
 }
 
 /**
- * @param \PhpParser\Node\Stmt $stmt
+ * Parses a class or trait statement to modify its private visibility methods to a protected
+ * visibility methods.
+ *
+ * The statement is modified as a side effect and not returned.
+ *
+ * @param \PhpParser\Node\Stmt $stmt The class or Trait statement the method of which should be opened.
  */
 function openPrivateClassMethods(Stmt $stmt) {
 	if (!($stmt instanceof Class_ || $stmt instanceof Stmt\Trait_)) {
@@ -185,7 +190,6 @@ function openPrivateClassMethods(Stmt $stmt) {
 			}
 		}
 	);
-
 }
 
 /**

@@ -3,7 +3,9 @@
 namespace tad\FunctionMocker;
 
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
@@ -213,5 +215,38 @@ PHP;
 		$printer = new Standard();
 		$block = wrapClassInIfBlock($stmt, $fqName, $namespace);
 		$this->assertEquals($expected, $printer->prettyPrint([$block]));
+	}
+
+	/**
+	 * Should modify private class methods to protected
+	 *
+	 * @test
+	 */
+	public function should_modify_private_class_methods_to_protected() {
+		$stmt = new Class_('Test', [new ClassMethod('privateMethod', ['flags' => Class_::MODIFIER_PRIVATE])]);
+
+		openPrivateClassMethods($stmt);
+
+		$expected = new Class_('Test', [new ClassMethod('privateMethod', ['flags' => Class_::MODIFIER_PROTECTED])]);
+		$this->assertCodeEquals($expected, $stmt);
+	}
+
+	protected function assertCodeEquals(Stmt $expected, Stmt $actual) {
+		$printer = new Standard();
+		$this->assertEquals($printer->prettyPrint([$expected]), $printer->prettyPrint([$actual]));
+	}
+
+	/**
+	 * Should modify private trait methods to protected
+	 *
+	 * @test
+	 */
+	public function should_modify_private_trait_methods_to_protected() {
+		$stmt = new Trait_('Test', [new ClassMethod('privateMethod', ['flags' => Class_::MODIFIER_PRIVATE])]);
+
+		openPrivateClassMethods($stmt);
+
+		$expected = new Trait_('Test', [new ClassMethod('privateMethod', ['flags' => Class_::MODIFIER_PROTECTED])]);
+		$this->assertCodeEquals($expected, $stmt);
 	}
 }
