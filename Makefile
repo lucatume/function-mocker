@@ -40,3 +40,4 @@ docker/parallel-lint/id:
 # Lints the source files with PHP Parallel Lint, requires the parallel-lint:5.6 image to be built.
 lint: docker/parallel-lint/id
 	docker run --rm -v ${CURDIR}:/app lucatume/parallel-lint:5.6 --colors /app/src
+	docker run --rm -v ${CURDIR}:/app lucatume/parallel-lint:5.6 --colors /app/tests
