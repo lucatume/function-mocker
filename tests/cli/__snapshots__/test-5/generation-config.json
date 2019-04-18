@@ -13,13 +13,14 @@
     "wrapInIf": true,
     "body": "copy",
     "autoload": true,
+    "functions": [],
     "classes": {
         "Acme\\Company\\FinalClass": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
-            "source": "../../_data/env/src/FinalClass.php"
+            "source": "../../../_data/env/src/FinalClass.php"
         }
     }
 }

@@ -1,3 +1,3 @@
 <?php
+require_once __DIR__ . '/src/Acme/Company/functions.php';
 
-require_once __DIR__ . '/Acme/Company/functions.php';

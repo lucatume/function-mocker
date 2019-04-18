@@ -1,15 +1,22 @@
 <?php
+
+use function tad\FunctionMocker\tempDir;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 \tad\FunctionMocker\FunctionMocker::init( [
-	'cache-path'            => __DIR__ . '/../../_cache/fm-main',
+	'cache-path'            => tempDir() . '/fm-cache',
 	'whitelist'             => [ __DIR__ . '/FunctionMocker', __DIR__ . '/_data' ],
 	'blacklist'             => [ __DIR__ . '/cli' ],
 	'redefinable-internals' => [ 'time' ],
 ] );
 
-foreach ( glob( __DIR__ . '/_data/*.php' ) as $file ) {
-	include $file;
+$dataFiles = new CallbackFilterIterator( new DirectoryIterator( __DIR__ . '/_data' ), function ( SplFileInfo $file ) {
+	return $file->getExtension() === 'php';
+} );
+/** @var \SplFileInfo $file */
+foreach ( $dataFiles as $file ) {
+	include $file->getPathname();
 }
 
 function _data_dir( $path = '' ) {

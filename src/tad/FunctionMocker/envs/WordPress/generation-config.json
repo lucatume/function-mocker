@@ -4,11 +4,11 @@
         "Read more about it at https://github.com/lucatume/function-mocker.",
         "This file was automatically @generated."
     ],
-    "timestamp": 1534702230,
-    "date": "2018-08-19 20:10:30 (Europe/Berlin)",
+    "timestamp": 1555598969,
+    "date": "2019-04-18 14:49:29 (UTC)",
     "name": "WordPress",
     "source": [
-        "../../../../../vendor/wordpress/src/wp-includes"
+        "../../../../../vendor/wordpress/wordpress/wp-includes"
     ],
     "destination": "src/tad/FunctionMocker/envs/WordPress",
     "bootstrap": "bootstrap.php",
@@ -19,183 +19,183 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "do_action": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "do_action_ref_array": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "doing_action": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "did_action": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "has_action": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "remove_action": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "add_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
         },
         "apply_filters": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "apply_filters_ref_array": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "doing_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
         },
         "has_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
         },
         "remove_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
         },
         "current_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
             "fileName": "filters.php"
         },
         "__return_true": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "__return_false": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "__return_null": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "__return_zero": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "__return_empty_array": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "__return_empty_string": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "untrailingslashit": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/formatting.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/formatting.php"
         },
         "trailingslashit": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/formatting.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/formatting.php",
             "fileName": "utils.php"
         },
         "wp_list_pluck": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "wp_list_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "wp_list_sort": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/functions.php",
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/functions.php",
             "fileName": "utils.php"
         },
         "_wp_call_all_hook": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
         },
         "_wp_filter_build_unique_id": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
         }
     },
     "classes": {
@@ -204,14 +204,14 @@
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/class-wp-hook.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/class-wp-hook.php"
         },
         "WP_List_Util": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
-            "source": "../../../../../../vendor/wordpress/src/wp-includes/class-wp-list-util.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/class-wp-list-util.php"
         }
     }
 }
