@@ -299,7 +299,7 @@ function validateFileOrDir( $fileOrDir, string $name, $fromRoot = null ) {
 	return \is_array($fileOrDir) ? $paths : $paths[0];
 }
 
-function validateJsonFile( string $file ): array {
+function validateJsonFile( $file ) {
 	$decoded = json_decode(file_get_contents($file), true);
 
 	if (empty($decoded)) {

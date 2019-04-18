@@ -17,7 +17,7 @@ class ExecutionTimeChecker {
 	/**
 	 * @return integer
 	 */
-	public function getLimit(): int {
+	public function getLimit() {
 		$maxTime = ini_get('max_execution_time');
 
 		if (empty($maxTime) || $maxTime <= 0) {

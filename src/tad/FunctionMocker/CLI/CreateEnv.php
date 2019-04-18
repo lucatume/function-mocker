@@ -163,13 +163,13 @@ class CreateEnv extends Command {
 	 *
 	 * @return CreateEnv
 	 */
-	public function _writeFileHeaders(bool $writeFileHeaders): CreateEnv {
+	public function _writeFileHeaders($writeFileHeaders) {
 		$this->writeFileHeaders = $writeFileHeaders;
 
 		return $this;
 	}
 
-	public function _writeDestination(bool $writeDestination) {
+	public function _writeDestination($writeDestination) {
 		$this->writeDestination = false;
 	}
 
@@ -499,7 +499,7 @@ TEXT;
 		}
 	}
 
-	protected function normalizeEntries(array $entries, array $defaults): array {
+	protected function normalizeEntries(array $entries, array $defaults) {
 		$normalized = [];
 		foreach ($entries as $index => $entry) {
 			$name = is_numeric($index) ? $entry : $index;
@@ -513,7 +513,7 @@ TEXT;
 	/**
 	 * @return array
 	 */
-	protected function orderFunctionsByNamespace(): array {
+	protected function orderFunctionsByNamespace() {
 		$namespaceOrderedFunctions = array_filter(
 			array_reduce(
 				$this->functionIndex,
@@ -539,7 +539,9 @@ TEXT;
 
 	protected function writeFunctionFile($data, $name, $namespace) {
 		list($file, $stmt) = array_values($data);
-		$thisConfig = $this->normalizedFunctionsEntries[$name] ?? (object)$this->defaultFunctionSettings;
+		$thisConfig = isset( $this->normalizedFunctionsEntries[ $name ] )
+			? $this->normalizedFunctionsEntries[ $name ]
+			: (object) $this->defaultFunctionSettings;
 		$generatedConfig = $thisConfig;
 
 		$functionsFileBasename = !empty($thisConfig->fileName) ? trim($thisConfig->fileName) : 'functions.php';
@@ -690,7 +692,7 @@ TEXT;
 		fwrite($fileHandle, "namespace {$namespace};\n\n");
 	}
 
-	protected function throwNotImplementedException(): array {
+	protected function throwNotImplementedException() {
 		return [
 			new Stmt\Throw_(
 				new Expr\New_(
@@ -866,7 +868,7 @@ TEXT;
 	 *
 	 * @return array
 	 */
-	protected function compileIncludePaths($bootstrap, $filesToInclude): array {
+	protected function compileIncludePaths($bootstrap, $filesToInclude) {
 		$requireLines = array_map(
 			function ($file) use ($bootstrap) {
 				$relativePath = findRelativePath(dirname($bootstrap), $file);

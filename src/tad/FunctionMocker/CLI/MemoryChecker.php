@@ -17,7 +17,7 @@ class MemoryChecker {
 	/**
 	 * @return int
 	 */
-	protected function getLimit(): int {
+	protected function getLimit() {
 		$maxMemory = $this->getMax();
 
 		if ( $maxMemory <= 0 ) {
@@ -27,7 +27,7 @@ class MemoryChecker {
 		return $maxMemory;
 	}
 
-	public function getMax(): int {
+	public function getMax() {
 		if ( $this->maxMemory !== null ) {
 			return $this->maxMemory;
 		}

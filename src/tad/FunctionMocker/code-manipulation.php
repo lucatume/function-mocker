@@ -219,7 +219,7 @@ function getFunctionAndClassStmts(array $allStmts) {
  *
  * @return array
  */
-function getIfWrapppedFunctionAndClassStmts(array $allStmts): array {
+function getIfWrapppedFunctionAndClassStmts(array $allStmts) {
 	$wrappedStmts = array_reduce(
 		$allStmts,
 		function (array $found, $stmt) {
@@ -301,7 +301,7 @@ function getNamespaceStmts(array $allStmts) {
  *
  * @return array
  */
-function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$dependencies = []): array {
+function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$dependencies = []) {
 	$thisDependencies = [];
 	$thisDependencies[] = parseExtendsDependencies($node, $namespace);
 	$thisDependencies[] = parseImplementsDependencies($node, $namespace);
@@ -316,7 +316,7 @@ function findStmtDependencies(Node $node, Namespace_ $namespace = null, array &$
 	return array_unique($thisDependencies);
 }
 
-function parseExtendsDependencies(Node $node, Namespace_ $namespace = null): array {
+function parseExtendsDependencies(Node $node, Namespace_ $namespace = null) {
 	if (empty($node->extends)) {
 		return [];
 	}
@@ -380,7 +380,7 @@ function extractFunctionAndNamespace($function) {
 	return array($function, $namespace, $functionFQN);
 }
 
-function isInternalClass(string $classFQN): bool {
+function isInternalClass(string $classFQN) {
 	try {
 		$classReflection = new \ReflectionClass($classFQN);
 
@@ -390,7 +390,7 @@ function isInternalClass(string $classFQN): bool {
 	}
 }
 
-function isInternalFunction(string $functionFQN): bool {
+function isInternalFunction(string $functionFQN) {
 	try {
 		$functionReflection = new \ReflectionFunction($functionFQN);
 
@@ -400,7 +400,7 @@ function isInternalFunction(string $functionFQN): bool {
 	}
 }
 
-function parseImplementsDependencies(Node $node, Namespace_ $namespace = null): array {
+function parseImplementsDependencies(Node $node, Namespace_ $namespace = null) {
 	if (empty($node->implements)) {
 		return [];
 	}
@@ -422,7 +422,7 @@ function parseImplementsDependencies(Node $node, Namespace_ $namespace = null): 
 	return $dependencies;
 }
 
-function parseFunctionCallDependencies(Node $node, Namespace_ $namespace = null): array {
+function parseFunctionCallDependencies(Node $node, Namespace_ $namespace = null) {
 	if (!$node instanceof FuncCall || $node->name instanceof Node\Expr\Variable) {
 		return [];
 	}
@@ -453,7 +453,7 @@ function parseFunctionCallDependencies(Node $node, Namespace_ $namespace = null)
 	return $dependencies;
 }
 
-function parseNameDependencies(Node $node, Namespace_ $namespace = null): array {
+function parseNameDependencies(Node $node, Namespace_ $namespace = null) {
 	if ($node instanceof Name) {
 		if (isInternal($node->toString())) {
 			return [];
@@ -465,7 +465,7 @@ function parseNameDependencies(Node $node, Namespace_ $namespace = null): array 
 	return [];
 }
 
-function parseFunctionParameterDependencies(Node $node, Namespace_ $namespace = null): array {
+function parseFunctionParameterDependencies(Node $node, Namespace_ $namespace = null) {
 	if (!($node instanceof Function_ || $node instanceof Stmt\ClassMethod)) {
 		return [];
 	}
@@ -490,7 +490,7 @@ function parseFunctionParameterDependencies(Node $node, Namespace_ $namespace = 
 	return $params;
 }
 
-function parseSubNodeDependencies(Node $node, Namespace_ $namespace = null): array {
+function parseSubNodeDependencies(Node $node, Namespace_ $namespace = null) {
 	$subNodeNames = array_diff($node->getSubNodeNames(), ['flags', 'parts', 'byRef']);
 	if (empty($subNodeNames)) {
 		return [];
@@ -517,7 +517,7 @@ function parseSubNodeDependencies(Node $node, Namespace_ $namespace = null): arr
 	return $dependencies;
 }
 
-function isInternal(string $name): bool {
+function isInternal($name) {
 	$internals = ['true', 'false', 'null'];
 
 	return \in_array($name, $internals, true) || isInternalFunction($name) || isInternalClass($name);
