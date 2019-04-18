@@ -32,3 +32,11 @@ generate_wpenv:
 	./function-mocker generate:env WordPress \
 		--config=$(SRC)/tad/FunctionMocker/envs/WordPress/generation-config.json \
 		--with-dependencies
+
+# Builds the Docker-based parallel-lint util.
+docker/parallel-lint/id:
+	docker build --force-rm --iidfile docker/parallel-lint/id docker/parallel-lint --tag lucatume/parallel-lint:5.6
+
+# Lints the source files with PHP Parallel Lint, requires the parallel-lint:5.6 image to be built.
+lint: docker/parallel-lint/id
+	docker run --rm -v ${CURDIR}:/app lucatume/parallel-lint:5.6 --colors /app/src
