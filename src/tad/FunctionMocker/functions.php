@@ -113,12 +113,14 @@ function writePatchworkConfig( array $userOptions ) {
 		throw new \RuntimeException("Could not write Patchwork library configuration file to {$configFilePath}");
 	}
 
-	$patchworkConfigFiles = new \CallbackFilterIterator(new \DirectoryIterator($destinationFolder), static function(\SplFileInfo $file){
-		return preg_match('/^pw-cs-.*\.yml$/',$file->getBasename()) 	;
-	});
-	/** @var \SplFileInfo $file */
-	foreach ( $patchworkConfigFiles as $file ) {
-		unlink( $file->getPathname() );
+	$patchworkConfigFiles = new \CallbackFilterIterator(
+		new \DirectoryIterator($destinationFolder), static function(\SplFileInfo $file){
+			return preg_match('/^pw-cs-.*\.yml$/', $file->getBasename());
+		}
+	);
+	// @var \SplFileInfo $file
+	foreach ($patchworkConfigFiles as $file) {
+		unlink($file->getPathname());
 	}
 
 	$date = date('Y-m-d H:i:s');
@@ -326,18 +328,19 @@ function getDirsPhpFiles( array $dirs ) {
 }
 
 function getDirPhpFiles( $dirOrFile, array &$results = [] ) {
-	if ( ! is_dir( $dirOrFile ) ) {
+	if (! is_dir($dirOrFile)) {
 		$results[] = $dirOrFile;
 
 		return $results;
 	}
 
-	$fileInfos = new \CallbackFilterIterator( new \DirectoryIterator( $dirOrFile ),
+	$fileInfos = new \CallbackFilterIterator(
+		new \DirectoryIterator($dirOrFile),
 		static function ( \SplFileInfo $file ) {
 			return $file->getExtension() === 'php';
 		}
 	);
-	foreach ( $fileInfos as $file ) {
+	foreach ($fileInfos as $file) {
 		$results[] = $file->getPathname();
 	}
 
@@ -345,15 +348,15 @@ function getDirPhpFiles( $dirOrFile, array &$results = [] ) {
 }
 
 function strFormat( $str, $replacement ) {
-	return preg_replace( '/[^\\w]+/', $replacement, $str );
+	return preg_replace('/[^\\w]+/', $replacement, $str);
 }
 
 function slugify( $str, $replacement = '-' ) {
-	return strtolower( strFormat( $str, $replacement ) );
+	return strtolower(strFormat($str, $replacement));
 }
 
 function camelCase( $str ) {
-	return strFormat( ucwords( strFormat( $str, ' ' ) ), '' );
+	return strFormat(ucwords(strFormat($str, ' ')), '');
 }
 
 function prettyLowercase( $string ) {
@@ -447,14 +450,14 @@ function orderAndFilterArray( array $order, array $toOrder ) {
 function tempDir() {
 	static $tempDir;
 
-	if ( ! empty( $tempDir ) ) {
+	if (! empty($tempDir)) {
 		return $tempDir;
 	}
 
 	$candidates = [];
 
 	// OS specific dirs.
-	if ( strpos( PHP_OS, 'WIN' ) === 0 ) {
+	if (strpos(PHP_OS, 'WIN') === 0) {
 		$candidates[] = 'c:\\windows\\temp';
 		$candidates[] = 'c:\\winnt\\temp';
 	} else {
@@ -465,28 +468,29 @@ function tempDir() {
 	$candidates[] = sys_get_temp_dir();
 
 	// If there is an upload directory available try and use that.
-	if ( ini_get( 'upload_tmp_dir' ) ) {
-		$candidates[] = ini_get( 'upload_tmp_dir' );
+	if (ini_get('upload_tmp_dir')) {
+		$candidates[] = ini_get('upload_tmp_dir');
 	}
 
-	$available = array_filter( $candidates, static function ( $candidate ) {
-		return is_dir( $candidate ) && is_writable( $candidate );
-	} );
-
+	$available = array_filter(
+		$candidates, static function ( $candidate ) {
+			return is_dir($candidate) && is_writable($candidate);
+		}
+	);
 
 	// Fallback on the '/tmp' folder if none available.
-	$available = count( $available ) ? reset( $available ) : getcwd() . '/tmp';
+	$available = count($available) ? reset($available) : getcwd() . '/tmp';
 
 	// Windows accepts paths with either slash (/) or backslash (\), but will
 	// not accept a path which contains both a slash and a backslash. Since
 	// the 'file_public_path' variable may have either format, we sanitize
 	// everything to use slash which is supported on all platforms.
-	$available = str_replace( '\\', '/', $available );
+	$available = str_replace('\\', '/', $available);
 
 	$tempDir = $available;
 
-	if ( $tempDir !== '/' ) {
-		$tempDir = rtrim( $tempDir, '/' );
+	if ($tempDir !== '/') {
+		$tempDir = rtrim($tempDir, '/');
 	}
 
 	return $tempDir;

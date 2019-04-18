@@ -15,17 +15,17 @@ class RunConfiguration implements \ArrayAccess {
 	public static function fromInput( InputInterface $input ) {
 		$instance = new static();
 		$instance->config = $instance->initFromInput($input);
-		$instance->config['functions'] = isset( $instance->config['functions'] ) ?
+		$instance->config['functions'] = isset($instance->config['functions']) ?
 			$instance->config['functions']
 			: [];
-		$instance->config['classes'] = isset( $instance->config['classes'] ) ?
+		$instance->config['classes'] = isset($instance->config['classes']) ?
 			$instance->config['classes']
 			: [];
 
 		return $instance;
 	}
 
-	protected function initFromInput( InputInterface $input ){
+	protected function initFromInput( InputInterface $input ) {
 		$name = $input->getArgument('name');
 		$inputDestination = $input->hasOption('destination') ? $input->getOption('destination') : '/tests/envs';
 

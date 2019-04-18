@@ -282,15 +282,15 @@ TEXT;
 		$this->autoload = empty($this->generationConfig['autoload']) ? true : (bool)$this->generationConfig['autoload'];
 		$this->wrapInIf = empty($this->generationConfig['wrapInIf']) ? true : (bool)$this->generationConfig['wrapInIf'];
 		$this->saveGenerationConfigFile = empty($this->generationConfig['save']) ? false : (bool)$this->generationConfig['save'];
-		$this->functionsToFind = isset( $this->generationConfig['functions'] ) ? $this->generationConfig['functions'] : [];
-		$this->classesToFind = isset( $this->generationConfig['classes'] ) ? $this->generationConfig['classes'] : [];
+		$this->functionsToFind = isset($this->generationConfig['functions']) ? $this->generationConfig['functions'] : [];
+		$this->classesToFind = isset($this->generationConfig['classes']) ? $this->generationConfig['classes'] : [];
 		$this->functionsToFindCount = \count($this->functionsToFind) ?: static::NOTHING_TO_FIND;
 		$this->classesToFindCount = \count($this->classesToFind) ?: static::NOTHING_TO_FIND;
 		if ($this->classesToFindCount === static::NOTHING_TO_FIND && $this->functionsToFindCount === static::NOTHING_TO_FIND) {
 			$this->findAny = true;
 		}
 
-		$this->withDependencies = ! empty( $this->generationConfig['with-dependencies'] );
+		$this->withDependencies = ! empty($this->generationConfig['with-dependencies']);
 	}
 
 	protected function readSourceFiles() {
@@ -539,9 +539,9 @@ TEXT;
 
 	protected function writeFunctionFile($data, $name, $namespace) {
 		list($file, $stmt) = array_values($data);
-		$thisConfig = isset( $this->normalizedFunctionsEntries[ $name ] )
+		$thisConfig = isset($this->normalizedFunctionsEntries[ $name ])
 			? $this->normalizedFunctionsEntries[ $name ]
-			: (object) $this->defaultFunctionSettings;
+			: (object)$this->defaultFunctionSettings;
 		$generatedConfig = $thisConfig;
 
 		$functionsFileBasename = !empty($thisConfig->fileName) ? trim($thisConfig->fileName) : 'functions.php';
@@ -656,7 +656,7 @@ TEXT;
 	}
 
 	protected function getFileHeader($header, $blankLinesAfter = 2) {
-		if ( ! $this->writeFileHeaders ) {
+		if (! $this->writeFileHeaders) {
 			return '';
 		}
 
@@ -733,9 +733,9 @@ TEXT;
 		 */
 		list($file, $stmt, $namespace) = array_values($classEntry);
 		$classFile = $this->destinationSrc . '/' . str_replace('\\', '/', $name) . '.php';
-		$thisConfig = isset( $this->normalizedClassesEntries[ $name ] ) ?
+		$thisConfig = isset($this->normalizedClassesEntries[ $name ]) ?
 			$this->normalizedClassesEntries[ $name ]
-			: (object) $this->defaultClassSetting;
+			: (object)$this->defaultClassSetting;
 		$generatedConfig = $thisConfig;
 
 		if (empty($thisConfig->autoload)) {
@@ -835,7 +835,7 @@ TEXT;
 		}
 
 		$bootstrapCode .= implode("\n", $requireLines);
-		$bootstrapCode .= "\n\n" . ( is_array( $extraLines ) ? implode( "\n", $extraLines ) : $extraLines );
+		$bootstrapCode .= "\n\n" . ( is_array($extraLines) ? implode("\n", $extraLines) : $extraLines );
 
 		file_put_contents($this->bootstrapFile, $bootstrapCode, LOCK_EX);
 
@@ -843,7 +843,7 @@ TEXT;
 	}
 
 	protected function writeEnvAutoloaderFile($name, $openingPhpTag) {
-		$autoloaderName = camelCase( $this->generationConfig['name'] ) . 'EnvAutoloader';
+		$autoloaderName = camelCase($this->generationConfig['name']) . 'EnvAutoloader';
 		$autoloaderFile = \dirname($this->bootstrapFile) . '/' . $autoloaderName . '.php';
 		$this->filesToInclude[] = $autoloaderFile;
 		$template = new EnvAutoloader();
