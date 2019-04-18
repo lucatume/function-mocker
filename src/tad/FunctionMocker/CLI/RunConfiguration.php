@@ -30,7 +30,7 @@ class RunConfiguration implements \ArrayAccess {
 			'source'            => $input->getArgument('source'),
 			'destination'       => $inputDestination,
 			'save'              => $input->hasOption('save') ? $input->getOption('save') : null,
-			'with-dependencies' => null === $input->getOption('with-dependencies'),
+			'with-dependencies' => $input->getOption('with-dependencies'),
 			'author'            => $input->getOption('author'),
 			'copyright'         => $input->getOption('copyright'),
 		];

@@ -100,7 +100,7 @@ function writePatchworkConfig( array $userOptions ) {
 	$destinationFolder = dirname(dirname(dirname(__DIR__)));
 	$options = getPatchworkConfiguration($destinationFolder, $userOptions);
 
-	$configFileContents = json_encode($options, JSON_PRETTY_PRINT);
+	$configFileContents = json_encode($options, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 	$configChecksum = md5($configFileContents);
 	$configFilePath = $destinationFolder . '/patchwork.json';
 	$checksumFilePath = "{$destinationFolder}/pw-cs-{$configChecksum}.yml";
@@ -113,8 +113,12 @@ function writePatchworkConfig( array $userOptions ) {
 		throw new \RuntimeException("Could not write Patchwork library configuration file to {$configFilePath}");
 	}
 
-	foreach (glob($destinationFolder . '/pw-cs-*.yml') as $file) {
-		unlink($file);
+	$patchworkConfigFiles = new \CallbackFilterIterator(new \DirectoryIterator($destinationFolder), static function(\SplFileInfo $file){
+		return preg_match('/^pw-cs-.*\.yml$/',$file->getBasename()) 	;
+	});
+	/** @var \SplFileInfo $file */
+	foreach ( $patchworkConfigFiles as $file ) {
+		unlink( $file->getPathname() );
 	}
 
 	$date = date('Y-m-d H:i:s');
@@ -163,9 +167,15 @@ function getPatchworkConfiguration( $destinationFolder, array $options = [] ) {
 
 	unset($options['load-wp-env']);
 
-	$options['blacklist'] = ! empty($options['blacklist']) ? array_merge(array_map('realpath', (array)$options['blacklist']), $defaultExcluded) : $defaultExcluded;
+	$options['blacklist'] = ! empty($options['blacklist']) ?
+		array_merge(array_map('realpath', (array)$options['blacklist']), $defaultExcluded)
+		: $defaultExcluded;
+	$options['blacklist'] = array_filter($options['blacklist']);
 
-	$options['whitelist'] = ! empty($options['whitelist']) ? array_merge(array_map('realpath', (array)$options['whitelist']), $defaultIncluded) : $defaultIncluded;
+	$options['whitelist'] = ! empty($options['whitelist']) ?
+		array_merge(array_map('realpath', (array)$options['whitelist']), $defaultIncluded)
+		: $defaultIncluded;
+	$options['blacklist'] = array_filter($options['blacklist']);
 
 	if (empty($options['cache-path'])) {
 		// by default cache code in a `cache` folder in the package root
@@ -315,30 +325,35 @@ function getDirsPhpFiles( array $dirs ) {
 	return array_merge(...$allResults);
 }
 
-function getDirPhpFiles( $dir, array &$results = [] ) {
-	if (! is_dir($dir)) {
-		$results[] = $dir;
+function getDirPhpFiles( $dirOrFile, array &$results = [] ) {
+	if ( ! is_dir( $dirOrFile ) ) {
+		$results[] = $dirOrFile;
 
 		return $results;
 	}
 
-	$iterator = new \FilesystemIterator($dir, \FilesystemIterator::SKIP_DOTS);
-	/*
-	 * @var \SplFileInfo $f
-	 */
-	foreach ($iterator as $f) {
-		if ($f->isFile()) {
-			$results[] = $f->getRealPath();
-		} elseif ($f->isDir()) {
-			getDirPhpFiles($f->getPathname(), $results);
+	$fileInfos = new \CallbackFilterIterator( new \DirectoryIterator( $dirOrFile ),
+		static function ( \SplFileInfo $file ) {
+			return $file->getExtension() === 'php';
 		}
+	);
+	foreach ( $fileInfos as $file ) {
+		$results[] = $file->getPathname();
 	}
 
 	return $results;
 }
 
+function strFormat( $str, $replacement ) {
+	return preg_replace( '/[^\\w]+/', $replacement, $str );
+}
+
 function slugify( $str, $replacement = '-' ) {
-	return strtolower(preg_replace('/[^\\w]+/', $replacement, $str));
+	return strtolower( strFormat( $str, $replacement ) );
+}
+
+function camelCase( $str ) {
+	return strFormat( ucwords( strFormat( $str, ' ' ) ), '' );
 }
 
 function prettyLowercase( $string ) {
@@ -420,4 +435,59 @@ function orderAndFilterArray( array $order, array $toOrder ) {
 	);
 
 	return array_intersect_key($toOrder, array_combine($order, $order));
+}
+
+/**
+ * Returns the OS and config aware path to the temporary directory.
+ *
+ * Thanks to Drupal code base!
+ *
+ * @return string The absolute path
+ */
+function tempDir() {
+	static $tempDir;
+
+	if ( ! empty( $tempDir ) ) {
+		return $tempDir;
+	}
+
+	$candidates = [];
+
+	// OS specific dirs.
+	if ( strpos( PHP_OS, 'WIN' ) === 0 ) {
+		$candidates[] = 'c:\\windows\\temp';
+		$candidates[] = 'c:\\winnt\\temp';
+	} else {
+		$candidates[] = '/tmp';
+	}
+
+	// Add the temp directory used by PHP.
+	$candidates[] = sys_get_temp_dir();
+
+	// If there is an upload directory available try and use that.
+	if ( ini_get( 'upload_tmp_dir' ) ) {
+		$candidates[] = ini_get( 'upload_tmp_dir' );
+	}
+
+	$available = array_filter( $candidates, static function ( $candidate ) {
+		return is_dir( $candidate ) && is_writable( $candidate );
+	} );
+
+
+	// Fallback on the '/tmp' folder if none available.
+	$available = count( $available ) ? reset( $available ) : getcwd() . '/tmp';
+
+	// Windows accepts paths with either slash (/) or backslash (\), but will
+	// not accept a path which contains both a slash and a backslash. Since
+	// the 'file_public_path' variable may have either format, we sanitize
+	// everything to use slash which is supported on all platforms.
+	$available = str_replace( '\\', '/', $available );
+
+	$tempDir = $available;
+
+	if ( $tempDir !== '/' ) {
+		$tempDir = rtrim( $tempDir, '/' );
+	}
+
+	return $tempDir;
 }

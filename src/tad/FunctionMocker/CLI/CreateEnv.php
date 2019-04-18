@@ -29,6 +29,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use tad\FunctionMocker\CLI\Exceptions\BreakSignal;
 use tad\FunctionMocker\Templates\EnvAutoloader;
+use function tad\FunctionMocker\camelCase;
 use function tad\FunctionMocker\capitalPDangIt;
 use function tad\FunctionMocker\findRelativePath;
 use function tad\FunctionMocker\findStmtDependencies;
@@ -44,7 +45,6 @@ use function tad\FunctionMocker\orderAndFilterArray;
 use function tad\FunctionMocker\prettyLowercase;
 use function tad\FunctionMocker\removeFinalFromClass;
 use function tad\FunctionMocker\removeFinalFromClassMethods;
-use function tad\FunctionMocker\slugify;
 use function tad\FunctionMocker\validateFileOrDir;
 use function tad\FunctionMocker\wrapClassInIfBlock;
 use function tad\FunctionMocker\wrapFunctionInIfBlock;
@@ -263,12 +263,13 @@ TEXT;
 	protected function initRunConfiguration() {
 		$this->generationConfig = RunConfiguration::fromInput($this->input);
 		$this->source = (array)validateFileOrDir(
-			$this->generationConfig['source'], 'Source file or directory',
-			[getcwd(), $this->generationConfig['configFileDir']]
+			$this->generationConfig['source'],
+			'Source file or directory',
+			[getcwd(), isset($this->generationConfig['configFileDir']) ? $this->generationConfig['configFileDir'] : '']
 		);
 		$this->destination = findRelativePath(
 			getcwd(),
-			$this->generationConfig['destination'] ?? getcwd() . '/tests/envs/' . $this->generationConfig['name']
+			$this->generationConfig['destination'] ?: getcwd() . '/tests/envs/' . $this->generationConfig['name']
 		);
 		$this->destinationSrc = $this->destination. '/src';
 		$this->bootstrapFile = !empty($this->generationConfig['bootstrap']) ? $this->destination . '/' . trim(
@@ -281,15 +282,15 @@ TEXT;
 		$this->autoload = empty($this->generationConfig['autoload']) ? true : (bool)$this->generationConfig['autoload'];
 		$this->wrapInIf = empty($this->generationConfig['wrapInIf']) ? true : (bool)$this->generationConfig['wrapInIf'];
 		$this->saveGenerationConfigFile = empty($this->generationConfig['save']) ? false : (bool)$this->generationConfig['save'];
-		$this->functionsToFind = $this->generationConfig['functions'] ?? [];
-		$this->classesToFind = $this->generationConfig['classes'] ?? [];
+		$this->functionsToFind = isset( $this->generationConfig['functions'] ) ? $this->generationConfig['functions'] : [];
+		$this->classesToFind = isset( $this->generationConfig['classes'] ) ? $this->generationConfig['classes'] : [];
 		$this->functionsToFindCount = \count($this->functionsToFind) ?: static::NOTHING_TO_FIND;
 		$this->classesToFindCount = \count($this->classesToFind) ?: static::NOTHING_TO_FIND;
 		if ($this->classesToFindCount === static::NOTHING_TO_FIND && $this->functionsToFindCount === static::NOTHING_TO_FIND) {
 			$this->findAny = true;
 		}
 
-		$this->withDependencies = empty($this->generationConfig['with-dependencies']) ? false : true;
+		$this->withDependencies = ! empty( $this->generationConfig['with-dependencies'] );
 	}
 
 	protected function readSourceFiles() {
@@ -396,7 +397,7 @@ TEXT;
 				|| $stmt instanceof Trait_
 				|| $stmt instanceof Interface_
 			) {
-				if (!array_key_exists($name, $this->functionIndex)
+				if (!array_key_exists($name, $this->classIndex)
 					&& ($this->findAny
 					|| ($this->classesToFindCount > 0 && \array_key_exists($name, $this->classesToFind)))
 				) {
@@ -653,6 +654,10 @@ TEXT;
 	}
 
 	protected function getFileHeader($header, $blankLinesAfter = 2) {
+		if ( ! $this->writeFileHeaders ) {
+			return '';
+		}
+
 		$package = 'Test\Environments';
 		$subpackage = capitalPDangIt($this->generationConfig['name']);
 		$author = $this->generationConfig['author'];
@@ -720,12 +725,15 @@ TEXT;
 
 	protected function writeClassFile($classEntry, $name) {
 		/*
+		 * @var string $file
 		 * @var Stmt $stmt
 		 * @var Namespace_ $namespace
 		 */
 		list($file, $stmt, $namespace) = array_values($classEntry);
 		$classFile = $this->destinationSrc . '/' . str_replace('\\', '/', $name) . '.php';
-		$thisConfig = $this->normalizedClassesEntries[$name] ?: (object)$this->defaultClassSetting;
+		$thisConfig = isset( $this->normalizedClassesEntries[ $name ] ) ?
+			$this->normalizedClassesEntries[ $name ]
+			: (object) $this->defaultClassSetting;
 		$generatedConfig = $thisConfig;
 
 		if (empty($thisConfig->autoload)) {
@@ -825,7 +833,7 @@ TEXT;
 		}
 
 		$bootstrapCode .= implode("\n", $requireLines);
-		$bootstrapCode .= "\n\n" . implode("\n", $extraLines);
+		$bootstrapCode .= "\n\n" . ( is_array( $extraLines ) ? implode( "\n", $extraLines ) : $extraLines );
 
 		file_put_contents($this->bootstrapFile, $bootstrapCode, LOCK_EX);
 
@@ -833,7 +841,7 @@ TEXT;
 	}
 
 	protected function writeEnvAutoloaderFile($name, $openingPhpTag) {
-		$autoloaderName = capitalPDangIt(slugify($this->generationConfig['name'], '_')) . 'EnvAutoloader';
+		$autoloaderName = camelCase( $this->generationConfig['name'] ) . 'EnvAutoloader';
 		$autoloaderFile = \dirname($this->bootstrapFile) . '/' . $autoloaderName . '.php';
 		$this->filesToInclude[] = $autoloaderFile;
 		$template = new EnvAutoloader();

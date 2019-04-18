@@ -34,7 +34,7 @@ class {{id}} {
 	 */
 	protected static \$classMap = [
 	{{#each classMap}}
-		'{{@key}}' =>  __DIR__ . '/{{this}}.php',
+		'{{@key}}' =>  __DIR__ . '/src/{{this}}.php',
 	{{/each}}
 	];
 	
@@ -65,6 +65,6 @@ PHP;
 	 *
 	 * @var array
 	 */
-	protected $extraLines = [ "spl_autoload_register( [ new {{id}}( __DIR__ ), 'autoload' ] );" ];
+	protected static $extraLines = [ "spl_autoload_register( [ new {{id}}( __DIR__ ), 'autoload' ] );" ];
 
 }

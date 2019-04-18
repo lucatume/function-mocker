@@ -56,7 +56,7 @@ class FunctionMocker {
 	protected $currentReplacementNamespace;
 
 	/**
-	 * @var bool Whether checks made in the `tearDown` method should be skipped or not.
+	 * @var boolean Whether checks made in the `tearDown` method should be skipped or not.
 	 */
 	protected $skipChecks = false;
 

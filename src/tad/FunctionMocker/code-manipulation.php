@@ -51,9 +51,9 @@ function resolveNamespace(Name $name, Namespace_ $namespace = null) {
 			\array_slice($namespaceFrags, 0, array_search($common[0], $namespaceFrags, true) + 1)
 		);
 		$fullyQualified .= '\\' . implode(
-				'\\',
-				\array_slice($objectFrags, array_search($common[0], $objectFrags, true) + 1)
-			);
+			'\\',
+			\array_slice($objectFrags, array_search($common[0], $objectFrags, true) + 1)
+		);
 
 		return '\\' . ltrim($fullyQualified, '\\');
 	}
@@ -74,9 +74,11 @@ function resolveNamespace(Name $name, Namespace_ $namespace = null) {
 function getAllFileStmts($file) {
 	$files = (array)$file;
 
-	$valid = array_filter($files, function ($file) {
-		return is_file($file) && is_readable($file);
-	});
+	$valid = array_filter(
+		$files, function ($file) {
+			return is_file($file) && is_readable($file);
+		}
+	);
 
 	if (count($files) !== count($valid)) {
 		throw new \InvalidArgumentException('Not all items are files or are readable.');
@@ -434,7 +436,7 @@ function parseFunctionCallDependencies(Node $node, Namespace_ $namespace = null)
 	$dependencies = [];
 
 	if (!($node->name instanceof Name\FullyQualified
-			|| $node->name instanceof Name\Relative)
+		|| $node->name instanceof Name\Relative)
 		&& \count($node->name->parts) === 1
 	) {
 		/*
