@@ -3,9 +3,9 @@ define( 'ABSPATH', __DIR__ . '/src/' );
 define( 'WP_DEFAULT_THEME', 'default' );
 define( 'WP_DEBUG', true );
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
-$_tests_dir = __DIR__ . '/../../tests';
+$_tests_dir = __DIR__ . '/../../../tests';
 if ( file_exists( $_tests_dir . '/.env.local' ) ) {
 	$env = new \Dotenv\Dotenv( $_tests_dir, '.env.local' );
 } else {
