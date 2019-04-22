@@ -180,8 +180,7 @@ function getPatchworkConfiguration( $destinationFolder, array $options = [] ) {
 	$options['blacklist'] = array_filter($options['blacklist']);
 
 	if (empty($options['cache-path'])) {
-		// by default cache code in a `cache` folder in the package root
-		$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
+		$options['cache-path'] = tempDir() . '/function-mocker-cache';
 	}
 
 	$options['cache-path'] = realpath(rtrim($options['cache-path'], '\\/')) ?: $options['cache-path'];
@@ -213,7 +212,8 @@ function validatePath( $path ) {
 }
 
 function readEnvsFromOptions( array $options ) {
-	$envs = isset($options['env']) ? (array)$options['env'] : [ 'WordPress' ];
+	$defaultEnv = isset( $options['load-wp-env'] ) && false === $options['load-wp-env'] ? [] : [ 'WordPress' ];
+	$envs = isset( $options['env'] ) ? (array) $options['env'] : $defaultEnv;
 
 	if (\in_array('WordPress', $envs, true)) {
 		$envs[ array_search('WordPress', $envs, true) ] = __DIR__ . '/envs/WordPress/bootstrap.php';
@@ -494,4 +494,48 @@ function tempDir() {
 	}
 
 	return $tempDir;
+}
+
+/**
+ * Returns a list of functions known to generate WARNINGS in the context of call rerouting.
+ *
+ * @return array An array of functions that are known sources of WARNING during call rerouting.
+ */
+function knownWarningSources(){
+	return [
+		'wp_default_scripts',
+		'wp_default_packages',
+	];
+}
+
+/**
+ * Handles the warnings generated, during call rerouting, by known "offenders".
+ *
+ * In the WordPress codebase some functions specify an argument as passed by reference even when
+ * that argument will be an object (hence always passed by reference). During the call rerouting
+ * performed by the Patchwork library the rerouting would generate a WARNING that would cause either
+ * noise in the output or failure if strictly handled.
+ *
+ * @param array|null $knownWarningsSources An array of known warning sources; if not provided then
+ *                                         some default known warning sources found in the WordPress
+ *                                         code base will be used.
+ */
+function setKnownWarningsHandler( array $knownWarningsSources = null ) {
+	$knownWarningsSources = $knownWarningsSources === null ?
+		knownWarningSources()
+		: $knownWarningsSources;
+
+	set_error_handler( static function ( $errno, $errstr, $errfile ) use ( $knownWarningsSources ) {
+		$pattern = '/Parameter (?<p>\\d+) to (?<f>[^\\s\\(]+)\\(\\) expected to be a reference, value given/u';
+
+		if ( strpos( $errfile, 'CallRerouting.php' ) !== false && preg_match( $pattern, $errstr, $matches ) ) {
+			if ( in_array( $matches['f'], $knownWarningsSources, true ) ) {
+				// Ok, go on.
+				return true;
+			}
+		}
+
+		// Not from the call re-routing, let the default handle handle that.
+		return false;
+	}, E_WARNING );
 }

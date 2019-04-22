@@ -4,8 +4,8 @@
         "Read more about it at https://github.com/lucatume/function-mocker.",
         "This file was automatically @generated."
     ],
-    "timestamp": 1555598969,
-    "date": "2019-04-18 14:49:29 (UTC)",
+    "timestamp": 1555928565,
+    "date": "2019-04-22 10:22:45 (UTC)",
     "name": "WordPress",
     "source": [
         "../../../../../vendor/wordpress/wordpress/wp-includes"
@@ -68,7 +68,8 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
+            "fileName": "filters.php"
         },
         "apply_filters": {
             "removeDocBlocks": false,
@@ -88,19 +89,22 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
+            "fileName": "filters.php"
         },
         "has_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
+            "fileName": "filters.php"
         },
         "remove_filter": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
+            "fileName": "filters.php"
         },
         "current_filter": {
             "removeDocBlocks": false,
@@ -155,7 +159,8 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/formatting.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/formatting.php",
+            "fileName": "utils.php"
         },
         "trailingslashit": {
             "removeDocBlocks": false,
@@ -189,13 +194,15 @@
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
+            "fileName": "filters.php"
         },
         "_wp_filter_build_unique_id": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php"
+            "source": "../../../../../../vendor/wordpress/wordpress/wp-includes/plugin.php",
+            "fileName": "filters.php"
         }
     },
     "classes": {

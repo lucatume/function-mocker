@@ -1,16 +1,21 @@
 <?php
-require_once( __DIR__ . '/../vendor/autoload.php' );
 
-// init Function Mocker before WordPress to wrap its code
+require_once __DIR__ . '/../vendor/autoload.php';
+
+/*
+ * Init Function Mocker before WordPress to wrap its code.
+ * Since WordPress will be loaded there is no need to load the WordPress environment.
+ */
 \tad\FunctionMocker\FunctionMocker::init( [
-	'cache-path'            => __DIR__ .'/../../../../_cache/fm-coresuite-example',
 	'whitelist'             => [
 		__DIR__,
 		dirname( __DIR__ ) . '/src',
 		dirname( __DIR__ ) . '/vendor/wordpress/wordpress/src',
 	],
 	'redefinable-internals' => [ 'time' ],
+	'load-wp-env' => false
 ] );
+
 
 // set some paths to get the things we need from the WordPress folder installed with Composer
 $wp_dir = dirname( __DIR__ ) . '/vendor/wordpress/wordpress';

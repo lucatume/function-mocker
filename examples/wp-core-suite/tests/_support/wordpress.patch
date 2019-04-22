@@ -1,18 +1,17 @@
 diff --git a/tests/phpunit/includes/bootstrap.php b/tests/phpunit/includes/bootstrap.php
-index 0d3bd4be96..61ec41f7df 100644
+index 23faca64e5..b316cd694b 100644
 --- a/tests/phpunit/includes/bootstrap.php
 +++ b/tests/phpunit/includes/bootstrap.php
-@@ -3,13 +3,6 @@
-  * Installs WordPress for running the tests and loads WordPress and the test libraries
+@@ -6,9 +6,9 @@
+ /**
+  * Compatibility with PHPUnit 6+
   */
- 
--/**
-- * Compatibility with PHPUnit 6+
-- */
 -if ( class_exists( 'PHPUnit\Runner\Version' ) ) {
--	require_once dirname( __FILE__ ) . '/phpunit6-compat.php';
+-	require_once dirname( __FILE__ ) . '/phpunit6/compat.php';
 -}
--
++//if ( class_exists( 'PHPUnit\Runner\Version' ) ) {
++//	require_once dirname( __FILE__ ) . '/phpunit6/compat.php';
++//}
+ 
  if ( defined( 'WP_TESTS_CONFIG_FILE_PATH' ) ) {
  	$config_file_path = WP_TESTS_CONFIG_FILE_PATH;
- } else {

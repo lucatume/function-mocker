@@ -130,7 +130,8 @@ class FunctionMocker {
 	 *                            ['redefinable-internals']   array A list of internal PHP functions that are available
 	 *                            for replacement.
 	 *                            ['env']                     array|string|bool Specifies one or more environment setup
-	 *                            files to load immediately after including Patchwork.
+	 *                            files to load immediately after including Patchwork. Set this value to an empty array
+	 *                            not to load any environment.
 	 *
 	 * @return void
 	 *
@@ -150,6 +151,8 @@ class FunctionMocker {
 		includePatchwork();
 
 		include_once __DIR__ . '/utils.php';
+
+		setKnownWarningsHandler();
 
 		includeEnvs($envs);
 

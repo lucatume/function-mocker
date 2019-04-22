@@ -112,7 +112,7 @@ function getAllFileStmts($file) {
  *
  * @return Stmt\If_ The `if not` statement wrapping the input statement.
  */
-function wrapStmtInIfNotBlock(Stmt $stmt, string $checkWhat, string $checkHow) {
+function wrapStmtInIfNotBlock(Stmt $stmt, $checkWhat, $checkHow) {
 	$functionStmt = new Stmt\If_(
 		new BooleanNot(
 			new FuncCall(
@@ -135,7 +135,7 @@ function wrapStmtInIfNotBlock(Stmt $stmt, string $checkWhat, string $checkHow) {
  *
  * @return Stmt\If_ The if-not-function-exists statement wrapping the input function for the specified namespace.
  */
-function wrapFunctionInIfBlock(Function_ $stmt, string $fqFunctionName, string $namespace = null) {
+function wrapFunctionInIfBlock(Function_ $stmt, $fqFunctionName, $namespace = null) {
 	$checkHow = empty($namespace) || $namespace === '\\' ? 'function_exists' : '\function_exists';
 	$functionStmt = clone $stmt;
 	$frags = explode('\\', $stmt->name);
@@ -154,7 +154,7 @@ function wrapFunctionInIfBlock(Function_ $stmt, string $fqFunctionName, string $
  * @return Stmt\If_ The if-not-class-exists statement wrapping the input class, interface, trait for the specified
  *                  namespace.
  */
-function wrapClassInIfBlock(Stmt $stmt, string $fqClassName, string $namespace = null) {
+function wrapClassInIfBlock(Stmt $stmt, $fqClassName, $namespace = null) {
 	if ($stmt instanceof Class_) {
 		$checkHow = empty($namespace) || $namespace === '\\' ? 'class_exists' : '\class_exists';
 	} elseif ($stmt instanceof Trait_) {
@@ -380,7 +380,7 @@ function extractFunctionAndNamespace($function) {
 	return array($function, $namespace, $functionFQN);
 }
 
-function isInternalClass(string $classFQN) {
+function isInternalClass($classFQN) {
 	try {
 		$classReflection = new \ReflectionClass($classFQN);
 
@@ -390,7 +390,7 @@ function isInternalClass(string $classFQN) {
 	}
 }
 
-function isInternalFunction(string $functionFQN) {
+function isInternalFunction($functionFQN) {
 	try {
 		$functionReflection = new \ReflectionFunction($functionFQN);
 

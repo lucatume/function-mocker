@@ -5,7 +5,6 @@ use function tad\FunctionMocker\tempDir;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 \tad\FunctionMocker\FunctionMocker::init( [
-	'cache-path'            => tempDir() . '/fm-cache',
 	'whitelist'             => [ __DIR__ . '/FunctionMocker', __DIR__ . '/_data' ],
 	'blacklist'             => [ __DIR__ . '/cli' ],
 	'redefinable-internals' => [ 'time' ],
