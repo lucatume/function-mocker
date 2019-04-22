@@ -8,9 +8,16 @@
          beStrictAboutTodoAnnotatedTests="true"
          colors="true"
          verbose="true">
-    <testsuite>
-        <directory suffix="Test.php">tests</directory>
-    </testsuite>
+    <testsuites>
+        <testsuite name="5.6-compat">
+            <directory suffix="Test.php" phpVersion="5.6.0" phpVersionOperator=">=">tests/tad/FunctionMocker</directory>
+            <exclude>tests/tad/FunctionMocker/codeManipulationTest.php</exclude>
+        </testsuite>
+        <testsuite name="7.0-compat">
+            <directory suffix="Test.php" phpVersion="7.0.0" phpVersionOperator=">=">tests/cli</directory>
+            <file phpVersion="7.0.0" phpVersionOperator=">=">tests/tad/FunctionMocker/codeManipulationTest.php</file>
+        </testsuite>
+    </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
