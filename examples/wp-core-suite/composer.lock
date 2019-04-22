@@ -1366,7 +1366,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -1546,7 +1546,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/wordpress-develop.git",
-                "reference": "cfc3a4f9b783fe77e2c1c9621bc9cf950718a761"
+                "reference": "7bdef3d3ef7b4eca799ca43c2c456f29e6213a0d"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "~0.5.0",
@@ -1575,7 +1575,7 @@
             "support": {
                 "issues": "https://core.trac.wordpress.org/"
             },
-            "time": "2019-04-19T14:21:00+00:00"
+            "time": "2019-04-22T12:38:50+00:00"
         }
     ],
     "aliases": [],
