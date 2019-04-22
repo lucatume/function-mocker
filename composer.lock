@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f34ceee3dd8146de89f70c1832be6605",
+    "content-hash": "4c32e00540edc7954c9f2de20425d251",
     "packages": [
         {
             "name": "antecedent/patchwork",
@@ -3492,7 +3492,8 @@
                 "url": "https://github.com/WordPress/WordPress",
                 "reference": "master"
             },
-            "type": "library"
+            "type": "library",
+            "time": "2019-04-18T06:02:53+00:00"
         }
     ],
     "aliases": [],
@@ -3505,7 +3506,7 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.6",
-        "ext-json": "^1.6"
+        "ext-json": "^1.0"
     },
     "platform-dev": []
 }
