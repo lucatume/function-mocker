@@ -17,5 +17,6 @@ define( 'VERSION', '0.1.0' );
 
 $app = new \Symfony\Component\Console\Application( 'Function Mocker CLI', VERSION );
 $app->add( new \tad\FunctionMocker\CLI\CreateEnv( 'generate:env' ) );
+// @todo add clear-cache command
 $app->run();
 
