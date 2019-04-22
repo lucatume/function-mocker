@@ -17,7 +17,8 @@ before_install:
 
 script:
     # test with PHPUnit, higher supported version
-    - vendor/bin/phpunit
+    - vendor/bin/phpunit --testsuite 5.6-compat
+    - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then vendor/bin/phpunit --testsuite 7.0-compat ; fi
     # run PHPUnit example
     - if [[ ${TRAVIS_PHP_VERSION:0:1} != "5" ]]; then (cd examples/phpunit && composer update && vendor/bin/phpunit); fi
     # run phpspec example
