@@ -212,8 +212,8 @@ function validatePath( $path ) {
 }
 
 function readEnvsFromOptions( array $options ) {
-	$defaultEnv = isset( $options['load-wp-env'] ) && false === $options['load-wp-env'] ? [] : [ 'WordPress' ];
-	$envs = isset( $options['env'] ) ? (array) $options['env'] : $defaultEnv;
+	$defaultEnv = isset($options['load-wp-env']) && false === $options['load-wp-env'] ? [] : [ 'WordPress' ];
+	$envs = isset($options['env']) ? (array)$options['env'] : $defaultEnv;
 
 	if (\in_array('WordPress', $envs, true)) {
 		$envs[ array_search('WordPress', $envs, true) ] = __DIR__ . '/envs/WordPress/bootstrap.php';
@@ -501,7 +501,7 @@ function tempDir() {
  *
  * @return array An array of functions that are known sources of WARNING during call rerouting.
  */
-function knownWarningSources(){
+function knownWarningSources() {
 	return [
 		'wp_default_scripts',
 		'wp_default_packages',
@@ -525,17 +525,19 @@ function setKnownWarningsHandler( array $knownWarningsSources = null ) {
 		knownWarningSources()
 		: $knownWarningsSources;
 
-	set_error_handler( static function ( $errno, $errstr, $errfile ) use ( $knownWarningsSources ) {
-		$pattern = '/Parameter (?<p>\\d+) to (?<f>[^\\s\\(]+)\\(\\) expected to be a reference, value given/u';
+	set_error_handler(
+		static function ( $errno, $errstr, $errfile ) use ( $knownWarningsSources ) {
+			$pattern = '/Parameter (?<p>\\d+) to (?<f>[^\\s\\(]+)\\(\\) expected to be a reference, value given/u';
 
-		if ( strpos( $errfile, 'CallRerouting.php' ) !== false && preg_match( $pattern, $errstr, $matches ) ) {
-			if ( in_array( $matches['f'], $knownWarningsSources, true ) ) {
-				// Ok, go on.
-				return true;
+			if (strpos($errfile, 'CallRerouting.php') !== false && preg_match($pattern, $errstr, $matches)) {
+				if (in_array($matches['f'], $knownWarningsSources, true)) {
+					// Ok, go on.
+					return true;
+				}
 			}
-		}
 
-		// Not from the call re-routing, let the default handle handle that.
-		return false;
-	}, E_WARNING );
+			// Not from the call re-routing, let the default handle handle that.
+			return false;
+		}, E_WARNING
+	);
 }

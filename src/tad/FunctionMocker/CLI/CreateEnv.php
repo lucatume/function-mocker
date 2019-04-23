@@ -856,6 +856,7 @@ TEXT;
 				$this->autoloadClasses
 			)
 		);
+		ksort($classMap);
 		$autoloadCode = $template->set('header', $this->getFileHeader($name . ' environment autoloader.', 1))->set('id', $autoloaderName)->set('name', capitalPDangIt($this->envName))->set('classMap', $classMap)->render();
 		file_put_contents($autoloaderFile, $openingPhpTag . $autoloadCode, LOCK_EX);
 

@@ -16,4 +16,4 @@ require_once __DIR__ . '/src/utils.php';
 require_once __DIR__ . '/src/filters.php';
 require_once __DIR__ . '/WordPressEnvAutoloader.php';
 
-spl_autoload_register( [ new WordPressEnvAutoloader( __DIR__ ), 'autoload' ] );
+spl_autoload_register([ new WordPressEnvAutoloader(__DIR__), 'autoload' ]);
