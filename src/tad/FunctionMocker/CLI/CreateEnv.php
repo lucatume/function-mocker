@@ -902,6 +902,11 @@ TEXT;
 
 		if (!$this->writeDestination) {
 			unset($this->generationConfig['destination']);
+		} else {
+			$this->generationConfig['destination'] = findRelativePath(
+				getcwd(),
+				$this->generationConfig['destination']
+			);
 		}
 
 		$orderedGenerationConfig = orderAndFilterArray(

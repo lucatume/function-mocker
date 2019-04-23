@@ -165,11 +165,11 @@ class CreateEnvTest extends TestCase {
 	}
 
 	/**
-	 * It should correcly parse and apply configuration parameters
+	 * It should correctly parse and apply configuration parameters
 	 *
 	 * @test
 	 */
-	public function should_correcly_parse_and_apply_configuration_parameters() {
+	public function should_correctly_parse_and_apply_configuration_parameters() {
 		$command = new CreateEnv();
 		$command->_writeFileHeaders( false );
 		$command->_writeDestination( false );
