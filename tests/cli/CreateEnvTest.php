@@ -2,11 +2,12 @@
 
 namespace tad\FunctionMocker\CLI;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use tad\FunctionMocker\Tests\SnapshotAssertions;
 
-class CreateEnvTest extends \PHPUnit_Framework_TestCase {
+class CreateEnvTest extends TestCase {
 
 	use SnapshotAssertions;
 

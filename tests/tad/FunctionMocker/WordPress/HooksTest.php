@@ -2,10 +2,11 @@
 
 namespace tad\FunctionMocker\WordPress;
 
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use tad\FunctionMocker\FunctionMocker;
 
-class HooksTest extends \PHPUnit_Framework_TestCase
+class HooksTest extends TestCase
 {
 	protected function setUp()
 	{

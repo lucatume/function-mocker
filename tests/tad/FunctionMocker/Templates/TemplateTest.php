@@ -2,9 +2,11 @@
 
 namespace tad\FunctionMocker\Templates;
 
+use PHPUnit\Framework\TestCase;
+
 require_once _data_dir( 'DummyTemplate.php' );
 
-class TemplateTest extends \PHPUnit_Framework_TestCase {
+class TemplateTest extends TestCase {
 
 	/**
 	 * Should render the class template

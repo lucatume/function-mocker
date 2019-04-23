@@ -124,7 +124,7 @@ Following the initialization of Function Mocker in the tests bootstrap file, in 
 ```php
 use \tad\FunctionMocker\FunctionMocker;
 
-class MyTest extends \PHPUnit_Framework_TestCase {
+class MyTest extends \PHPUnit\Framework\TestCase {
     public function setUp(){
         // before any other set up method
         FunctionMocker::setUp();

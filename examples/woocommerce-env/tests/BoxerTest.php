@@ -2,9 +2,10 @@
 
 use Examples\WoocommerceEnv\Box;
 use Examples\WoocommerceEnv\Boxer;
+use PHPUnit\Framework\TestCase;
 use tad\FunctionMocker\FunctionMocker;
 
-class BoxerTest extends PHPUnit_Framework_TestCase {
+class BoxerTest extends TestCase {
 
 	/**
 	 * @test
