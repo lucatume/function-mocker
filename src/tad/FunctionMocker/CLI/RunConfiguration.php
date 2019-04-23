@@ -178,6 +178,14 @@ class RunConfiguration implements \ArrayAccess {
 	}
 
 	public function toArray() {
+		if (!empty($this->config['classes'])) {
+			ksort($this->config['classes']);
+		}
+
+		if (!empty($this->config['functions'])) {
+			ksort($this->config['functions']);
+		}
+
 		return $this->config;
 	}
 }

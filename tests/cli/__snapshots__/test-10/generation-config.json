@@ -20,26 +20,12 @@
     "autoload": true,
     "functions": [],
     "classes": {
-        "GlobalAbstractClass": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/GlobalAbstractClass.php"
-        },
         "Acme\\Company\\NamespacedAbstractClass": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
             "source": "../../../_data/env/src/NamespacedAbstractClass.php"
-        },
-        "GlobalInterface": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/GlobalInterface.php"
         },
         "Acme\\Company\\NamespacedInterface": {
             "removeDocBlocks": false,
@@ -48,19 +34,33 @@
             "autoload": true,
             "source": "../../../_data/env/src/NamespacedInterface.php"
         },
-        "GlobalTrait": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/GlobalTrait.php"
-        },
         "Acme\\Company\\NamespacedTrait": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
             "source": "../../../_data/env/src/NamespacedTrait.php"
+        },
+        "GlobalAbstractClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/GlobalAbstractClass.php"
+        },
+        "GlobalInterface": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/GlobalInterface.php"
+        },
+        "GlobalTrait": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/GlobalTrait.php"
         }
     }
 }

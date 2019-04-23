@@ -14,23 +14,17 @@
     "body": "copy",
     "autoload": true,
     "functions": {
-        "withoutComments": {
+        "Acme\\Company\\functionOne": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../_data/env/src/global-functions.php"
+            "source": "../../../_data/env/src/namespaced-functions.php"
         },
-        "withDocBlock": {
+        "Acme\\Company\\function_two": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../_data/env/src/global-functions.php"
-        },
-        "withoutDocBlock": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "source": "../../../_data/env/src/global-functions.php"
+            "source": "../../../_data/env/src/namespaced-functions.php"
         },
         "depending_function_one": {
             "removeDocBlocks": false,
@@ -56,33 +50,46 @@
             "wrapInIf": true,
             "source": "../../../_data/env/src/depending-functions.php"
         },
-        "Acme\\Company\\functionOne": {
+        "withDocBlock": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../_data/env/src/namespaced-functions.php"
+            "source": "../../../_data/env/src/global-functions.php"
         },
-        "Acme\\Company\\function_two": {
+        "withoutComments": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
-            "source": "../../../_data/env/src/namespaced-functions.php"
+            "source": "../../../_data/env/src/global-functions.php"
+        },
+        "withoutDocBlock": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../_data/env/src/global-functions.php"
         }
     },
     "classes": {
+        "Acme\\Company\\ClassWFinalMethods": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/ClassWFinalMethods.php"
+        },
+        "Acme\\Company\\ClassWPrivateMethods": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/ClassWPrivateMethods.php"
+        },
         "Acme\\Company\\DependingClass": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
             "source": "../../../_data/env/src/DependingClass.php"
-        },
-        "GlobalAbstractClass": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/GlobalAbstractClass.php"
         },
         "Acme\\Company\\FinalClass": {
             "removeDocBlocks": false,
@@ -98,40 +105,12 @@
             "autoload": true,
             "source": "../../../_data/env/src/NamespacedAbstractClass.php"
         },
-        "SomeInputClass": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/SomeInputClass.php"
-        },
-        "GlobalInterface": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/GlobalInterface.php"
-        },
         "Acme\\Company\\NamespacedInterface": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
             "source": "../../../_data/env/src/NamespacedInterface.php"
-        },
-        "Acme\\Company\\ParentClass": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/ParentClass.php"
-        },
-        "Acme\\Company\\ClassWPrivateMethods": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/ClassWPrivateMethods.php"
         },
         "Acme\\Company\\NamespacedTrait": {
             "removeDocBlocks": false,
@@ -140,19 +119,26 @@
             "autoload": true,
             "source": "../../../_data/env/src/NamespacedTrait.php"
         },
-        "GlobalTrait": {
+        "Acme\\Company\\ParentClass": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
-            "source": "../../../_data/env/src/GlobalTrait.php"
+            "source": "../../../_data/env/src/ParentClass.php"
         },
-        "Acme\\Company\\ClassWFinalMethods": {
+        "GlobalAbstractClass": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "autoload": true,
-            "source": "../../../_data/env/src/ClassWFinalMethods.php"
+            "source": "../../../_data/env/src/GlobalAbstractClass.php"
+        },
+        "GlobalInterface": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/GlobalInterface.php"
         },
         "GlobalNamespaceClass": {
             "removeDocBlocks": false,
@@ -160,6 +146,20 @@
             "wrapInIf": true,
             "autoload": true,
             "source": "../../../_data/env/src/GlobalNamespaceClass.php"
+        },
+        "GlobalTrait": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/GlobalTrait.php"
+        },
+        "SomeInputClass": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/SomeInputClass.php"
         }
     }
 }

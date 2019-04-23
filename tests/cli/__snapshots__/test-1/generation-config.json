@@ -14,13 +14,13 @@
     "body": "copy",
     "autoload": true,
     "functions": {
-        "withoutComments": {
+        "withDocBlock": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,
             "source": "../../../_data/env/src/global-functions.php"
         },
-        "withDocBlock": {
+        "withoutComments": {
             "removeDocBlocks": false,
             "body": "copy",
             "wrapInIf": true,

@@ -17,18 +17,6 @@
     "body": "empty",
     "autoload": false,
     "functions": {
-        "withDocBlock": {
-            "removeDocBlocks": false,
-            "body": "copy",
-            "wrapInIf": true,
-            "source": "../../../_data/env/src/global-functions.php"
-        },
-        "withoutDocBlock": {
-            "removeDocBlocks": false,
-            "body": "throw",
-            "wrapInIf": false,
-            "source": "../../../_data/env/src/global-functions.php"
-        },
         "Acme\\Company\\functionOne": {
             "removeDocBlocks": false,
             "body": "copy",
@@ -40,22 +28,34 @@
             "body": "empty",
             "wrapInIf": true,
             "source": "../../../_data/env/src/namespaced-functions.php"
+        },
+        "withDocBlock": {
+            "removeDocBlocks": false,
+            "body": "copy",
+            "wrapInIf": true,
+            "source": "../../../_data/env/src/global-functions.php"
+        },
+        "withoutDocBlock": {
+            "removeDocBlocks": false,
+            "body": "throw",
+            "wrapInIf": false,
+            "source": "../../../_data/env/src/global-functions.php"
         }
     },
     "classes": {
-        "Acme\\Company\\ClassWPrivateMethods": {
-            "removeDocBlocks": false,
-            "body": "throw",
-            "wrapInIf": true,
-            "autoload": true,
-            "source": "../../../_data/env/src/ClassWPrivateMethods.php"
-        },
         "Acme\\Company\\ClassWFinalMethods": {
             "removeDocBlocks": false,
             "body": "empty",
             "wrapInIf": false,
             "autoload": true,
             "source": "../../../_data/env/src/ClassWFinalMethods.php"
+        },
+        "Acme\\Company\\ClassWPrivateMethods": {
+            "removeDocBlocks": false,
+            "body": "throw",
+            "wrapInIf": true,
+            "autoload": true,
+            "source": "../../../_data/env/src/ClassWPrivateMethods.php"
         }
     }
 }
