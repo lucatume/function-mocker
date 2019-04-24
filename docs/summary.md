@@ -1,7 +1,7 @@
 ## Summary
 
 * [Welcome](welcome.md)
-* [Levels of testing](levels-of-testing.md)
+	* [Levels of testing](levels-of-testing.md)
 * Getting started
 	* [Installation](installation.md)
 	* [Configuration](configuration.md)
