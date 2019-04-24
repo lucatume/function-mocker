@@ -13,3 +13,4 @@ patchwork.json
 cache/*
 tests/_output/*
 pw-cs-*.yml
+patchwork.json

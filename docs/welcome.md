@@ -1,5 +1,5 @@
-Function Mocker is a function mocking framework powered by [Patchwork][7026-0001] and [Prophecy][7026-0002] born out of my need to stub, mock and spy WordPress defined functions in unit and integration tests.  
-A lot of concepts in this opening, a code example might help.  
+Function Mocker is a function mocking framework powered by [Patchwork][7026-0001] and [Prophecy][7026-0002] born out of my need to stub, mock and spy functions defined by WordPress in the context of unit and integration tests.  
+A lot of concepts in this opening, a code example might help understanding.
 
 ## A complete PHPUnit example
 Supposing I want to test the method `log` of the `Logger` class below:
@@ -34,12 +34,12 @@ In [PhpUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") bootst
 The test case itself:
 
 ```php
-use \tad\FunctionMocker\FunctionMocker;
+use \tad\FunctionMocker\FunctionMocker as the_function;
 
 class LoggerTest extends TestCase {
 
 	public function setUp() {
-		FunctionMocker::setUp();
+		the_function::setUp();
 	}
 
 	/**
@@ -49,16 +49,16 @@ class LoggerTest extends TestCase {
 		// Arrange
 		$mockTime = strtotime( '2018-04-21 08:12:45' );
 		// stub the internal `time` function
-		FunctionMocker::time()->willReturn( $mockTime );
+		the_function::time()->willReturn( $mockTime );
 		// stub the `get_transient` function
-		FunctionMocker::get_transient( Argument::type( 'string' ) )
+		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [ '12:23' => 'First message' ] );
 		// mock the `set_transient` function and set expectations on it
 		$expected = [
 			'12:23' => 'First message',
 			'12:45' => 'Second message',
 		];
-		FunctionMocker::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldBeCalled();
 
 		// Act
@@ -76,12 +76,12 @@ class LoggerTest extends TestCase {
 		// Arrange
 		$mockTime = strtotime( '2018-04-21 08:12:45' );
 		// stub the internal `time` function
-		FunctionMocker::time()->willReturn( $mockTime );
+		the_function::time()->willReturn( $mockTime );
 		// stub the `get_transient` function, this time to return an empty array
-		FunctionMocker::get_transient( Argument::type( 'string' ) )
+		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [] );
 		// spy the `set_transient` function, calls will be verified in the Assert phase
-		FunctionMocker::spy('set_transient');
+		the_function::spy('set_transient');
 
 		// Act
 		$logger = new Logger();
@@ -90,7 +90,7 @@ class LoggerTest extends TestCase {
 		// Assert
 		// the spy expectations are explicitly verified
 		$expected = [ '12:45' => 'Second message' ];
-		FunctionMocker::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldHaveBeenCalled();
 	}
 
@@ -100,10 +100,10 @@ class LoggerTest extends TestCase {
 	public function test_logging_at_a_specific_time() {
 		// Arrange
 		// stub the `get_transient` function, this time to return an empty array
-		FunctionMocker::get_transient( Argument::type( 'string' ) )
+		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [] );
 		// spy the `set_transient` function, calls will be verified in the Assert phase
-		FunctionMocker::spy('set_transient');
+		the_function::spy('set_transient');
 
 		// Act
 		$logger = new Logger();
@@ -112,18 +112,17 @@ class LoggerTest extends TestCase {
 		// Assert
 		// the spy expectations are explicitly verified
 		$expected = [ '12:45' => 'Second message' ];
-		FunctionMocker::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldHaveBeenCalled();
 	}
 
 	public function tearDown() {
-		FunctionMocker::tearDown( $this );
+		the_function::tearDown( $this );
 	}
 }
 ```
 
-[Go to the quickstart guide](/quickstart.html) or check out the [alternatives](/alternatives.html).
+[Go to the installation guide](installation.md) or check out the [alternatives](alternatives.md).
 
 [7026-0001]: http://patchwork2.org/
 [7026-0002]: https://github.com/phpspec/prophecy
-

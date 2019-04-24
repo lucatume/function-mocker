@@ -3,7 +3,7 @@
 use Examples\WoocommerceEnv\Box;
 use Examples\WoocommerceEnv\Boxer;
 use PHPUnit\Framework\TestCase;
-use tad\FunctionMocker\FunctionMocker;
+use tad\FunctionMocker\FunctionMocker as the_function;
 
 class BoxerTest extends TestCase {
 
@@ -55,7 +55,7 @@ class BoxerTest extends TestCase {
 
 		$product_id = 23;
 
-		FunctionMocker::wc_get_product( $product_id )->willReturn( $product->reveal() );
+		the_function::wc_get_product( $product_id )->willReturn( $product->reveal() );
 
 		$box = $boxer->get_box_for_product( $product_id, Box::INCH, Box::LB );
 
@@ -63,10 +63,10 @@ class BoxerTest extends TestCase {
 	}
 
 	protected function setUp() {
-		FunctionMocker::setUp();
+		the_function::setUp();
 	}
 
 	protected function tearDown() {
-		FunctionMocker::tearDown();
+		the_function::tearDown();
 	}
 }

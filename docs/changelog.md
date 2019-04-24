@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+### Added
+- project documentation
+- Prophecy-based mocking of functions
+- Prophecy-based mocking of static methods
+- configurable and automated generation of testing environments
+
+### Removed
+- instance method mocking
 
 ## [1.3.8]
 ### Fixed

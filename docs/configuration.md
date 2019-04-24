@@ -1,27 +1,5 @@
----
-title: Quick start
-url: quickstart.html
-permalink: quickstart.html
-sidebar_link: true
----
-
-## Installation
-Function Mocker should be installed as a developer dependency using [Composer](https://getcomposer.org/); from your WordPress project root folder (a plugin, a theme or a whole site) run:
-
-```bash
-composer install --dev lucatume/function-mocker
-```
-
-Function Mocker has two main dependencies and it will pull them when installing it:
-
-* [Patchwork](!g patchwork2 php) - a monkey patching library for PHP
-* [Prophecy](!g prophecy php) - [phpspec](!g) own mocking engine
-
-If you are using [PHPUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") the second will be installed with it, still it's good to know what is happening.
-
-## Setup
 I will use, as an example, a simple WordPress plugin project for which I want to write [PhpUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") unit tests; Function Mocker has been installed using [Composer](https://getcomposer.org/).  
-The setup is common and generic enough but for more thorough or specific setup guides check out the [Different Setups page](/different-setups.html).  
+The setup is common and generic enough but for more thorough or specific setup guides check out the [Different Setups page](/setups/index.md).  
 Assuming PHPUnit will use the `tests/bootstrap.php` file to bootstrap you need to initialize Function Mocker:
 
 ```php
@@ -48,48 +26,45 @@ In any test case that will use Function Mocker you need to call the `FunctionMoc
 ```php
 // file tests/FirstTestCase.php
 
-use tad\FucntionMocker\FunctionMocker;
+use tad\FucntionMocker\FunctionMocker as the_function;
 
 class FirstTestCase extends \PHPUnit\Framework\TestCase {
 
 	public function setUp(){
-		FunctionMocker::setUp();	
+		the_function::setUp();
 	}
 
 	public function test_stubbing_a_function(){
 		// stub the `get_option` function
-		FunctionMocker::get_option('foo')->willReturn('bar');
+		the_function::get_option('foo')->willReturn('bar');
 
 		$this->assertEquals('bar', get_option('foo'));
 	}
 
 	public function test_mocking_a_function(){
 		// mock the `get_option` function to check if and how it's called
-		FunctionMocker::get_option('foo')->shouldBeCalled();
-		FunctionMocker::get_option('not-foo')->shouldNotBeCalled();
+		the_function::get_option('foo')->shouldBeCalled();
+		the_function::get_option('not-foo')->shouldNotBeCalled();
 
 		$this->assertEquals('bar', get_option('foo'));
 	}
 
 	public function test_spying_a_function(){
 		// spy the `get_option` function
-		FunctionMocker::spy('get_option');
+		the_function::spy('get_option');
 	
 		// call it
 		get_option('foo');
 	
 		// verify how it was called
-		FunctionMocker::get_option('foo')->shouldHaveBeenCalled();
-		FunctionMocker::get_option('not-foo')->shouldNotBeenCalled();
+		the_function::get_option('foo')->shouldHaveBeenCalled();
+		the_function::get_option('not-foo')->shouldNotBeenCalled();
 	}
 
 	public function tearDown(){
-		FunctionMocker::tearDown($this);
+		the_function::tearDown($this);
 	}
 }
 ```
-
-> If you
- use an IDE that will index the project files (e.g. PhpStorm) take care to exclude the cache folder from the indexing to avoid duplicated definitions.
  
  If you need to set up Function Mocker in a less standard environment [look into specific setup guides](/setups/index.md).

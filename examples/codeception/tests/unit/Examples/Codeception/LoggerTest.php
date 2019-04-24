@@ -3,7 +3,7 @@
 namespace Examples\Codeception;
 
 use Prophecy\Argument;
-use tad\FunctionMocker\FunctionMocker;
+use tad\FunctionMocker\FunctionMocker as the_function;
 
 class LoggerTest extends \Codeception\Test\Unit {
 
@@ -13,7 +13,7 @@ class LoggerTest extends \Codeception\Test\Unit {
 	protected $tester;
 
 	protected function _before() {
-		FunctionMocker::setUp();
+		the_function::setUp();
 	}
 
 	/**
@@ -23,16 +23,16 @@ class LoggerTest extends \Codeception\Test\Unit {
 		// Arrange
 		$mockTime = strtotime( '2018-04-21 08:12:45' );
 		// stub the internal `time` function
-		FunctionMocker::time()->willReturn( $mockTime );
+		the_function::time()->willReturn( $mockTime );
 		// stub the `get_transient` function
-		FunctionMocker::get_transient( Argument::type( 'string' ) )
+		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [ '12:23' => 'First message' ] );
 		// mock the `set_transient` function and set expectations on it
 		$expected = [
 			'12:23' => 'First message',
 			'12:45' => 'Second message',
 		];
-		FunctionMocker::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldBeCalled();
 
 		// Act
@@ -50,12 +50,12 @@ class LoggerTest extends \Codeception\Test\Unit {
 		// Arrange
 		$mockTime = strtotime( '2018-04-21 08:12:45' );
 		// stub the internal `time` function
-		FunctionMocker::time()->willReturn( $mockTime );
+		the_function::time()->willReturn( $mockTime );
 		// stub the `get_transient` function, this time to return an empty array
-		FunctionMocker::get_transient( Argument::type( 'string' ) )
+		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [] );
 		// spy the `set_transient` function, calls will be verified in the Assert phase
-		FunctionMocker::spy( 'set_transient' );
+		the_function::spy( 'set_transient' );
 
 		// Act
 		$logger = new Logger();
@@ -64,7 +64,7 @@ class LoggerTest extends \Codeception\Test\Unit {
 		// Assert
 		// the spy expectations are explicitly verified
 		$expected = [ '12:45' => 'Second message' ];
-		FunctionMocker::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldHaveBeenCalled();
 	}
 
@@ -74,10 +74,10 @@ class LoggerTest extends \Codeception\Test\Unit {
 	public function test_logging_at_a_specific_time() {
 		// Arrange
 		// stub the `get_transient` function, this time to return an empty array
-		FunctionMocker::get_transient( Argument::type( 'string' ) )
+		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [] );
 		// spy the `set_transient` function, calls will be verified in the Assert phase
-		FunctionMocker::spy( 'set_transient' );
+		the_function::spy( 'set_transient' );
 
 		// Act
 		$logger = new Logger();
@@ -86,11 +86,11 @@ class LoggerTest extends \Codeception\Test\Unit {
 		// Assert
 		// the spy expectations are explicitly verified
 		$expected = [ '12:45' => 'Second message' ];
-		FunctionMocker::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldHaveBeenCalled();
 	}
 
 	protected function _after() {
-		FunctionMocker::tearDown();
+		the_function::tearDown();
 	}
 }

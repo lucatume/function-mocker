@@ -1,7 +1,4 @@
 <?php
-
-use function tad\FunctionMocker\tempDir;
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 \tad\FunctionMocker\FunctionMocker::init( [

@@ -33,6 +33,14 @@ generate_wpenv:
 		--config=$(SRC)/tad/FunctionMocker/envs/WordPress/generation-config.json \
 		--with-dependencies
 
+generate_autoloaded_wordpress:
+	./function-mocker generate:env AutoloadedWordPress \
+		${CURDIR}/vendor/wordpress/wordpress \
+		--destination=${CURDIR}/AutoloadedWordPress \
+		--author="WordPress Contributors <wordpress@wordpress.org>" \
+		--copyright="WordPress Contributors" \
+		--with-dependencies
+
 # Builds the Docker-based parallel-lint util.
 docker/parallel-lint/id:
 	docker build --force-rm --iidfile docker/parallel-lint/id docker/parallel-lint --tag lucatume/parallel-lint:5.6
@@ -41,3 +49,6 @@ docker/parallel-lint/id:
 lint: docker/parallel-lint/id
 	docker run --rm -v ${CURDIR}:/app lucatume/parallel-lint:5.6 --colors /app/src
 	docker run --rm -v ${CURDIR}:/app lucatume/parallel-lint:5.6 --colors /app/tests
+
+duplicate_gitbook_files:
+	cp ${CURDIR}/docs/welcome.md ${CURDIR}/docs/README.md

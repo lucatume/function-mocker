@@ -17,5 +17,9 @@ class functionsTest extends TestCase {
         $env = _data_dir('no-bootstrap-env/alternante-bootstrap.php');
         
         includeEnvs([$env]);
+
+	    $mock = $this->getMockBuilder( 'SomeClass' )->getMock();
+	    $mock->method('someMethod')->willReturn(23);
+
     }
 }
