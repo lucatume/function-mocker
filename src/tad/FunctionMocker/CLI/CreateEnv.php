@@ -188,11 +188,7 @@ option is set to `false`.
 When using a JSON configuration file the following optional parameters can be specified; read more in the README.
 TEXT;
 
-		$this->setName('generate:env')
-		     ->setDescription('Generates an environment file from a source folder or file.')
-		     ->setHelp($help)
-		     ->addArgument('name', InputArgument::REQUIRED, 'The environment name')
-		     ->addArgument(
+		$this->setName('generate:env')->setDescription('Generates an environment file from a source folder or file.')->setHelp($help)->addArgument('name', InputArgument::REQUIRED, 'The environment name')->addArgument(
 			'source',
 			InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
 			'The environment source files of directories; separate them with a space'

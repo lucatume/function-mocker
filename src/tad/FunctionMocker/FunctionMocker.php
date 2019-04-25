@@ -11,6 +11,7 @@
 namespace tad\FunctionMocker;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\MethodProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use Prophecy\Prophet;
@@ -276,7 +277,7 @@ class FunctionMocker {
 	 * @throws \Exception If the function could not be created.
 	 */
 	public static function __callStatic($function, array $arguments) {
-		return self::replace($function, ...$arguments);
+		return self::prophesize($function, ...$arguments);
 
 	}
 
@@ -296,9 +297,9 @@ class FunctionMocker {
 	 *          }
 	 *
 	 *          public function test_something_requiring_function_mocking(){
-	 *              FunctionMocker::replace('MyNamespace\\SubSpace\\update_option', 'foo', ['bar'])
+	 *              FunctionMocker::prophesize('MyNamespace\\SubSpace\\update_option', 'foo', ['bar'])
 	 *                  ->shouldBeCalled();
-	 *              FunctionMocker::replace('MyNamespace\\SubSpace\\get_option', Argument::type('string'))
+	 *              FunctionMocker::prophesize('MyNamespace\\SubSpace\\get_option', Argument::type('string'))
 	 *                  ->willReturn([]);
 	 *
 	 *              $logger = new OptionLogger($option = 'foo');
@@ -318,7 +319,7 @@ class FunctionMocker {
 	 * @return \Prophecy\Prophecy\MethodProphecy
 	 * @throws \Exception If the function could not be created.
 	 */
-	public static function replace($function, ...$arguments) {
+	public static function prophesize($function, ...$arguments) {
 		$instance = self::instance();
 
 		list($function, $namespace, $functionFQN) = extractFunctionAndNamespace($function);
@@ -498,7 +499,7 @@ class FunctionMocker {
 	 * @throws \Exception If the function could not be created.
 	 */
 	public static function spy($function) {
-		return static::replace($function);
+		return static::prophesize($function);
 
 	}
 
@@ -510,5 +511,17 @@ class FunctionMocker {
 	public static function skipChecks() {
 		static::instance()->skipChecks = true;
 
+	}
+
+	public static function replace( $functionOrStaticMethod, $value = null ) {
+		if ( ! is_callable( $value ) ) {
+			return static::prophesize( $functionOrStaticMethod, Argument::any() )->willReturn( $value );
+		}
+
+		$proxy = function ( $prophecyArgs ) use ( $value ) {
+			return $value( ...$prophecyArgs );
+		};
+
+		return static::prophesize( $functionOrStaticMethod, Argument::cetera() )->will( $proxy );
 	}
 }

@@ -22,11 +22,10 @@ class Logger {
 }
 ```
 
-In [PhpUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") bootstrap file:
+In the [PhpUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") bootstrap file:
 
 ```php
 \tad\FunctionMocker\FunctionMocker::init([
-	'cache-dir' => __DIR__ . '/_cache',
 	'redefinable-internals' => ['time']
 ]);
 ```

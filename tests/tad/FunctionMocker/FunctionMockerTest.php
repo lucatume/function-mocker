@@ -39,7 +39,7 @@ class FunctionMockerTest extends TestCase {
 	 * @dataProvider globalNonExistingFunctions
 	 */
 	public function should_allow_stubbing_a_non_existing_function_using_replace( $function ) {
-		FunctionMocker::replace( $function, 'foo' )->willReturn( 'bar' );
+		FunctionMocker::prophesize( $function, 'foo' )->willReturn( 'bar' );
 
 		$result = call_user_func( $function, 'foo' );
 
@@ -75,7 +75,7 @@ class FunctionMockerTest extends TestCase {
 	 * @dataProvider existingFunctions
 	 */
 	public function should_allow_stubbing_existing_functions_using_replace( $function ) {
-		FunctionMocker::replace( $function, 'foo' )->willReturn( 'bar' );
+		FunctionMocker::prophesize( $function, 'foo' )->willReturn( 'bar' );
 
 		$result = call_user_func( $function, 'foo' );
 
@@ -99,7 +99,7 @@ class FunctionMockerTest extends TestCase {
 	 * @test
 	 */
 	public function should_allow_stubbing_non_existing_namespaced_functions( $function ) {
-		FunctionMocker::replace( $function, 'foo' )->willReturn( 'bar' );
+		FunctionMocker::prophesize( $function, 'foo' )->willReturn( 'bar' );
 
 		$result = call_user_func( $function, 'foo' );
 
@@ -123,7 +123,7 @@ class FunctionMockerTest extends TestCase {
 	 * @dataProvider existingNamespacedFunctions
 	 */
 	public function should_allow_stubbing_a_namespaced_function( $function ) {
-		FunctionMocker::replace( $function, 'foo' )->willReturn( 'bar' );
+		FunctionMocker::prophesize( $function, 'foo' )->willReturn( 'bar' );
 
 		$result = call_user_func( $function, 'foo' );
 

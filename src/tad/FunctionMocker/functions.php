@@ -335,18 +335,18 @@ function getDirPhpFiles( $dirOrFile, array &$results = [] ) {
 	}
 
 	$fileInfos = new \CallbackFilterIterator(
-		new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $dirOrFile ) ),
+		new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dirOrFile)),
 		static function ( \SplFileInfo $file ) {
 			return $file->getExtension() === 'php';
 		}
 	);
 
-	/** @var \SplFileInfo $file */
+	// @var \SplFileInfo $file
 	foreach ($fileInfos as $file) {
 		if (!$file->isDir()) {
 			$results[] = $file->getPathname();
 		} else {
-			getDirPhpFiles($file->getPathname(),$results);
+			getDirPhpFiles($file->getPathname(), $results);
 		}
 	}
 
