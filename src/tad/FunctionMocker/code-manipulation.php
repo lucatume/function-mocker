@@ -389,6 +389,13 @@ function extractFunctionAndNamespace($function)
         $functionFQN = $function;
     }
 
+    // Handle the case where this might a be static method in the format "Class::method".
+    if (strpos($functionFQN, '::')!== false) {
+        list($staticMethodClassFQN,$staticMethod) = explode('::', $functionFQN);
+        $functionFQN = $staticMethodClassFQN;
+        $function = $staticMethod;
+    }
+
     return array($function, $namespace, $functionFQN);
 }
 

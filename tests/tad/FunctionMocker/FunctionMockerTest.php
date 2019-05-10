@@ -248,6 +248,38 @@ class FunctionMockerTest extends TestCase
         $this->assertEquals('foo bar', time());
     }
 
+    /**
+     * It should allow replacing a function multiple times
+     *
+     * @test
+     */
+    public function should_allow_replacing_a_function_multiple_times()
+    {
+        FunctionMocker::replace('testFunctionFive');
+
+        $this->assertNull(testFunctionFive());
+
+        FunctionMocker::replace('testFunctionFive', 23);
+
+        $this->assertEquals(23, testFunctionFive());
+
+        FunctionMocker::replace('testFunctionFive', 89);
+
+        $this->assertEquals(89, testFunctionFive());
+
+        FunctionMocker::replace('testFunctionFive', function () {
+            return 2389;
+        });
+
+        $this->assertEquals(2389, testFunctionFive());
+
+        FunctionMocker::prophesize('testFunctionFive')->will(function () {
+            return 'test';
+        });
+
+        $this->assertEquals('test', testFunctionFive());
+    }
+
     protected function setUp()
     {
         FunctionMocker::setUp();

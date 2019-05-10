@@ -13,6 +13,7 @@ namespace tad\FunctionMocker;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\MethodProphecy;
+use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use Prophecy\Prophet;
 
@@ -340,15 +341,20 @@ class FunctionMocker
             $functionFQN = $namespace . '\\' . trim($function, '\\');
         }
 
-        if (!function_exists($functionFQN)) {
+        if (! (
+            function_exists($functionFQN)
+            || is_callable("{$functionFQN}::{$function}")
+        )) {
             \tad\FunctionMocker\createFunction($function, $namespace);
         }
 
-        if ($prophecy = $instance->buildNewProphecyFor($function, $functionFQN)) {
+        if ($instance->buildNewProphecyFor($function, $functionFQN)) {
             $instance->redefineFunctionWithPatchwork($function, $functionFQN);
         }
 
-        return $instance->buildMethodProphecy($function, $arguments, $instance->prophecies[$functionFQN]);
+        $redefineTarget = $instance->getRedefineTarget($function, $functionFQN);
+
+        return $instance->buildMethodProphecy($function, $arguments, $instance->prophecies[$redefineTarget]);
     }
 
     /**
@@ -361,13 +367,15 @@ class FunctionMocker
      */
     protected function buildNewProphecyFor($function, $functionFQN)
     {
-        if (array_key_exists($functionFQN, $this->prophecies)) {
+        $redefineTarget = $this->getRedefineTarget($function, $functionFQN);
+
+        if (array_key_exists($redefineTarget, $this->prophecies)) {
             return false;
         }
 
         $class = $this->createClassForFunction($function, $functionFQN);
         $prophecy = $this->prophet->prophesize($class);
-        $this->prophecies[$functionFQN] = $prophecy;
+        $this->prophecies[$redefineTarget] = $prophecy;
 
         return $prophecy;
     }
@@ -387,6 +395,7 @@ class FunctionMocker
     {
         $uniqid = md5(uniqid('function-', true));
         $functionSlug = str_replace('\\', '_', $functionFQN);
+
         $className = "_{$functionSlug}_{$uniqid}";
 
 		//phpcs:ignore
@@ -405,10 +414,11 @@ class FunctionMocker
      */
     protected function redefineFunctionWithPatchwork($function, $functionFQN)
     {
+        $redefineTarget = $this->getRedefineTarget($function, $functionFQN);
         \Patchwork\redefine(
-            $functionFQN,
-            function () use ($functionFQN, $function) {
-                $prophecy = FunctionMocker::instance()->getRevealedProphecyFor($functionFQN);
+            $this->getRedefineTarget($function, $functionFQN, '::'),
+            static function () use ($redefineTarget, $function) {
+                $prophecy = FunctionMocker::instance()->getRevealedProphecyFor($redefineTarget);
                 $args = func_get_args();
 
                 if (empty($args)) {
@@ -450,6 +460,8 @@ class FunctionMocker
      */
     protected function buildMethodProphecy($function, array $arguments, ProphecyInterface $prophecy)
     {
+        $this->removePreviousMethodProfecies($prophecy, $function);
+
         if (empty($arguments)) {
             $methodProphecy = $prophecy->$function();
         } else {
@@ -530,10 +542,57 @@ class FunctionMocker
             return static::prophesize($functionOrStaticMethod, Argument::any())->willReturn($value);
         }
 
+        // Use a proxy function to unpack the call arguments.
         $proxy = function ($prophecyArgs) use ($value) {
             return $value(...$prophecyArgs);
         };
 
         return static::prophesize($functionOrStaticMethod, Argument::cetera())->will($proxy);
+    }
+
+    /**
+     * Depending on the function name and fully-qualified name returns the redefine target that should be used.
+     *
+     * @param  string  $function     The name of the function w/o namespace, or the statc method name.
+     * @param  string  $functionFQN  The fully-qualified function name or the fully-qualified class static method class
+     *                               name.
+     * @param  string  $separator The separator to use between the class and the static method name; defaults to `_`.
+     *
+     * @return string The name that will be used across the request to identify the function/method/class combination.
+     */
+    protected function getRedefineTarget($function, $functionFQN, $separator = '_')
+    {
+        $redefineTarget = is_callable("{$functionFQN}::{$function}") ?
+            $functionFQN . $separator . $function
+            : $functionFQN;
+
+        return $redefineTarget;
+    }
+
+    /**
+     * Removes existing method prophecies from the prophecy to avoid following method redefinitions not having effect.
+     *
+     * This is really an hack to choose between one of two evils: either build a different prophecy for each function
+     * and/or class method combination (with the included `eval` run) or do this. This might change in the future as
+     * meddling with a private property is really not ideal.
+     *
+     * @param  \Prophecy\Prophecy\ObjectProphecy  $prophecy     The Prophecy object to remove the method prophecies for
+     *                                                          the function, or static method, from.
+     * @param  string                             $function     The function, or static method name, to remove the
+     *                                                          existing prophecies for.
+     *
+     * @throws \ReflectionException If the private `$methodProphecies` property on the object prophecy cannot be
+     *                              accessed.
+     */
+    protected function removePreviousMethodProfecies(ObjectProphecy $prophecy, $function)
+    {
+        $methodProphecies = $prophecy->getMethodProphecies();
+
+        if (! empty($methodProphecies)) {
+            $prophecyMethodProphecies = new \ReflectionProperty(ObjectProphecy::class, 'methodProphecies');
+            $prophecyMethodProphecies->setAccessible(true);
+            $methodProphecies[ $function ] = [];
+            $prophecyMethodProphecies->setValue($prophecy, $methodProphecies);
+        }
     }
 }
