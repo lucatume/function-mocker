@@ -13,230 +13,241 @@
 
 if (!function_exists('wp_list_filter')) {
 
-	/**
-	 * Filters a list of objects, based on a set of key => value arguments.
-	 *
-	 * @since 3.1.0
-	 * @since 4.7.0 Uses `WP_List_Util` class.
-	 *
-	 * @param array  $list     An array of objects to filter.
-	 * @param array  $args     Optional. An array of key => value arguments to match
-	 *                         against each object. Default empty array.
-	 * @param string $operator Optional. The logical operation to perform. 'AND' means
-	 *                         all elements from the array must match. 'OR' means only
-	 *                         one element needs to match. 'NOT' means no elements may
-	 *                         match. Default 'AND'.
-	 * @return array Array of found values.
-	 */
-	function wp_list_filter($list, $args = array(), $operator = 'AND') {
-		if (!is_array($list)) {
-			return array();
-		}
+    /**
+     * Filters a list of objects, based on a set of key => value arguments.
+     *
+     * @since 3.1.0
+     * @since 4.7.0 Uses `WP_List_Util` class.
+     *
+     * @param array  $list     An array of objects to filter.
+     * @param array  $args     Optional. An array of key => value arguments to match
+     *                         against each object. Default empty array.
+     * @param string $operator Optional. The logical operation to perform. 'AND' means
+     *                         all elements from the array must match. 'OR' means only
+     *                         one element needs to match. 'NOT' means no elements may
+     *                         match. Default 'AND'.
+     * @return array Array of found values.
+     */
+    function wp_list_filter($list, $args = array(), $operator = 'AND')
+    {
+        if (!is_array($list)) {
+            return array();
+        }
 
-		$util = new WP_List_Util($list);
-		return $util->filter($args, $operator);
-	}
+        $util = new WP_List_Util($list);
+        return $util->filter($args, $operator);
+    }
 
 }
 
 if (!function_exists('wp_list_pluck')) {
 
-	/**
-	 * Pluck a certain field out of each object in a list.
-	 *
-	 * This has the same functionality and prototype of
-	 * array_column() (PHP 5.5) but also supports objects.
-	 *
-	 * @since 3.1.0
-	 * @since 4.0.0 $index_key parameter added.
-	 * @since 4.7.0 Uses `WP_List_Util` class.
-	 *
-	 * @param array      $list      List of objects or arrays
-	 * @param int|string $field     Field from the object to place instead of the entire object
-	 * @param int|string $index_key Optional. Field from the object to use as keys for the new array.
-	 *                              Default null.
-	 * @return array Array of found values. If `$index_key` is set, an array of found values with keys
-	 *               corresponding to `$index_key`. If `$index_key` is null, array keys from the original
-	 *               `$list` will be preserved in the results.
-	 */
-	function wp_list_pluck($list, $field, $index_key = null) {
-		$util = new WP_List_Util($list);
-		return $util->pluck($field, $index_key);
-	}
+    /**
+     * Pluck a certain field out of each object in a list.
+     *
+     * This has the same functionality and prototype of
+     * array_column() (PHP 5.5) but also supports objects.
+     *
+     * @since 3.1.0
+     * @since 4.0.0 $index_key parameter added.
+     * @since 4.7.0 Uses `WP_List_Util` class.
+     *
+     * @param array      $list      List of objects or arrays
+     * @param int|string $field     Field from the object to place instead of the entire object
+     * @param int|string $index_key Optional. Field from the object to use as keys for the new array.
+     *                              Default null.
+     * @return array Array of found values. If `$index_key` is set, an array of found values with keys
+     *               corresponding to `$index_key`. If `$index_key` is null, array keys from the original
+     *               `$list` will be preserved in the results.
+     */
+    function wp_list_pluck($list, $field, $index_key = null)
+    {
+        $util = new WP_List_Util($list);
+        return $util->pluck($field, $index_key);
+    }
 
 }
 
 if (!function_exists('wp_list_sort')) {
 
-	/**
-	 * Sorts a list of objects, based on one or more orderby arguments.
-	 *
-	 * @since 4.7.0
-	 *
-	 * @param array        $list          An array of objects to sort.
-	 * @param string|array $orderby       Optional. Either the field name to order by or an array
-	 *                                    of multiple orderby fields as $orderby => $order.
-	 * @param string       $order         Optional. Either 'ASC' or 'DESC'. Only used if $orderby
-	 *                                    is a string.
-	 * @param bool         $preserve_keys Optional. Whether to preserve keys. Default false.
-	 * @return array The sorted array.
-	 */
-	function wp_list_sort($list, $orderby = array(), $order = 'ASC', $preserve_keys = false) {
-		if (!is_array($list)) {
-			return array();
-		}
+    /**
+     * Sorts a list of objects, based on one or more orderby arguments.
+     *
+     * @since 4.7.0
+     *
+     * @param array        $list          An array of objects to sort.
+     * @param string|array $orderby       Optional. Either the field name to order by or an array
+     *                                    of multiple orderby fields as $orderby => $order.
+     * @param string       $order         Optional. Either 'ASC' or 'DESC'. Only used if $orderby
+     *                                    is a string.
+     * @param bool         $preserve_keys Optional. Whether to preserve keys. Default false.
+     * @return array The sorted array.
+     */
+    function wp_list_sort($list, $orderby = array(), $order = 'ASC', $preserve_keys = false)
+    {
+        if (!is_array($list)) {
+            return array();
+        }
 
-		$util = new WP_List_Util($list);
-		return $util->sort($orderby, $order, $preserve_keys);
-	}
+        $util = new WP_List_Util($list);
+        return $util->sort($orderby, $order, $preserve_keys);
+    }
 
 }
 
 if (!function_exists('__return_true')) {
 
-	/**
-	 * Returns true.
-	 *
-	 * Useful for returning true to filters easily.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @see __return_false()
-	 *
-	 * @return true True.
-	 */
-	function __return_true() {
-		return true;
-	}
+    /**
+     * Returns true.
+     *
+     * Useful for returning true to filters easily.
+     *
+     * @since 3.0.0
+     *
+     * @see __return_false()
+     *
+     * @return true True.
+     */
+    function __return_true()
+    {
+        return true;
+    }
 
 }
 
 if (!function_exists('__return_false')) {
 
-	/**
-	 * Returns false.
-	 *
-	 * Useful for returning false to filters easily.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @see __return_true()
-	 *
-	 * @return false False.
-	 */
-	function __return_false() {
-		return false;
-	}
+    /**
+     * Returns false.
+     *
+     * Useful for returning false to filters easily.
+     *
+     * @since 3.0.0
+     *
+     * @see __return_true()
+     *
+     * @return false False.
+     */
+    function __return_false()
+    {
+        return false;
+    }
 
 }
 
 if (!function_exists('__return_zero')) {
 
-	/**
-	 * Returns 0.
-	 *
-	 * Useful for returning 0 to filters easily.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return int 0.
-	 */
-	function __return_zero() {
-		return 0;
-	}
+    /**
+     * Returns 0.
+     *
+     * Useful for returning 0 to filters easily.
+     *
+     * @since 3.0.0
+     *
+     * @return int 0.
+     */
+    function __return_zero()
+    {
+        return 0;
+    }
 
 }
 
 if (!function_exists('__return_empty_array')) {
 
-	/**
-	 * Returns an empty array.
-	 *
-	 * Useful for returning an empty array to filters easily.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return array Empty array.
-	 */
-	function __return_empty_array() {
-		return array();
-	}
+    /**
+     * Returns an empty array.
+     *
+     * Useful for returning an empty array to filters easily.
+     *
+     * @since 3.0.0
+     *
+     * @return array Empty array.
+     */
+    function __return_empty_array()
+    {
+        return array();
+    }
 
 }
 
 if (!function_exists('__return_null')) {
 
-	/**
-	 * Returns null.
-	 *
-	 * Useful for returning null to filters easily.
-	 *
-	 * @since 3.4.0
-	 *
-	 * @return null Null value.
-	 */
-	function __return_null() {
-		return null;
-	}
+    /**
+     * Returns null.
+     *
+     * Useful for returning null to filters easily.
+     *
+     * @since 3.4.0
+     *
+     * @return null Null value.
+     */
+    function __return_null()
+    {
+        return null;
+    }
 
 }
 
 if (!function_exists('__return_empty_string')) {
 
-	/**
-	 * Returns an empty string.
-	 *
-	 * Useful for returning an empty string to filters easily.
-	 *
-	 * @since 3.7.0
-	 *
-	 * @see __return_null()
-	 *
-	 * @return string Empty string.
-	 */
-	function __return_empty_string() {
-		return '';
-	}
+    /**
+     * Returns an empty string.
+     *
+     * Useful for returning an empty string to filters easily.
+     *
+     * @since 3.7.0
+     *
+     * @see __return_null()
+     *
+     * @return string Empty string.
+     */
+    function __return_empty_string()
+    {
+        return '';
+    }
 
 }
 
 if (!function_exists('trailingslashit')) {
 
-	/**
-	 * Appends a trailing slash.
-	 *
-	 * Will remove trailing forward and backslashes if it exists already before adding
-	 * a trailing forward slash. This prevents double slashing a string or path.
-	 *
-	 * The primary use of this is for paths and thus should be used for paths. It is
-	 * not restricted to paths and offers no specific path support.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param string $string What to add the trailing slash to.
-	 * @return string String with trailing slash added.
-	 */
-	function trailingslashit($string) {
-		return untrailingslashit($string) . '/';
-	}
+    /**
+     * Appends a trailing slash.
+     *
+     * Will remove trailing forward and backslashes if it exists already before adding
+     * a trailing forward slash. This prevents double slashing a string or path.
+     *
+     * The primary use of this is for paths and thus should be used for paths. It is
+     * not restricted to paths and offers no specific path support.
+     *
+     * @since 1.2.0
+     *
+     * @param string $string What to add the trailing slash to.
+     * @return string String with trailing slash added.
+     */
+    function trailingslashit($string)
+    {
+        return untrailingslashit($string) . '/';
+    }
 
 }
 
 if (!function_exists('untrailingslashit')) {
 
-	/**
-	 * Removes trailing forward slashes and backslashes if they exist.
-	 *
-	 * The primary use of this is for paths and thus should be used for paths. It is
-	 * not restricted to paths and offers no specific path support.
-	 *
-	 * @since 2.2.0
-	 *
-	 * @param string $string What to remove the trailing slashes from.
-	 * @return string String without the trailing slashes.
-	 */
-	function untrailingslashit($string) {
-		return rtrim($string, '/\\');
-	}
+    /**
+     * Removes trailing forward slashes and backslashes if they exist.
+     *
+     * The primary use of this is for paths and thus should be used for paths. It is
+     * not restricted to paths and offers no specific path support.
+     *
+     * @since 2.2.0
+     *
+     * @param string $string What to remove the trailing slashes from.
+     * @return string String without the trailing slashes.
+     */
+    function untrailingslashit($string)
+    {
+        return rtrim($string, '/\\');
+    }
 
 }

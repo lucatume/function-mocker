@@ -1,14 +1,16 @@
 SRC?=src
 
 cs_sniff:
-	vendor/bin/phpcs --colors -p --standard=ruleset.xml $(SRC)
+	vendor/bin/phpcs --colors -p --standard=phpcs.xml $(SRC) \
+		--ignore=src/data,src/includes,src/tad/scripts,src/tad/FunctionMocker/envs \
+		-s src
 
 cs_fix:
-	vendor/bin/phpcbf --colors -p --standard=ruleset.xml $(SRC)
+	vendor/bin/phpcbf --colors -p --standard=phpcs.xml $(SRC) \
+		--ignore=src/data,src/includes,src/tad/scripts,tests/_output,src/tad/FunctionMocker/envs \
+		-s src tests
 
-cs_fix_n_sniff:
-	vendor/bin/phpcbf --colors -p --standard=ruleset.xml $(SRC)
-	vendor/bin/phpcs --colors -p --standard=ruleset.xml $(SRC)
+cs_fix_n_sniff: cs_fix cs_sniff
 
 composer_install:
 	composer install
@@ -52,3 +54,8 @@ lint: docker/parallel-lint/id
 
 duplicate_gitbook_files:
 	cp ${CURDIR}/docs/welcome.md ${CURDIR}/docs/README.md
+
+test:
+	phpunit
+
+pre_commit:lint test cs_sniff

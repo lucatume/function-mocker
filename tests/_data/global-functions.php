@@ -4,8 +4,9 @@
  *
  * @return string
  */
-function testFunctionOne() {
-	return 'foo';
+function testFunctionOne()
+{
+    return 'foo';
 }
 
 /**
@@ -13,8 +14,9 @@ function testFunctionOne() {
  *
  * @return string
  */
-function testFunctionTwo() {
-	return 'foo';
+function testFunctionTwo()
+{
+    return 'foo';
 }
 
 /**
@@ -22,18 +24,22 @@ function testFunctionTwo() {
  *
  * @return string
  */
-function testFunctionThree() {
-	return 'foo';
+function testFunctionThree()
+{
+    return 'foo';
 }
 
-function testFunctionFour() {
-	return 'foo';
+function testFunctionFour()
+{
+    return 'foo';
 }
 
-function testFunctionFive() {
-	return 'foo';
+function testFunctionFive()
+{
+    return 'foo';
 }
 
-function testFunctionSix() {
-	return 'foo';
+function testFunctionSix()
+{
+    return 'foo';
 }

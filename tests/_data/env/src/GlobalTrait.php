@@ -1,25 +1,29 @@
 <?php
 
-trait GlobalTrait {
+trait GlobalTrait
+{
 
-	/**
-	 * @return string
-	 */
-	public function method_one() {
-		return 'one';
-	}
+    /**
+     * @return string
+     */
+    public function method_one()
+    {
+        return 'one';
+    }
 
-	/**
-	 * @return string
-	 */
-	final protected function method_two() {
-		return 'two';
-	}
+    /**
+     * @return string
+     */
+    final protected function method_two()
+    {
+        return 'two';
+    }
 
-	/**
-	 * @return int
-	 */
-	private function method_three() {
-		return 23;
-	}
+    /**
+     * @return int
+     */
+    private function method_three()
+    {
+        return 23;
+    }
 }

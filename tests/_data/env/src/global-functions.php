@@ -1,7 +1,8 @@
 <?php
 
-function withoutComments( $a, $b ) {
-	return 'withoutComments';
+function withoutComments($a, $b)
+{
+    return 'withoutComments';
 }
 
 /**
@@ -12,10 +13,12 @@ function withoutComments( $a, $b ) {
  *
  * @return string
  */
-function withDocBlock( $a, $b ) {
-	return 'withDocBlock';
+function withDocBlock($a, $b)
+{
+    return 'withDocBlock';
 }
 
-function withoutDocBlock( $a, $b ) {
-	return 'withoutDocBlock';
+function withoutDocBlock($a, $b)
+{
+    return 'withoutDocBlock';
 }

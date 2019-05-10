@@ -13,13 +13,14 @@ namespace tad\FunctionMocker\Templates;
 /**
  * Class EnvAutoloader
  */
-class EnvAutoloader extends Template {
+class EnvAutoloader extends Template
+{
 
-	/**
-	 * The environment autoloader class code template, the `spl_autoload_register` call is in the extra lines.
-	 * @var string
-	 */
-	protected static $template = <<< PHP
+    /**
+     * The environment autoloader class code template, the `spl_autoload_register` call is in the extra lines.
+     * @var string
+     */
+    protected static $template = <<< PHP
 {{{header}}}
 /**
  * Class {{id}}
@@ -59,12 +60,11 @@ class {{id}} {
 
 PHP;
 
-	/**
-	 * Environment autoloader template extra lines define lines that will be included in the
-	 * bootstrap file to register the autoloader itself.
-	 *
-	 * @var array
-	 */
-	protected static $extraLines = [ "spl_autoload_register( [ new {{id}}( __DIR__ ), 'autoload' ] );" ];
-
+    /**
+     * Environment autoloader template extra lines define lines that will be included in the
+     * bootstrap file to register the autoloader itself.
+     *
+     * @var array
+     */
+    protected static $extraLines = [ "spl_autoload_register( [ new {{id}}( __DIR__ ), 'autoload' ] );" ];
 }

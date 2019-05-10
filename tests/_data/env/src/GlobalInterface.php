@@ -1,11 +1,11 @@
 <?php
 
-interface GlobalInterface {
+interface GlobalInterface
+{
 
-	public function method_one();
+    public function method_one();
 
-	public function method_two();
+    public function method_two();
 
-	public function method_three();
-
+    public function method_three();
 }

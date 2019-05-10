@@ -23,14 +23,15 @@ namespace tad\FunctionMocker;
  * @return boolean `true` if the function was created, `false` if the function was not created.
  * @throws \RuntimeException If the function could not be created.
  */
-function createFunction($functionName, $functionNamespace = null) {
-	$namespace = $functionNamespace ? " {$functionNamespace};" : '';
-	$code = trim(sprintf('namespace %s {function %s(){return null;}}', $namespace, $functionName));
+function createFunction($functionName, $functionNamespace = null)
+{
+    $namespace = $functionNamespace ? " {$functionNamespace};" : '';
+    $code = trim(sprintf('namespace %s {function %s(){return null;}}', $namespace, $functionName));
 	// phpcs:ignore
 	$ok = eval($code);
-	if ($ok === false) {
-		throw new \RuntimeException("Could not eval code $code for function $functionName");
-	}
+    if ($ok === false) {
+        throw new \RuntimeException("Could not eval code $code for function $functionName");
+    }
 
-	return true;
+    return true;
 }

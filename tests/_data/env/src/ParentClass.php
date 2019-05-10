@@ -2,7 +2,7 @@
 
 namespace Acme\Company;
 
-
-class ParentClass {
+class ParentClass
+{
 
 }

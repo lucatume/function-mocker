@@ -39,7 +39,7 @@ class V1ApiTest extends TestCase
     public function should_allow_replacing_a_function_with_a_stub_calling_a_callback()
     {
         FunctionMocker::replace('testFunctionSeven', function ($arg1, $arg2) {
-            return $arg2 === 'add' ? 23 + (int) $arg1 : $arg1 - 23;
+            return $arg2 === 'add' ? 23 + (int)$arg1 : $arg1 - 23;
         });
         $this->assertEquals(60, testFunctionSeven(37, 'add'));
         $this->assertEquals(14, testFunctionSeven(37, 'sub'));
@@ -48,26 +48,26 @@ class V1ApiTest extends TestCase
     public function scalarValues()
     {
         return [
-            'string'       => ['foo'],
+            'string' => ['foo'],
             'empty_string' => [''],
-            'false'        => [false],
-            'true'         => [true],
-            'null'         => [null],
-            'zero'         => [0],
-            'one'          => [1],
-            'two'          => [2],
-            'string_zero'  => ['0'],
-            'string_one'   => ['1'],
-            'string_two'   => ['2'],
-            'array'        => [23, 89, '2389', 'foo'],
-            'empty_array'  => [[]],
+            'false' => [false],
+            'true' => [true],
+            'null' => [null],
+            'zero' => [0],
+            'one' => [1],
+            'two' => [2],
+            'string_zero' => ['0'],
+            'string_one' => ['1'],
+            'string_two' => ['2'],
+            'array' => [23, 89, '2389', 'foo'],
+            'empty_array' => [[]],
         ];
     }
 
     public function complex_objects()
     {
         return [
-            'object'       => [(object) ['foo' => 'bar']],
+            'object' => [(object)['foo' => 'bar']],
             'empty_object' => [new \stdClass()],
         ];
     }

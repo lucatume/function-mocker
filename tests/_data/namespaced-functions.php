@@ -2,20 +2,26 @@
 
 namespace Test\Space;
 
-function testFunctionOne() {
+function testFunctionOne()
+{
 }
 
-function testFunctionTwo() {
+function testFunctionTwo()
+{
 }
 
-function testFunctionThree() {
+function testFunctionThree()
+{
 }
 
-function testFunctionFour() {
+function testFunctionFour()
+{
 }
 
-function testFunctionFive() {
+function testFunctionFive()
+{
 }
 
-function testFunctionSix() {
+function testFunctionSix()
+{
 }

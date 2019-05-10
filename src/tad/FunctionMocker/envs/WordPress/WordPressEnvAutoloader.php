@@ -16,32 +16,34 @@
  *
  * Handles the autoloading of the  test environment classes.
  */
-class WordPressEnvAutoloader {
+class WordPressEnvAutoloader
+{
 
-	/**
-	 * A map of fully-qualified class names to their path.
-	 * @var array
-	 */
-	protected static $classMap = [
-		'WP_List_Util' => __DIR__ . '/src/WP_List_Util.php',
-		'WP_Hook' => __DIR__ . '/src/WP_Hook.php',
-	];
+    /**
+     * A map of fully-qualified class names to their path.
+     * @var array
+     */
+    protected static $classMap = [
+        'WP_List_Util' => __DIR__ . '/src/WP_List_Util.php',
+        'WP_Hook' => __DIR__ . '/src/WP_Hook.php',
+    ];
 
-	/**
-	 * Finds and loads a class file managed by the autoloader.
-	 *
-	 * @param string $class The class fully qualified name.
-	 *
-	 * @return boolean Whether the file for the class was found and
-	 *              loaded or not.
-	 */
-	public function autoload( $class ) {
-		if (array_key_exists($class, static::$classMap)) {
-			include_once static::$classMap[ $class ];
+    /**
+     * Finds and loads a class file managed by the autoloader.
+     *
+     * @param string $class The class fully qualified name.
+     *
+     * @return boolean Whether the file for the class was found and
+     *              loaded or not.
+     */
+    public function autoload($class)
+    {
+        if (array_key_exists($class, static::$classMap)) {
+            include_once static::$classMap[ $class ];
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }
