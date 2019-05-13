@@ -7,8 +7,8 @@ cs_sniff:
 
 cs_fix:
 	vendor/bin/phpcbf --colors -p --standard=phpcs.xml $(SRC) \
-		--ignore=src/data,src/includes,src/tad/scripts,tests/cli/__snapshots__,src/tad/FunctionMocker/envs \
-		-s src tests
+		--ignore=src/data,src/includes,src/tad/scripts,tests/cli/__snapshots__,src/tad/FunctionMocker/envs,examples/**/vendor \
+		-s src tests examples
 
 cs_fix_n_sniff: cs_fix cs_sniff
 

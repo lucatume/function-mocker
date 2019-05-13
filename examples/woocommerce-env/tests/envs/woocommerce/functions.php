@@ -117,4 +117,3 @@ if (!function_exists('wc_get_weight')) {
         return $weight < 0 ? 0 : $weight;
     }
 }
-

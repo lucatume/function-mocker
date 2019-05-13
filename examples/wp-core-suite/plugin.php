@@ -8,12 +8,13 @@ Author URI: https://theaveragedev.com
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-function logger_start() {
-	if ( ! is_admin() ) {
-		return;
-	}
+function logger_start()
+{
+    if (! is_admin()) {
+        return;
+    }
 
-	\Examples\WPCore\Logger::start();
+    \Examples\WPCore\Logger::start();
 }
 
 add_action('init', 'logger_start');

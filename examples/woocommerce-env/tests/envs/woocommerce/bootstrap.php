@@ -10,29 +10,32 @@
 
 require_once __DIR__ . '/functions.php';
 
-class EnvAutoloader_woocommerce {
+class EnvAutoloader_woocommerce
+{
 
-	protected static $classMap = [
-		'WC_Abstract_Legacy_Product' =>  __DIR__ . '/WC_Abstract_Legacy_Product.php',
-		'WC_Product' =>  __DIR__ . '/WC_Product.php',
-		'WC_Data' =>  __DIR__ . '/WC_Data.php',
-	];
+    protected static $classMap = [
+        'WC_Abstract_Legacy_Product' =>  __DIR__ . '/WC_Abstract_Legacy_Product.php',
+        'WC_Product' =>  __DIR__ . '/WC_Product.php',
+        'WC_Data' =>  __DIR__ . '/WC_Data.php',
+    ];
 
-	protected $rootDir;
+    protected $rootDir;
 
-	public function __construct( $rootDir ) {
-		$this->rootDir = $rootDir;
-	}
+    public function __construct($rootDir)
+    {
+        $this->rootDir = $rootDir;
+    }
 
-	public function autoload( $class ) {
-		if ( array_key_exists( $class, static::$classMap ) ) {
-			include_once static::$classMap[ $class ];
+    public function autoload($class)
+    {
+        if (array_key_exists($class, static::$classMap)) {
+            include_once static::$classMap[ $class ];
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }
 
-spl_autoload_register( [ new EnvAutoloader_woocommerce( __DIR__ ), 'autoload' ] );
+spl_autoload_register([ new EnvAutoloader_woocommerce(__DIR__), 'autoload' ]);
