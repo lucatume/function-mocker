@@ -14,3 +14,4 @@ cache/*
 tests/_output/*
 pw-cs-*.yml
 patchwork.json
+tags

@@ -3,6 +3,7 @@
   "description": "An example integration of Function Mocker in PHPUnit",
   "type": "project",
   "license": "GPL-2.0",
+  "minimum-stability": "stable",
   "authors": [
     {
       "name": "theAverageDev (Luca Tumedei)",
@@ -20,6 +21,6 @@
     ]
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.5"
+    "phpunit/phpunit": "^5.7"
   }
 }

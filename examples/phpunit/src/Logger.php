@@ -2,6 +2,8 @@
 
 namespace Examples\PHPUnit;
 
+use Examples\PHPUnit\Legacy\LoggingServices;
+
 class Logger
 {
 
@@ -16,5 +18,11 @@ class Logger
         $hourly_log[ date('i:s', $when) ] = $message;
 
         set_transient($transient, $hourly_log, DAY_IN_SECONDS);
+
+        // If we have an external logging service then dispatch the message log there too.
+        foreach (LoggingServices::getLoggers() as $externalLogger) {
+            /** @var \Psr\Log\LoggerInterface $externalLogger */
+            $externalLogger->debug($message);
+        }
     }
 }

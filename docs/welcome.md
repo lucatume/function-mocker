@@ -1,13 +1,13 @@
-Function Mocker is a function mocking framework powered by [Patchwork][7026-0001] and [Prophecy][7026-0002] born out of my need to stub, mock and spy functions defined by WordPress in the context of unit and integration tests.  
+Function Mocker is a function mocking framework powered by [Patchwork][7026-0001] and [Prophecy][7026-0002] born out of my need to stub, mock and spy **functions and static methods** defined by WordPress in the context of unit and integration tests.  
 A lot of concepts in this opening, a code example might help understanding.
 
 ## A complete PHPUnit example
 Supposing I want to test the method `log` of the `Logger` class below:
 
 ```php
-// The class under test
+<?php
+// The class under test.
 class Logger {
-
 	public function log( $message, $when = null ) {
 		$when = $when ? $when : time();
 
@@ -18,6 +18,11 @@ class Logger {
 		$hourly_log[ date( 'i:s', $when ) ] = $message;
 
 		set_transient( $transient, $hourly_log, DAY_IN_SECONDS );
+		
+		// If we have an external logging service then dispatch the message log there too.
+		foreach(LoggingServices::loggers() as $externalLogger){
+			$externalLogger->log($message);
+		}
 	}
 }
 ```
@@ -25,6 +30,8 @@ class Logger {
 In the [PhpUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") bootstrap file:
 
 ```php
+<?php
+// file bootstrap.php
 \tad\FunctionMocker\FunctionMocker::init([
 	'redefinable-internals' => ['time']
 ]);
@@ -33,6 +40,7 @@ In the [PhpUnit](https://phpunit.de/ "PHPUnit – The PHP Testing Framework") bo
 The test case itself:
 
 ```php
+<?php
 use \tad\FunctionMocker\FunctionMocker as the_function;
 
 class LoggerTest extends TestCase {
@@ -45,26 +53,25 @@ class LoggerTest extends TestCase {
 	 * Test logging in an existing log
 	 */
 	public function test_logging_in_an_existing_log() {
-		// Arrange
+		// For the purpose of this test let's say there are no external services.
+		the_function::prophesize([LoggingServices,'loggers'])->willReturn([]);
 		$mockTime = strtotime( '2018-04-21 08:12:45' );
-		// stub the internal `time` function
+		// Stub the internal `time` function.
 		the_function::time()->willReturn( $mockTime );
-		// stub the `get_transient` function
+		// Stub the `get_transient` function.
 		the_function::get_transient( Argument::type( 'string' ) )
 		              ->willReturn( [ '12:23' => 'First message' ] );
-		// mock the `set_transient` function and set expectations on it
+		// Start spying on the `set_transient` function.
 		$expected = [
 			'12:23' => 'First message',
 			'12:45' => 'Second message',
 		];
-		the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
+		$spy = the_function::set_transient( Argument::type( 'string' ), $expected, DAY_IN_SECONDS )
 		              ->shouldBeCalled();
 
-		// Act
 		$logger = new Logger();
 		$logger->log( 'Second message' );
 
-		// Assert
 		// the mock expectation will be verified in the `tearDown` method
 	}
 
@@ -121,6 +128,7 @@ class LoggerTest extends TestCase {
 }
 ```
 
+You can find this example code [in the PHPUnit example](https://github.com/lucatume/function-mocker/tree/master/examples/phpunit).  
 [Go to the installation guide](installation.md) or check out the [alternatives](alternatives.md).
 
 [7026-0001]: http://patchwork2.org/

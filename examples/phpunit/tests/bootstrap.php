@@ -1,13 +1,13 @@
 <?php
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-// init Function Mocker
+// Init Function Mocker.
 \tad\FunctionMocker\FunctionMocker::init([
     'whitelist'             => [ __DIR__, dirname(__DIR__) . '/src' ],
     'redefinable-internals' => [ 'time' ],
 ]);
 
-// setup some constants
+// Setup some constants WordPress would set up for us.
 if (! defined('DAY_IN_SECONDS')) {
     define('DAY_IN_SECONDS', 24 * 60 * 60);
 }
