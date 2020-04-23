@@ -119,7 +119,37 @@ class FunctionMocker {
         return self::_replace($functionName, $returnValue);
     }
 
-    /**
+	/**
+	 * Replaces a function with few results, a static method or an instance method.
+	 *
+	 * The function or methods to be replaced must be specified with fully
+	 * qualified names like
+	 *
+	 *     FunctionMocker::replace('my\name\space\aFunction');
+	 *     FunctionMocker::replace('my\name\space\SomeClass::someMethod');
+	 *
+	 * not specifying a return value will make the replaced function or value
+	 * return `null`.
+	 *
+	 * @param      $functionName
+	 * @param null $returnValue
+	 *
+	 * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
+	 */
+	public static function replaceInOrder($functionName, $returnValue = null) {
+    	if ( ! $returnValue || ! is_array( $returnValue ) ) {
+    		return self::replace( $functionName, $returnValue );
+	    }
+    	$returnValue = array_values( $returnValue );
+
+    	return self::replace( $functionName, function() use ( $returnValue ) {
+		    static $i = 0;
+
+		    return $returnValue[ $i ++ ];
+	    } );
+	}
+
+		/**
      * @param $functionName
      * @param $returnValue
      *
