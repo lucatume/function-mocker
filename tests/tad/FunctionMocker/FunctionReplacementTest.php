@@ -158,4 +158,19 @@ class FunctionReplacementTest extends TestCase
         $this->assertEquals(2324, $f());
         $spy->wasCalledOnce();
     }
+
+	/**
+	 * It should allow replacing a function result w/ an array
+	 *
+	 * @test
+	 */
+	public function should_allow_replacing_a_function_result_w_an_array() {
+		$f = 'Some\Name\Space\func' . uniqid(rand(1, 9999));
+
+		$spy = FunctionMocker::replace($f, [23,89,2389]);
+
+		$this->assertTrue(function_exists($f));
+		$this->assertEquals([23,89,2389], $f());
+		$spy->wasCalledOnce();
+	}
 }

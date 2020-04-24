@@ -27,7 +27,7 @@ class FunctionReplacementInOrderTest extends TestCase {
 	 * @test
 	 * @dataProvider returnValues
 	 */
-	public function replace_function_should_be_retunr_values_in_order( $values ) {
+	public function replace_function_should_be_return_values_in_order(array $values) {
 		$f = 'Some\Name\Space\func' . uniqid(rand(1, 9999));
 		$spy = FunctionMocker::replaceInOrder( $f, $values );
 
@@ -38,4 +38,17 @@ class FunctionReplacementInOrderTest extends TestCase {
 		$spy->wasCalledTimes(count($values));
 	}
 
+	/**
+	 * Test replace static methods should replace values in order
+	 * @dataProvider returnValues
+	 */
+	public function test_replace_static_methods_should_replace_values_in_order(array $values) {
+		$f = 'tad\FunctionMocker\Tests\AClass::staticMethod';
+		$spy = FunctionMocker::replaceInOrder( $f, $values );
+
+		foreach ( $values as $value ) {
+			$this->assertEquals( $value, $f() );
+		}
+		$spy->wasCalledTimes(count($values));
+	}
 }
