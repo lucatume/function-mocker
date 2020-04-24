@@ -45,7 +45,7 @@ class ReturnValue
 
     public function call(array $args = array())
     {
-        return call_user_func_array($this->value, $args);
+	    return call_user_func_array( $this->value, $args );
     }
 
     public function isSelf()

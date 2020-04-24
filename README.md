@@ -153,6 +153,18 @@ public fuction testReplacedFunctionReturnsCallback(){
 }
 ```
 
+If you need to replace a function and make it return a sequence of values, one at each call, then you can use the `FunctionMocker::replaceInOrder` method:
+
+```php
+public function testReplacedFunctionReturnsValue(){
+    FunctionMocker::replaceInOrder('myFunction', [23, 89, 2389]);
+
+    $this->assertEquals(23, myFunction());
+    $this->assertEquals(89, myFunction());
+    $this->assertEquals(2389, myFunction());
+}
+```
+
 #### Spying on functions
 If the value returned by the `FunctionMocker::replace` method is stored in a variable than checks for calls can be made on that function:
 

@@ -120,42 +120,44 @@ class FunctionMocker {
     }
 
 	/**
-	 * Replaces a function with few results, a static method or an instance method.
+	 * Replaces a function, a static method or an instance method with a set of results, that will be returned in order.
 	 *
-	 * The function or methods to be replaced must be specified with fully
-	 * qualified names like
+	 * The function or methods to be replaced must be specified with fully qualified names like:
 	 *
-	 *     FunctionMocker::replace('my\name\space\aFunction');
-	 *     FunctionMocker::replace('my\name\space\SomeClass::someMethod');
+	 *     FunctionMocker::replaceInOrder('my\name\space\aFunction', [1, 2, 3]);
+	 *     FunctionMocker::replaceInOrder('my\name\space\SomeClass::someMethod', [1, 2, 3]);
 	 *
-	 * not specifying a return value will make the replaced function or value
-	 * return `null`.
+	 * @param string       $functionName The fully-qualified name of the function, or static method, to replace.
+	 * @param array<mixed> $returnValues The set of values to return when the function is called, in order.
 	 *
-	 * @param      $functionName
-	 * @param null $returnValue
-	 *
-	 * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
+	 * @return mixed A return value from the set, depending on the current index.
 	 */
-	public static function replaceInOrder($functionName, $returnValue = null) {
-    	if ( ! $returnValue || ! is_array( $returnValue ) ) {
-    		return self::replace( $functionName, $returnValue );
+	public static function replaceInOrder($functionName, array $returnValues) {
+    	if ( ! $returnValues || ! is_array($returnValues) ) {
+    		return self::replace($functionName, $returnValues);
 	    }
-    	$returnValue = array_values( $returnValue );
 
-    	return self::replace( $functionName, function() use ( $returnValue ) {
-		    static $i = 0;
+    	$returnValues = array_values($returnValues);
 
-		    return $returnValue[ $i ++ ];
-	    } );
+		return self::replace($functionName, static function () use ($returnValues) {
+			static $i = 0;
+
+			return $returnValues[$i ++];
+		});
 	}
 
-		/**
-     * @param $functionName
-     * @param $returnValue
-     *
-     * @return mixed|null|Call\Verifier\InstanceMethodCallVerifier|static|Step
-     * @throws \Exception
-     */
+	/**
+	 * Internal method to replace the functions or static methods.
+	 *
+	 * @param string $functionName The fully-qualified name of the function or static method or instance method to
+	 *                             replace.
+	 * @param mixed  $returnValue  The return value for the replaced function or static method.
+	 *
+	 * @return mixed|null|Call\Verifier\InstanceMethodCallVerifier|static|Step The replaced function handle, for spying,
+	 *                                                                         or the head of a replacement chain.
+	 *
+	 * @throws \Exception
+	 */
     private static function _replace($functionName, $returnValue) {
         $request = ReplacementRequest::on($functionName);
         $returnValue = ReturnValue::from($returnValue);

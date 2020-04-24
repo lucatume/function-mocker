@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.3.9]
+### Added
+- the `FunctionMocker::replaceInOrder` method to return values from a set from a replaced function or static method, thanks @wppunk, fixes #11
+
 ## [1.3.8]
 ### Fixed
 - compatibility with PHPUnit 6.0+
