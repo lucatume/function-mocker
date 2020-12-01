@@ -77,11 +77,14 @@ class MethodCode implements MethodCodeInterface
             $contents = $this->contents;
         }
 
+        $contents = str_replace( "\r\n", "\n", $contents );
+        $contents = str_replace( "\r", "\n", $contents );
+
         $startLine = $method->getStartLine();
         $endLine = $method->getEndLine();
 
         $classAliases = [];
-        $lines = explode(PHP_EOL, $contents);
+        $lines = explode("\n", $contents);
         foreach ($lines as $line) {
             $frags = explode(' ', $line);
             if (!empty($frags) && $frags[0] == 'use') {
