@@ -35,6 +35,9 @@
 		 * @dataProvider pathArrays
 		 */
 		public function it_should_return_properly_filtered_paths_arrays( $in, $out ) {
+			$in  = str_replace( '/', DIRECTORY_SEPARATOR, $in );
+			$out = str_replace( '/', DIRECTORY_SEPARATOR, $out );
+
 			$this->assertEquals( $out, Utils::filterPathListFrom( $in, $this->rootDir ) );
 		}
 	}
