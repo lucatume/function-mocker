@@ -435,6 +435,26 @@ YAML;
 		if (empty($options['cache-path'])) {
 			$options['cache-path'] = $destinationFolder . DIRECTORY_SEPARATOR . 'cache';
 		}
+
+		$options = self::makePathsUniform( $options );
+
+		return $options;
+	}
+
+	/**
+	 * Replace '/' in paths by DIRECTORY_SEPARATOR to work properly on Windows.
+	 *
+	 * @param array $options An array of options as those supported by Patchwork configuration.
+	 *
+	 * @return array
+	 */
+	private static function makePathsUniform( $options ) {
+		$pathArrays = [ 'whitelist', 'blacklist', 'cache-path' ];
+
+		foreach ( $pathArrays as $pathArray ) {
+			$options[$pathArray] = str_replace( '/', DIRECTORY_SEPARATOR, $options[$pathArray] );
+		}
+
 		return $options;
 	}
 }
