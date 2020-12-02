@@ -15,7 +15,7 @@
 
 		private $rootDir;
 
-		public function setUp() {
+		public function setUp(): void {
 			$this->rootDir = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
 		}
 

@@ -3,6 +3,8 @@
 namespace tad\FunctionMocker\Call\Verifier;
 
 
+use PHPUnit\Framework\MockObject\Invocation;
+use ReflectionClass;
 use tad\FunctionMocker\Call\Logger\LoggerInterface;
 use tad\FunctionMocker\ReturnValue;
 
@@ -37,15 +39,14 @@ class InstanceMethodCallVerifier extends AbstractVerifier {
 
 	/**
 	 * @param array  $args
-	 *
 	 * @param string $methodName
 	 *
 	 * @return array
 	 */
 	protected function getCallTimesWithArgs( $methodName, array $args = null ) {
-		$invocations = $this->invokedRecorder->getInvocations();
+		$invocations = $this->getInvocations();
 		$callTimes   = 0;
-		array_map( function ( \PHPUnit_Framework_MockObject_Invocation_Object $invocation ) use ( &$callTimes, $args, $methodName ) {
+		array_map( function ( Invocation $invocation ) use ( &$callTimes, $args, $methodName ) {
 			if ( is_array( $args ) ) {
 				$callTimes += $this->compareName( $invocation, $methodName ) && $this->compareArgs( $invocation, $args );
 			} else {
@@ -57,29 +58,39 @@ class InstanceMethodCallVerifier extends AbstractVerifier {
 	}
 
 	/**
-	 * @param \PHPUnit_Framework_MockObject_Invocation_Object $invocation
+	 * @return array
+	 * @throws \ReflectionException
+	 */
+	private function getInvocations() {
+		$reflectionClass       = new ReflectionClass( get_class( $this->invokedRecorder ) );
+		$parentReflectionClass = $reflectionClass->getParentClass();
+
+		$invocationsProperty = $parentReflectionClass->getProperty('invocations');
+		$invocationsProperty->setAccessible( true );
+
+		return $invocationsProperty->getValue( $this->invokedRecorder );
+	}
+
+	/**
+	 * @param Invocation $invocation
 	 * @param                                                 $methodName
 	 *
 	 * @return bool
 	 */
-	private function compareName( \PHPUnit_Framework_MockObject_Invocation_Object $invocation, $methodName ) {
-		$invokedMethodName = method_exists( $invocation, 'getMethodName' )
-			? $invocation->getMethodName()
-			: $invocation->methodName;
+	private function compareName( Invocation $invocation, $methodName ) {
+		$invokedMethodName = $invocation->getMethodName();
 
 		return $invokedMethodName === $methodName;
 	}
 
 	/**
-	 * @param \PHPUnit_Framework_MockObject_Invocation_Object $invocation
-	 * @param                                                 $args
+	 * @param Invocation $invocation
+	 * @param                                          $args
 	 *
 	 * @return bool|mixed|void
 	 */
-	private function compareArgs( \PHPUnit_Framework_MockObject_Invocation_Object $invocation, $args ) {
-		$parameters = method_exists( $invocation, 'getParameters' )
-			? $invocation->getParameters()
-			: $invocation->parameters;
+	private function compareArgs( Invocation $invocation, $args ) {
+		$parameters = $invocation->getParameters();
 
 		if ( count( $args ) > count( $parameters ) ) {
 			return false;

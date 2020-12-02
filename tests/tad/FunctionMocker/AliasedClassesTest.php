@@ -7,11 +7,11 @@ use tad\FunctionMocker\FunctionMocker;
 class AliasedClassesTest extends \PHPUnit\Framework\TestCase
 {
 
-	public function setUp() {
+	public function setUp(): void {
 		FunctionMocker::setUp();
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		FunctionMocker::tearDown();
 	}
 

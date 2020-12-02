@@ -23,7 +23,6 @@
       "tad\\FunctionMocker": "src"
     },
     "files": [
-      "src/shims.php",
       "src/functions.php"
     ]
   }

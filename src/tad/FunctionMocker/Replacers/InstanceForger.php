@@ -3,6 +3,8 @@
 namespace tad\FunctionMocker\Replacers;
 
 
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use tad\FunctionMocker\MockWrapper;
 use tad\FunctionMocker\ReplacementRequest;
 use tad\FunctionMocker\ReturnValue;
@@ -15,7 +17,7 @@ class InstanceForger
 {
 
     /**
-     * @var \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder
+     * @var InvocationOrder
      */
     protected $invokedRecorder;
 
@@ -44,6 +46,13 @@ class InstanceForger
         return $wrapperInstance;
     }
 
+	/**
+	 * @param       $className
+	 * @param array $methods
+	 *
+	 * @return MockObject|\PHPUnit_Framework_MockObject_MockObject
+	 * @throws \ReflectionException
+	 */
     public function getPHPUnitMockObjectFor($className, array $methods)
     {
         $rc = new \ReflectionClass($className);
@@ -77,7 +86,7 @@ class InstanceForger
     }
 
     /**
-     * @param \PHPUnit_Framework_MockObject_MockObject $mockObject
+     * @param \PHPUnit\Framework\MockObject\MockObject $mockObject
      * @param $methodName
      * @param ReturnValue|null $returnValue
      */

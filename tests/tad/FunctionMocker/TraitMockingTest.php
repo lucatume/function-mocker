@@ -37,12 +37,12 @@
 		 */
 		protected $sutClass;
 
-		public function setUp() {
+		public function setUp(): void {
 			$this->sutClass = __NAMESPACE__ . '\TestTrait';
 			Test::setUp();
 		}
 
-		public function tearDown() {
+		public function tearDown(): void {
 			Test::tearDown();
 		}
 

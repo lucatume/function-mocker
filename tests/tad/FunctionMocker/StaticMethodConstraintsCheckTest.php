@@ -7,12 +7,12 @@ use tad\FunctionMocker\Tests\TestCase;
 
 class StaticMethodConstraintsCheckTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         Sut::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Sut::tearDown();
     }

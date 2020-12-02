@@ -13,3 +13,4 @@ composer.lock
 patchwork.json
 cache/*
 pw-cs-*.yml
+.phpunit.result.cache

@@ -411,7 +411,7 @@ YAML;
 	 *
 	 * @return array
 	 */
-	public static function getPatchworkConfiguration($options = [], $destinationFolder) {
+	public static function getPatchworkConfiguration($options = [], $destinationFolder = '') {
 		$translatedFields = ['include' => 'whitelist', 'exclude' => 'blacklist'];
 
 		foreach ($translatedFields as $from => $to) {

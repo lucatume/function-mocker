@@ -24,11 +24,11 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 		return \$this->__functionMocker_callHandler;
 	}
 
-	public function __set_functionMocker_originalMockObject(\PHPUnit_Framework_MockObject_MockObject \$mockObject){
+	public function __set_functionMocker_originalMockObject(\PHPUnit\Framework\MockObject\MockObject \$mockObject){
 		\$this->__functionMocker_originalMockObject = \$mockObject;
 	}
 
-	public function __set_functionMocker_invokedRecorder(\PHPUnit_Framework_MockObject_Matcher_InvokedRecorder \$invokedRecorder){
+	public function __set_functionMocker_invokedRecorder(\PHPUnit\Framework\MockObject\Rule\InvocationOrder \$invokedRecorder){
 		\$this->__functionMocker_invokedRecorder = \$invokedRecorder;
 	}
 
@@ -89,7 +89,7 @@ CODESET;
     protected function wasCalledWithTimesTemplate()
     {
         return <<< CODESET
-        public function wasCalledWithTimes(array \$args = array(), \$times){
+        public function wasCalledWithTimes(array \$args = array(), \$times = 0){
         \$args = [
             \$args,
             \$times,

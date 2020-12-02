@@ -2,7 +2,7 @@
 
 namespace tad\FunctionMocker\Call\Verifier;
 
-use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use tad\FunctionMocker\Call\CallHandlerInterface;
 use tad\FunctionMocker\MatchingStrategy\MatchingStrategyFactory;
 use tad\FunctionMocker\ReplacementRequest;
@@ -20,7 +20,7 @@ abstract class AbstractVerifier implements VerifierInterface, CallHandlerInterfa
     protected $constraintClass;
 
     /**
-     * @var PHPUnit_Framework_MockObject_Matcher_InvokedRecorder
+     * @var InvocationOrder
      */
     protected $invokedRecorder;
 
@@ -70,11 +70,11 @@ abstract class AbstractVerifier implements VerifierInterface, CallHandlerInterfa
     }
 
     /**
-     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder
+     * @param InvocationOrder $invokedRecorder
      *
      * @return mixed
      */
-    public function setInvokedRecorder(PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder)
+    public function setInvokedRecorder(InvocationOrder $invokedRecorder)
     {
         $this->invokedRecorder = $invokedRecorder;
     }

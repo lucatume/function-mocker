@@ -9,13 +9,13 @@ namespace tests\tad\FunctionMocker {
     {
         protected $class;
 
-        public function setUp()
+        public function setUp(): void
         {
             Sut::setUp();
             $this->class = __NAMESPACE__ . '\ForgeClass';
         }
 
-        public function tearDown()
+        public function tearDown(): void
         {
             Sut::tearDown();
         }

@@ -2,6 +2,7 @@
 namespace tad\FunctionMocker\Forge;
 
 
+use PHPUnit\Framework\MockObject\MockObject;
 use tad\FunctionMocker\ReplacementRequest;
 use tad\FunctionMocker\Replacers\InstanceForger;
 use tad\FunctionMocker\ReturnValue;
@@ -63,13 +64,15 @@ class Step implements StepInterface
         }
     }
 
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
+	/**
+	 * @return MockObject
+	 * @throws \ReflectionException
+	 */
     protected function getForgedMockObject()
     {
         $methods = array_merge(array_keys($this->methods), ['__construct']);
         $mockObject = $this->instanceForger->getPHPUnitMockObjectFor($this->class, $methods);
+
         return $mockObject;
     }
 

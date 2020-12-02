@@ -14,13 +14,13 @@
          */
         protected $testClass;
 
-        public function setUp()
+        public function setUp(): void
         {
             $this->testClass = __NAMESPACE__ . '\TestClass';
             FunctionMocker::setUp();
         }
 
-        public function tearDown()
+        public function tearDown(): void
         {
             FunctionMocker::tearDown();
         }
@@ -38,13 +38,13 @@
 
         /**
          * @test
-         * it should return an object implementing the PHPUnit_Framework_MockObject_MockObject interface when stubbing
+         * it should return an object implementing the PHPUnit\Framework\MockObject\MockObject interface when stubbing
          */
         public function it_should_return_an_object_implementing_the_php_unit_framework_mock_object_mock_object_interface_when_stubbing()
         {
             $stub = FunctionMocker::replace($this->testClass . '::methodOne');
 
-            $this->assertInstanceOf('\PHPUnit_Framework_MockObject_MockObject', $stub);
+            $this->assertInstanceOf('\PHPUnit\Framework\MockObject\MockObject', $stub);
         }
 
         /**

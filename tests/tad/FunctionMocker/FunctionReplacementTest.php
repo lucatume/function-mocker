@@ -9,12 +9,12 @@ use tad\FunctionMocker\MockCallLogger;
 class FunctionReplacementTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         FunctionMocker::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         FunctionMocker::tearDown();
     }

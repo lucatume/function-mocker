@@ -4,17 +4,19 @@ namespace tests\tad\FunctionMocker;
 
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Runner\Version;
+use PHPUnit_Runner_Version;
 use tad\FunctionMocker\FunctionMocker;
 
 class PatchworkConfigurationTest extends TestCase {
 
 	protected $toRemove = [];
 
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->removeFiles();
 	}
 
-	protected function tearDown() {
+	protected function tearDown(): void {
 		$this->removeFiles();
 	}
 
@@ -82,7 +84,11 @@ class PatchworkConfigurationTest extends TestCase {
 		$this->assertTrue(FunctionMocker::writePatchworkConfig($newConfigContents, __DIR__));
 
 		$this->assertFileExists($configFile);
-		$this->assertFileNotExists($previousChecksumFile);
+		if ( version_compare( substr( Version::id(), 0, 3 ), '8.5', '=') ) {
+			$this->assertFileNotExists($previousChecksumFile);
+		} else {
+			$this->assertFileDoesNotExist($previousChecksumFile);
+		}
 		$newChecksum     = md5(json_encode(FunctionMocker::getPatchworkConfiguration($newConfigContents, __DIR__)));
 		$newChecksumFile = __DIR__ . "/pw-cs-{$newChecksum}.yml";
 		$this->assertFileExists($newChecksumFile);
