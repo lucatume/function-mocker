@@ -46,7 +46,7 @@ class InstanceMethodCallVerifier extends AbstractVerifier {
 	protected function getCallTimesWithArgs( $methodName, array $args = null ) {
 		$invocations = $this->getInvocations();
 		$callTimes   = 0;
-		array_map( function ( Invocation $invocation ) use ( &$callTimes, $args, $methodName ) {
+		array_map( function ( $invocation ) use ( &$callTimes, $args, $methodName ) {
 			if ( is_array( $args ) ) {
 				$callTimes += $this->compareName( $invocation, $methodName ) && $this->compareArgs( $invocation, $args );
 			} else {
@@ -72,25 +72,29 @@ class InstanceMethodCallVerifier extends AbstractVerifier {
 	}
 
 	/**
-	 * @param Invocation $invocation
+	 * @param \PHPUnit_Framework_MockObject_Invocation_Object|Invocation $invocation
 	 * @param                                                 $methodName
 	 *
 	 * @return bool
 	 */
-	private function compareName( Invocation $invocation, $methodName ) {
-		$invokedMethodName = $invocation->getMethodName();
+	private function compareName( $invocation, $methodName ) {
+		$invokedMethodName = method_exists( $invocation, 'getMethodName' )
+			? $invocation->getMethodName()
+			: $invocation->methodName;
 
 		return $invokedMethodName === $methodName;
 	}
 
 	/**
-	 * @param Invocation $invocation
+	 * @param \PHPUnit_Framework_MockObject_Invocation_Object|Invocation $invocation
 	 * @param                                          $args
 	 *
 	 * @return bool|mixed|void
 	 */
-	private function compareArgs( Invocation $invocation, $args ) {
-		$parameters = $invocation->getParameters();
+	private function compareArgs( $invocation, $args ) {
+		$parameters = method_exists( $invocation, 'getParameters' )
+			? $invocation->getParameters()
+			: $invocation->parameters;
 
 		if ( count( $args ) > count( $parameters ) ) {
 			return false;
