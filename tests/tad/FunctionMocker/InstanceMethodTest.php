@@ -36,16 +36,23 @@
             $this->assertInstanceOf($this->testClass, $stub);
         }
 
-        /**
-         * @test
-         * it should return an object implementing the PHPUnit\Framework\MockObject\MockObject interface when stubbing
-         */
-        public function it_should_return_an_object_implementing_the_php_unit_framework_mock_object_mock_object_interface_when_stubbing()
-        {
-            $stub = FunctionMocker::replace($this->testClass . '::methodOne');
+	    /**
+	     * @test
+	     * it should return an object implementing the
+	     * PHPUnit_Framework_MockObject_MockObject or
+	     * PHPUnit\Framework\MockObject\MockObject
+	     * interface when stubbing
+	     */
+	    public function it_should_return_an_object_implementing_the_php_unit_framework_mock_object_mock_object_interface_when_stubbing()
+	    {
+		    $stub = FunctionMocker::replace($this->testClass . '::methodOne');
 
-            $this->assertInstanceOf('\PHPUnit\Framework\MockObject\MockObject', $stub);
-        }
+		    if (version_compare(PHP_VERSION, '7.0', '<' )) {
+			    $this->assertInstanceOf('\PHPUnit_Framework_MockObject_MockObject', $stub);
+		    } else {
+			    $this->assertInstanceOf('\PHPUnit\Framework\MockObject\MockObject', $stub);
+		    }
+	    }
 
         /**
          * @test
