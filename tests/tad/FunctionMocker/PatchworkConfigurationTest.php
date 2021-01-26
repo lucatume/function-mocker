@@ -84,10 +84,10 @@ class PatchworkConfigurationTest extends TestCase {
 		$this->assertTrue(FunctionMocker::writePatchworkConfig($newConfigContents, __DIR__));
 
 		$this->assertFileExists($configFile);
-		if ( version_compare( substr( Version::id(), 0, 3 ), '8.5', '=') ) {
-			$this->assertFileNotExists($previousChecksumFile);
-		} else {
+		if ( version_compare( substr( Version::id(), 0, 3 ), '8.5', '>=') ) {
 			$this->assertFileDoesNotExist($previousChecksumFile);
+		} else {
+			$this->assertFileNotExists($previousChecksumFile);
 		}
 		$newChecksum     = md5(json_encode(FunctionMocker::getPatchworkConfiguration($newConfigContents, __DIR__)));
 		$newChecksumFile = __DIR__ . "/pw-cs-{$newChecksum}.yml";
