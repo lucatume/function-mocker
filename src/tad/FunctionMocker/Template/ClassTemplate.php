@@ -22,11 +22,11 @@ class %%extendedClassName%% extends %%mockClassName%% implements %%interfaceName
 		return \$this->__functionMocker_callHandler;
 	}
 
-	public function __set_functionMocker_originalMockObject(\PHPUnit\Framework\MockObject\MockObject \$mockObject){
+	public function __set_functionMocker_originalMockObject(\$mockObject){
 		\$this->__functionMocker_originalMockObject = \$mockObject;
 	}
 
-	public function __set_functionMocker_invokedRecorder(\PHPUnit\Framework\MockObject\Rule\InvocationOrder \$invokedRecorder){
+	public function __set_functionMocker_invokedRecorder(\$invokedRecorder){
 		\$this->__functionMocker_invokedRecorder = \$invokedRecorder;
 	}
 

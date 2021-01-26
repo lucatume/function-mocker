@@ -41,14 +41,14 @@ class MockWrapper
         return $this->wrappedObject;
     }
 
-    /**
-     * @param MockObject         $mockObject
-     * @param InvocationOrder    $invokedRecorder
-     * @param ReplacementRequest $request
-     *
-     * @return mixed
-     */
-    public function wrap(MockObject $mockObject, InvocationOrder $invokedRecorder, ReplacementRequest $request)
+	/**
+	 * @param \PHPUnit_Framework_MockObject_MockObject|MockObject                   $mockObject
+	 * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder|InvocationOrder $invokedRecorder
+	 * @param ReplacementRequest                                                    $request
+	 *
+	 * @return mixed
+	 */
+    public function wrap($mockObject, $invokedRecorder, ReplacementRequest $request)
     {
         $extender = new SpyExtender();
 
@@ -56,17 +56,17 @@ class MockWrapper
     }
 
 	/**
-	 * @param MockObject         $object
-	 * @param ExtenderInterface  $extender
+	 * @param \PHPUnit_Framework_MockObject_MockObject|MockObject                   $object
+	 * @param ExtenderInterface                                                     $extender
 	 *
-	 * @param InvocationOrder    $invokedRecorder
-	 * @param ReplacementRequest $request
-	 *
-	 * @throws \Exception
+	 * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder|InvocationOrder $invokedRecorder
+	 * @param ReplacementRequest                                                    $request
 	 *
 	 * @return mixed
+	 * @throws \Exception
+	 *
 	 */
-    protected function getWrappedInstance(MockObject $object, ExtenderInterface $extender, InvocationOrder $invokedRecorder = null, ReplacementRequest $request = null)
+    protected function getWrappedInstance($object, ExtenderInterface $extender, $invokedRecorder = null, ReplacementRequest $request = null)
     {
         $mockClassName = get_class($object);
         $extendClassName = sprintf('%s_%s', uniqid('Extended_'), $mockClassName);

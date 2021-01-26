@@ -10,11 +10,11 @@ interface CallHandlerInterface
 {
 
     /**
-     * @param InvocationOrder $invokedRecorder
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder|InvocationOrder $invokedRecorder
      *
      * @return mixed
      */
-    public function setInvokedRecorder(InvocationOrder $invokedRecorder);
+    public function setInvokedRecorder($invokedRecorder);
 
     /**
      * @param ReplacementRequest $request

@@ -10,8 +10,7 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "php": ">=7.2",
-    "phpunit/phpunit": "8.5 - 9.5",
+    "phpunit/phpunit": "5.7 - 9.5",
     "antecedent/patchwork": "^2.0",
     "lucatume/args": "^1.0"
   },
@@ -22,5 +21,15 @@
     "files": [
       "src/functions.php"
     ]
+  },
+  "bin": [
+    "bin/update-tests"
+  ],
+  "scripts": {
+    "pre-update-cmd": "update-tests",
+    "update-tests": "update-tests",
+    "revert-tests": "update-tests revert",
+    "phpcs": "phpcs --colors --standard=phpcs.xml",
+    "unit": "phpunit"
   }
 }
