@@ -84,7 +84,7 @@ class PatchworkConfigurationTest extends TestCase {
 		$this->assertTrue(FunctionMocker::writePatchworkConfig($newConfigContents, __DIR__));
 
 		$this->assertFileExists($configFile);
-		if ( version_compare( substr( Version::id(), 0, 3 ), '8.5', '>=') ) {
+		if ( version_compare( substr( Version::id(), 0, 1 ), '9', '>=') ) {
 			$this->assertFileDoesNotExist($previousChecksumFile);
 		} else {
 			$this->assertFileNotExists($previousChecksumFile);
