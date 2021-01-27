@@ -47,7 +47,10 @@
 	    {
 		    $stub = FunctionMocker::replace($this->testClass . '::methodOne');
 
-		    if (version_compare(PHP_VERSION, '7.0', '<' )) {
+		    if (
+			    class_exists(\PHPUnit_Runner_Version::class ) &&
+			    version_compare( substr( \PHPUnit_Runner_Version::id(), 0, 1 ), '5', '=')
+		    ) {
 			    $this->assertInstanceOf('\PHPUnit_Framework_MockObject_MockObject', $stub);
 		    } else {
 			    $this->assertInstanceOf('\PHPUnit\Framework\MockObject\MockObject', $stub);
