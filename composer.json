@@ -28,7 +28,7 @@
   "scripts": {
     "pre-update-cmd": "update-tests",
     "update-tests": "update-tests",
-    "revert-tests": "update-tests revert",
+    "revert-tests": "composer update-tests revert",
     "phpcs": "phpcs --colors --standard=phpcs.xml",
     "unit": "phpunit"
   }
