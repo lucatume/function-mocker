@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.4.0]
+### Added
+- PHP 8 compatibility and test coverage (thanks @kagg-design)
+
+### Fixed
+- Windows compatibility issues (thanks @kagg-design)
+
 ## [1.3.9]
 ### Added
 - the `FunctionMocker::replaceInOrder` method to return values from a set from a replaced function or static method, thanks @wppunk, fixes #11
@@ -75,7 +82,9 @@ All notable changes to this project will be documented in this file. This projec
 ### Fixed
 - issue where verifying the same instance replacement would result in double instance creations
 
-[unreleased]: https://github.com/lucatume/function-mocker/compare/1.3.8...HEAD
+[unreleased]: https://github.com/lucatume/function-mocker/compare/1.4.0...HEAD
+[1.4.0]: https://github.com/lucatume/function-mocker/compare/1.3.9...1.4.0
+[1.3.9]: https://github.com/lucatume/function-mocker/compare/1.3.8...1.3.9
 [1.3.8]: https://github.com/lucatume/function-mocker/compare/1.3.7...1.3.8
 [1.3.7]: https://github.com/lucatume/function-mocker/compare/1.3.6...1.3.7
 [1.3.6]: https://github.com/lucatume/function-mocker/compare/1.3.5...1.3.6
