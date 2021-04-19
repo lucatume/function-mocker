@@ -17,13 +17,13 @@ class InstanceMockingTest extends \PHPUnit\Framework\TestCase
 
 	protected $ns;
 
-	public function setUp() {
+	public function setUp(): void {
 		Test::setUp();
 
 		$this->ns = __NAMESPACE__;
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		Test::tearDown();
 	}
 

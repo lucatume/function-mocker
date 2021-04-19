@@ -3,18 +3,18 @@
 namespace tad\FunctionMocker\Call;
 
 
-use PHPUnit_Framework_MockObject_Matcher_InvokedRecorder;
+use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use tad\FunctionMocker\ReplacementRequest;
 
 interface CallHandlerInterface
 {
 
     /**
-     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedRecorder|InvocationOrder $invokedRecorder
      *
      * @return mixed
      */
-    public function setInvokedRecorder(PHPUnit_Framework_MockObject_Matcher_InvokedRecorder $invokedRecorder);
+    public function setInvokedRecorder($invokedRecorder);
 
     /**
      * @param ReplacementRequest $request

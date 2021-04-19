@@ -13,7 +13,7 @@ class SpyExtender extends AbstractExtender
     {
         return array(
             'wasCalledTimes($times)' => 'wasCalledTimes',
-            'wasCalledWithTimes(array $args = array(), $times)' => 'wasCalledWithTimes',
+            'wasCalledWithTimes(array $args = array(), $times = 0)' => 'wasCalledWithTimes',
             'wasNotCalled()' => 'wasNotCalled',
             'wasNotCalledWith(array $args = array())' => 'wasNotCalledWith',
             'wasCalledWithOnce(array $args = array())' => 'wasCalledWithOnce',

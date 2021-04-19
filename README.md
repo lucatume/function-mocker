@@ -2,7 +2,7 @@
 
 *A [Patchwork](http://antecedent.github.io/patchwork/) powered function mocker.*
 
-[![Build Status](https://travis-ci.org/lucatume/function-mocker.svg?branch=master)](https://travis-ci.org/lucatume/function-mocker)
+![Build Status](https://github.com/lucatume/function-mocker/actions/workflows/ci.yml/badge.svg)
 
 ## Show me the code
 This can be written in a [PHPUnit](http://phpunit.de/) test suite

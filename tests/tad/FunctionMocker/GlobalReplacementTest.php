@@ -8,12 +8,12 @@ use tad\FunctionMocker\FunctionMocker as Test;
 class GlobalReplacementTest extends \PHPUnit\Framework\TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         Test::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Test::tearDown();
     }

@@ -14,13 +14,13 @@
          */
         protected $testClass;
 
-        public function setUp()
+        public function setUp(): void
         {
             $this->testClass = __NAMESPACE__ . '\TestClass';
             FunctionMocker::setUp();
         }
 
-        public function tearDown()
+        public function tearDown(): void
         {
             FunctionMocker::tearDown();
         }
@@ -36,16 +36,26 @@
             $this->assertInstanceOf($this->testClass, $stub);
         }
 
-        /**
-         * @test
-         * it should return an object implementing the PHPUnit_Framework_MockObject_MockObject interface when stubbing
-         */
-        public function it_should_return_an_object_implementing_the_php_unit_framework_mock_object_mock_object_interface_when_stubbing()
-        {
-            $stub = FunctionMocker::replace($this->testClass . '::methodOne');
+	    /**
+	     * @test
+	     * it should return an object implementing the
+	     * PHPUnit_Framework_MockObject_MockObject or
+	     * PHPUnit\Framework\MockObject\MockObject
+	     * interface when stubbing
+	     */
+	    public function it_should_return_an_object_implementing_the_php_unit_framework_mock_object_mock_object_interface_when_stubbing()
+	    {
+		    $stub = FunctionMocker::replace($this->testClass . '::methodOne');
 
-            $this->assertInstanceOf('\PHPUnit_Framework_MockObject_MockObject', $stub);
-        }
+		    if (
+			    class_exists(\PHPUnit_Runner_Version::class ) &&
+			    version_compare( substr( \PHPUnit_Runner_Version::id(), 0, 1 ), '5', '=')
+		    ) {
+			    $this->assertInstanceOf('\PHPUnit_Framework_MockObject_MockObject', $stub);
+		    } else {
+			    $this->assertInstanceOf('\PHPUnit\Framework\MockObject\MockObject', $stub);
+		    }
+	    }
 
         /**
          * @test

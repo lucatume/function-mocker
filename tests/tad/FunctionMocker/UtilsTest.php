@@ -15,7 +15,7 @@
 
 		private $rootDir;
 
-		public function setUp() {
+		public function setUp(): void {
 			$this->rootDir = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
 		}
 
@@ -35,6 +35,9 @@
 		 * @dataProvider pathArrays
 		 */
 		public function it_should_return_properly_filtered_paths_arrays( $in, $out ) {
+			$in  = str_replace( '/', DIRECTORY_SEPARATOR, $in );
+			$out = str_replace( '/', DIRECTORY_SEPARATOR, $out );
+
 			$this->assertEquals( $out, Utils::filterPathListFrom( $in, $this->rootDir ) );
 		}
 	}

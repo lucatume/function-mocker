@@ -8,7 +8,7 @@
     {
         protected $class;
 
-        public function setUp()
+        public function setUp(): void
         {
             $this->class = $class = __NAMESPACE__ . '\StepDummyClass';
         }
