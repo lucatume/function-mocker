@@ -98,8 +98,8 @@ class FunctionMocker {
      * not specifying a return value will make the replaced function or value
      * return `null`.
      *
-     * @param      $functionName
-     * @param null $returnValue
+	 * @param string|array $functionName
+	 * @param mixed        $returnValue
      *
      * @return mixed|Call\Verifier\InstanceMethodCallVerifier|static
      */
