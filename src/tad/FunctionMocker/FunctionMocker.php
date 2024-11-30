@@ -367,7 +367,7 @@ class FunctionMocker {
 	 *
 	 * @throws \RuntimeException If the Patchwork configuration file or the checksum file could not be written.
 	 */
-	public static function writePatchworkConfig(?array $options = null, $destinationFolder) {
+	public static function writePatchworkConfig(?array $options = null, $destinationFolder = '') {
 		$options = self::getPatchworkConfiguration($options, $destinationFolder);
 
 		$configFileContents = json_encode($options);
