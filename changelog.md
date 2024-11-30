@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.5.0]
+### Added
+- Support for PHP 8.4.
+
+### Changed
+- The minimum required PHP version is now 7.2.
+
 ## [1.4.0]
 ### Added
 - PHP 8 compatibility and test coverage (thanks @kagg-design)
