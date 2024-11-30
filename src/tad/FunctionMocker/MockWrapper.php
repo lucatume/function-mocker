@@ -34,7 +34,7 @@ class MockWrapper
 	 */
 	private $methodCode;
 
-	public function __construct($originalClassName = '', ClassTemplateInterface $classTemplate = null, MethodCodeInterface $methodCode = null)
+	public function __construct($originalClassName = '', ?ClassTemplateInterface $classTemplate = null, ?MethodCodeInterface $methodCode = null)
     {
         $this->originalClassName = $originalClassName;
         $this->classTemplate = $classTemplate ?: new ClassTemplate();
@@ -71,7 +71,7 @@ class MockWrapper
 	 * @throws \Exception
 	 *
 	 */
-    protected function getWrappedInstance($object, ExtenderInterface $extender, $invokedRecorder = null, ReplacementRequest $request = null)
+    protected function getWrappedInstance($object, ExtenderInterface $extender, $invokedRecorder = null, ?ReplacementRequest $request = null)
     {
         $mockClassName = get_class($object);
         $extendClassName = sprintf('%s_%s', uniqid('Extended_'), $mockClassName);

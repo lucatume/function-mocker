@@ -22,12 +22,12 @@ class SpyCallLogger implements LoggerInterface
             : '\\PHPUnit\\Framework\\Constraint\\Constraint';
     }
 
-    public function called(array $args = null)
+    public function called(?array $args = null)
     {
         $this->calls[] = CallTrace::fromArguments($args);
     }
 
-    public function getCallTimes(array $args = null)
+    public function getCallTimes(?array $args = null)
     {
         $calls = $this->calls;
         if ($args) {

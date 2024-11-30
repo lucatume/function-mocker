@@ -90,7 +90,7 @@ class InstanceForger
      * @param $methodName
      * @param ReturnValue|null $returnValue
      */
-    public function setMockObjectExpectation(&$mockObject, $methodName, ReturnValue $returnValue = null)
+    public function setMockObjectExpectation(&$mockObject, $methodName, ?ReturnValue $returnValue = null)
     {
         if ($returnValue->isCallable()) {
             // callback

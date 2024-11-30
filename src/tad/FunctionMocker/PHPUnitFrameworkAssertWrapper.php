@@ -32,7 +32,7 @@ trait PHPUnitFrameworkAssertWrapper
      * @param array $args
      * @return mixed
      */
-    public static function __callStatic($name, array $args = null)
+    public static function __callStatic($name, ?array $args = null)
     {
         return call_user_func_array([self::getTestCase(), $name], $args);
     }
