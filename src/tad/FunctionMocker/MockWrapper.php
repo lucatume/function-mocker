@@ -29,7 +29,12 @@ class MockWrapper
      */
     protected $classTemplate;
 
-    public function __construct($originalClassName = '', ClassTemplateInterface $classTemplate = null, MethodCodeInterface $methodCode = null)
+	/**
+	 * @var MethodCode|MethodCodeInterface
+	 */
+	private $methodCode;
+
+	public function __construct($originalClassName = '', ClassTemplateInterface $classTemplate = null, MethodCodeInterface $methodCode = null)
     {
         $this->originalClassName = $originalClassName;
         $this->classTemplate = $classTemplate ?: new ClassTemplate();
