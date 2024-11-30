@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [1.3.7]
 ### Fixed
-- issue that would generate en excpetion when providing an empty configuration to the `FunctionMocker::init` method
+- issue that would generate en exception when providing an empty configuration to the `FunctionMocker::init` method
 
 ## [1.3.6]
 ### Fixed
