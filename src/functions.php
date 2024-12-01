@@ -14,7 +14,7 @@ namespace tad\FunctionMocker;
  * @see \Patchwork\configure()
  *
  */
-function init(array $options = null) {
+function init(?array $options = null) {
     FunctionMocker::init($options);
 }
 

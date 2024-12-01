@@ -27,7 +27,7 @@ class Verifier
     {
     }
 
-    public function __call($name, array $args = null)
+    public function __call($name, ?array $args = null)
     {
         return InstanceMethodCallVerifier::from($this->returnValue, $this->callLogger);
     }

@@ -43,7 +43,7 @@ class InstanceMethodCallVerifier extends AbstractVerifier {
 	 *
 	 * @return array
 	 */
-	protected function getCallTimesWithArgs( $methodName, array $args = null ) {
+	protected function getCallTimesWithArgs( $methodName, ?array $args = null ) {
 		$invocations = $this->getInvocations();
 		$callTimes   = 0;
 		array_map( function ( $invocation ) use ( &$callTimes, $args, $methodName ) {

@@ -10,9 +10,10 @@
   ],
   "minimum-stability": "stable",
   "require": {
-    "phpunit/phpunit": "5.7 - 9.5",
-    "antecedent/patchwork": "^2.0",
-    "lucatume/args": "^1.0"
+    "php": ">=7.1",
+    "phpunit/phpunit": "7.5 - 9.6",
+    "antecedent/patchwork": "^2.2.0",
+    "lucatume/args": "^1.0.1"
   },
   "autoload": {
     "psr-0": {

@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
+## [1.5.0]
+### Added
+- Support for PHP 8.4.
+
+### Changed
+- The minimum required PHP version is now 7.2.
+
 ## [1.4.0]
 ### Added
 - PHP 8 compatibility and test coverage (thanks @kagg-design)
@@ -21,7 +28,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [1.3.7]
 ### Fixed
-- issue that would generate en excpetion when providing an empty configuration to the `FunctionMocker::init` method
+- issue that would generate en exception when providing an empty configuration to the `FunctionMocker::init` method
 
 ## [1.3.6]
 ### Fixed
