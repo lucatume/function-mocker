@@ -3,9 +3,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased][unreleased]
 
-## [1.5.0]
+## [2.0.0]
 ### Added
-- Support for PHP 8.4.
+
+- Support for PHP 8.4. (thanks @kagg-design)
 
 ### Changed
 - The minimum required PHP version is now 7.2.
@@ -90,6 +91,7 @@ All notable changes to this project will be documented in this file. This projec
 - issue where verifying the same instance replacement would result in double instance creations
 
 [unreleased]: https://github.com/lucatume/function-mocker/compare/1.4.0...HEAD
+[2.0.0]: https://github.com/lucatume/function-mocker/compare/1.4.0...2.0.0
 [1.4.0]: https://github.com/lucatume/function-mocker/compare/1.3.9...1.4.0
 [1.3.9]: https://github.com/lucatume/function-mocker/compare/1.3.8...1.3.9
 [1.3.8]: https://github.com/lucatume/function-mocker/compare/1.3.7...1.3.8
